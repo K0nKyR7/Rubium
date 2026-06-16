@@ -445,7 +445,123 @@
     </style>
 </head>
 <body>
-<!-- ВСЁ ОСТАЛЬНОЕ СОДЕРЖИМОЕ constructor.html ОСТАЁТСЯ БЕЗ ИЗМЕНЕНИЙ -->
-<!-- (весь HTML и JavaScript из вашего оригинального файла) -->
-</body>
-</html>
+
+<nav class="navbar">
+    <div class="container">
+        <div class="nav-content">
+            <div class="logo"><span>⚡</span> Максим Ковалёв</div>
+            <div class="nav-links">
+                <a href="index.html">Главная</a>
+                <a href="index.html#about">Обо мне</a>
+                <a href="index.html#subjects">Предметы</a>
+                <a href="index.html#materials">Материалы</a>
+                <a href="index.html#contacts">Контакты</a>
+                <a href="tasks.html" class="tasks-btn"><i class="fas fa-tasks"></i> Задачи</a>
+                <a href="constructor.html" class="constructor-btn"><i class="fas fa-random"></i> Конструктор</a>
+                <a href="profile.html" class="tasks-btn"><i class="fas fa-user"></i> Профиль</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<section class="constructor-hero">
+    <div class="container">
+        <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> На главную</a>
+        <h1><i class="fas fa-random"></i> Конструктор вариантов ОГЭ</h1>
+        <p>Выберите номера заданий для тренировки</p>
+    </div>
+</section>
+
+<div class="container">
+    <div class="selection-panel">
+        <div class="selection-header">
+            <div class="selection-title"><i class="fas fa-check-square"></i> Выберите номера заданий</div>
+            <div>
+                <button class="select-all-btn" id="selectAllBtn">Выбрать все</button>
+                <button class="select-all-btn" id="deselectAllBtn" style="margin-left: 8px;">Снять все</button>
+            </div>
+        </div>
+        
+        <div class="numbers-group">
+            <div class="group-title">📦 Задания 1-5 (группа по тексту)</div>
+            <div class="numbers-grid" id="numbersGrid1_5"></div>
+        </div>
+        
+        <div class="numbers-group">
+            <div class="group-title">🔢 Задания 6-25</div>
+            <div class="numbers-grid" id="numbersGrid6_25"></div>
+        </div>
+    </div>
+
+    <div class="top-control-panel">
+        <button class="control-btn" id="generateBtn"><i class="fas fa-dice-d6"></i> Собрать вариант</button>
+        <button class="control-btn secondary" id="printBtn"><i class="fas fa-print"></i> Распечатать</button>
+    </div>
+
+    <div id="tasksContainer" class="tasks-grid">
+        <div class="empty-message">
+            <i class="fas fa-dice-d6" style="font-size: 3rem; margin-bottom: 16px; display: block;"></i>
+            <p>Выберите номера заданий и нажмите "Собрать вариант"</p>
+        </div>
+    </div>
+
+    <div class="bottom-control-panel">
+        <button class="control-btn success" id="saveDraftBtn"><i class="fas fa-save"></i> Сохранить черновик</button>
+        <button class="control-btn secondary" id="checkAllBtn"><i class="fas fa-check-double"></i> Завершить и проверить</button>
+        <button class="control-btn secondary" id="clearAnswersBtn"><i class="fas fa-eraser"></i> Очистить ответы</button>
+    </div>
+</div>
+
+<div id="saveNotification" class="save-notification">✅ Черновик сохранён!</div>
+
+<div id="checkConfirmModal" class="modal-overlay">
+    <div class="modal-content">
+        <i class="fas fa-clipboard-list" style="font-size: 3rem; color: #A67B5B; margin-bottom: 16px; display: block;"></i>
+        <h3>Завершить проверку?</h3>
+        <p>После проверки вы не сможете изменить ответы.</p>
+        <div class="modal-buttons">
+            <button class="btn-primary" id="checkConfirmYesBtn">Да, проверить</button>
+            <button class="btn-secondary" id="checkConfirmNoBtn">Отмена</button>
+        </div>
+    </div>
+</div>
+
+<div id="saveConfirmModal" class="modal-overlay">
+    <div class="modal-content">
+        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #D4A574; margin-bottom: 16px; display: block;"></i>
+        <h3>Внимание!</h3>
+        <p>При сохранении нового черновика старый черновик будет удалён без возможности восстановления.</p>
+        <div class="modal-buttons">
+            <button class="btn-danger" id="saveConfirmYesBtn">Да, сохранить</button>
+            <button class="btn-secondary" id="saveConfirmNoBtn">Отмена</button>
+        </div>
+    </div>
+</div>
+
+<div id="resultsModal" class="modal-overlay">
+    <div class="modal-content results-modal-content">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <h3 style="margin: 0;"><i class="fas fa-chart-simple"></i> Результаты проверки</h3>
+            <button id="resultsCloseBtn" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #B8A88A;">&times;</button>
+        </div>
+        
+        <div id="resultsSummaryBar" class="results-summary-bar">
+            <div><strong>Всего заданий:</strong> <span id="totalQuestions">0</span></div>
+            <div><strong>Решено:</strong> <span id="answeredCount">0</span></div>
+            <div><strong>Правильно:</strong> <span id="correctCount">0</span></div>
+            <div class="total-score" id="totalScore">0%</div>
+        </div>
+        
+        <div style="overflow-x: auto;">
+            <table class="results-table" id="resultsTable">
+                <thead>
+                    <tr>
+                        <th>Задание</th>
+                        <th>Ваш ответ</th>
+                        <th>Верный ответ</th>
+                        <th>Ваш балл</th>
+                        <th>Макс балл</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsTableBody"></tbody>
+     
