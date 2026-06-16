@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет — Максим Ковалёв</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #FDF8F0;
+            color: #4A3728;
+            min-height: 100vh;
+        }
+        .navbar {
+            background: rgba(255, 252, 245, 0.98);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(196, 162, 122, 0.2);
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #5C3D2E;
+        }
+        .logo span {
+            background: linear-gradient(135deg, #8B5E3C, #C4A27A);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #6B4C3B;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover { color: #8B5E3C; }
+        .logout-btn {
+            background: rgba(139, 69, 19, 0.08);
+            border: none;
+            padding: 8px 22px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            color: #6B4C3B;
+        }
+        .logout-btn:hover { background: #E8D5B7; transform: translateY(-2px); }
+        .profile-hero {
+            background: linear-gradient(135deg, #F5EDE0 0%, #EFE4D5 100%);
+            color: #4A3728;
+            padding: 60px 0;
+            text-align: center;
+            margin-bottom: 40px;
+            border-radius: 0 0 40px 40px;
+        }
+        .profile-hero h1 { font-size: 2.5rem; margin-bottom: 16px; color: #3D2B1F; }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 28px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(139, 69, 19, 0.05);
+            border: 1px solid rgba(196, 162, 122, 0.15);
+            transition: all 0.3s;
+        }
+        .stat-card:hover { transform: translateY(-4px); box-shadow: 0 15px 30px rgba(139, 69, 19, 0.08); }
+        .stat-number { font-size: 2.5rem; font-weight: 700; color: #A67B5B; }
+        .stat-label { color: #9B8B75; margin-top: 8px; }
+        
+        .info-card {
+            background: white;
+            border-radius: 28px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(139, 69, 19, 0.05);
+            border: 1px solid rgba(196, 162, 122, 0.15);
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #F0E8DD;
+        }
+        .info-row:last-child { border-bottom: none; }
+        .info-label { font-weight: 500; color: #6B4C3B; }
+        .info-value { font-weight: 600; color: #4A3728; }
+        
+        .draft-card {
+            background: #FDF8F0;
+            border-radius: 24px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            border: 1px solid rgba(196, 162, 122, 0.15);
+        }
+        .draft-info { flex: 1; }
+        .draft-time { font-size: 0.8rem; color: #9B8B75; }
+        .draft-expires { font-size: 0.8rem; font-weight: 500; }
+        .draft-expires.soon { color: #D4A574; }
+        .draft-expires.normal { color: #A67B5B; }
+        .draft-btn {
+            background: linear-gradient(135deg, #C4A27A, #A67B5B);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+        .draft-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(139, 69, 19, 0.2); }
+        .delete-draft-btn {
+            background: #D4A574;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+        .delete-draft-btn:hover { transform: translateY(-2px); }
+        
+        .guest-message {
+            text-align: center;
+            padding: 60px;
+            background: white;
+            border-radius: 28px;
+        }
+        .guest-message a { color: #A67B5B; text-decoration: none; }
+        .guest-message a:hover { color: #8B5E3C; }
+        
+        footer {
+            background: #3D2B1F;
+            color: #E8D5B7;
+            padding: 48px 0 24px;
+            margin-top: 40px;
+        }
+        .footer-content { text-align: center; }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        .footer-links a { color: #D4B28A; text-decoration: none; opacity: 0.8; transition: opacity 0.3s; }
+        .footer-links a:hover { opacity: 1; }
+        @media (max-width: 768px) {
+            .profile-hero h1 { font-size: 1.8rem; }
+            .draft-card { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="container">
+        <div class="nav-content">
+            <div class="logo"><span>⚡</span> Максим Ковалёв</div>
+            <div class="nav-links">
+                <a href="index.html">Главная</a>
+                <a href="index.html#about">Обо мне</a>
+                <a href="index.html#subjects">Предметы</a>
+                <a href="index.html#materials">Материалы</a>
+                <a href="tasks.html">Задачи</a>
+                <a href="constructor.html">Конструктор</a>
+                <a href="profile.html" class="tasks-btn" style="background: linear-gradient(135deg, #C4A27A, #A67B5B); color: white; padding: 8px 20px; border-radius: 30px;">Профиль</a>
+                <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Выйти</button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div id="profileContent"></div>
+</div>
+
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="index.html">Главная</a>
+                <a href="tasks.html">Сборник задач</a>
+                <a href="constructor.html">Конструктор</a>
+            </div>
+            <p>© 2026 Максим Ковалёв · Репетитор по математике и физике</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    const CURRENT_USER_KEY = "current_user";
+    const USERS_KEY = "site_users";
+    
+    function getCurrentUser() {
+        const saved = localStorage.getItem(CURRENT_USER_KEY);
+        if (saved) return JSON.parse(saved);
+        return null;
+    }
+    
+    function getDraftKey(username) { return `variant_draft_${username}`; }
+    
+    function formatDate(dateString) {
+        if (!dateString) return '—';
+        return new Date(dateString).toLocaleString('ru-RU');
+    }
+    
+    function getTimeRemaining(expiresAt) {
+        const now = new Date();
+        const expires = new Date(expiresAt);
+        const diff = expires - now;
+        if (diff <= 0) return null;
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        if (hours > 0) return { text: `${hours} ч ${minutes} мин`, hours, minutes };
+        return { text: `${minutes} мин`, hours: 0, minutes };
+    }
+    
+    function loadDraftInfo(username) {
+        const draftKey = getDraftKey(username);
+        const saved = localStorage.getItem(draftKey);
+        if (saved) {
+            const draft = JSON.parse(saved);
+            const now = new Date();
+            const expiresAt = new Date(draft.expiresAt);
+            if (now < expiresAt) {
+                const remaining = getTimeRemaining(draft.expiresAt);
+                return {
+                    exists: true,
+                    savedAt: draft.savedAt,
+                    expiresAt: draft.expiresAt,
+                    remaining: remaining.text,
+                    remainingHours: remaining.hours,
+                    questionsCount: Object.keys(draft.variant || {}).length
+                };
+            } else {
+                localStorage.removeItem(draftKey);
+                return { exists: false };
+            }
+        }
+        return { exists: false };
+    }
+    
+    function deleteDraft(username) {
+        localStorage.removeItem(getDraftKey(username));
+        renderProfile();
+    }
+    
+    function continueDraft() { window.location.href = 'constructor.html'; }
+    
+    function renderProfile() {
+        const container = document.getElementById('profileContent');
+        const currentUser = getCurrentUser();
+        
+        if (!currentUser) {
+            container.innerHTML = `
+                <div class="guest-message">
+                    <i class="fas fa-user-circle" style="font-size: 4rem; color: #E8D5B7; margin-bottom: 20px; display: block;"></i>
+                    <h2>Вы не авторизованы</h2>
+                    <p style="margin-top: 10px;">Войдите в аккаунт, чтобы видеть свою статистику и сохранённые черновики</p>
+                    <a href="login.html" style="display: inline-block; margin-top: 20px; background: linear-gradient(135deg, #C4A27A, #A67B5B); color: white; padding: 12px 32px; border-radius: 40px; text-decoration: none;">Войти</a>
+                </div>
+            `;
+            return;
+        }
+        
+        const stats = currentUser.stats || { tasksSolved: 0, tasksCorrect: 0, solvedTasks: [] };
+        const percent = stats.tasksSolved > 0 ? Math.round((stats.tasksCorrect / stats.tasksSolved) * 100) : 0;
+        const draftInfo = loadDraftInfo(currentUser.username);
+        
+        let draftHtml = '';
+        if (draftInfo.exists) {
+            const isSoon = draftInfo.remainingHours === 0 && draftInfo.remainingMinutes < 30;
+            draftHtml = `
+                <div class="info-card">
+                    <h3 style="margin-bottom: 16px;"><i class="fas fa-save"></i> Сохранённый черновик варианта</h3>
+                    <div class="draft-card">
+                        <div class="draft-info">
+                            <div><strong>📝 Вариант ОГЭ</strong></div>
+                            <div class="draft-time">Сохранён: ${formatDate(draftInfo.savedAt)}</div>
+                            <div class="draft-expires ${isSoon ? 'soon' : 'normal'}">
+                                ⏰ Действует ещё: ${draftInfo.remaining}
+                            </div>
+                            <div>📋 ${draftInfo.questionsCount} заданий</div>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="draft-btn" onclick="continueDraft()"><i class="fas fa-play"></i> Продолжить</button>
+                            <button class="delete-draft-btn" onclick="deleteDraft('${currentUser.username}')"><i class="fas fa-trash"></i> Удалить</button>
+                        </div>
+                    </div>
+                    <p style="font-size: 0.8rem; color: #9B8B75; margin-top: 12px;">
+                        <i class="fas fa-info-circle"></i> Черновик автоматически удалится через 4 часа после сохранения
+                    </p>
+                </div>
+            `;
+        }
+        
+        container.innerHTML = `
+            <section class="profile-hero">
+                <div class="container">
+                    <h1><i class="fas fa-user-circle"></i> Личный кабинет</h1>
+                    <p>${currentUser.name || currentUser.username}</p>
+                </div>
+            </section>
+            
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-number">${stats.tasksSolved || 0}</div><div class="stat-label">Решено задач</div></div>
+                <div class="stat-card"><div class="stat-number">${stats.tasksCorrect || 0}</div><div class="stat-label">Правильных ответов</div></div>
+                <div class="stat-card"><div class="stat-number">${percent}%</div><div class="stat-label">Точность</div></div>
+                <div class="stat-card"><div class="stat-number">${stats.solvedTasks?.length || 0}</div><div class="stat-label">Уникальных задач</div></div>
+            </div>
+            
+            ${draftHtml}
+            
+            <div class="info-card">
+                <div class="info-row"><span class="info-label"><i class="fas fa-user"></i> Имя</span><span class="info-value">${currentUser.name || currentUser.username}</span></div>
+                <div class="info-row"><span class="info-label"><i class="fas fa-tag"></i> Логин</span><span class="info-value">${currentUser.username}</span></div>
+                <div class="info-row"><span class="info-label"><i class="fas fa-crown"></i> Роль</span><span class="info-value">${currentUser.role === 'admin' ? 'Администратор 👑' : 'Ученик'}</span></div>
+            </div>
+            
+            <div class="info-card">
+                <h3 style="margin-bottom: 16px;"><i class="fas fa-chart-line"></i> Детальная статистика</h3>
+                <div class="info-row"><span class="info-label">Всего попыток</span><span class="info-value">${stats.tasksSolved || 0}</span></div>
+                <div class="info-row"><span class="info-label">Из них правильных</span><span class="info-value">${stats.tasksCorrect || 0}</span></div>
+                <div class="info-row"><span class="info-label">Процент правильных</span><span class="info-value">${percent}%</span></div>
+            </div>
+        `;
+    }
+    
+    window.continueDraft = continueDraft;
+    window.deleteDraft = deleteDraft;
+    document.getElementById('logoutBtn')?.addEventListener('click', () => {
+        localStorage.removeItem(CURRENT_USER_KEY);
+        window.location.href = 'index.html';
+    });
+    
+    renderProfile();
+</script>
+</body>
+</html>

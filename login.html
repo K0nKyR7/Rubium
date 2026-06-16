@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход — Максим Ковалёв</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #FDF8F0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container { max-width: 450px; width: 100%; }
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #8B5E3C, #C4A27A);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+        .logo p { color: #9B8B75; font-size: 0.85rem; }
+        .card {
+            background: white;
+            border-radius: 32px;
+            padding: 40px;
+            box-shadow: 0 25px 50px rgba(139, 69, 19, 0.08);
+            border: 1px solid rgba(196, 162, 122, 0.15);
+        }
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 32px;
+            background: #F5EDE0;
+            padding: 6px;
+            border-radius: 60px;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 12px 20px;
+            background: transparent;
+            border: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: #8B7355;
+            transition: all 0.3s;
+            border-radius: 50px;
+        }
+        .tab-btn.active {
+            background: white;
+            color: #A67B5B;
+            box-shadow: 0 2px 8px rgba(139, 69, 19, 0.05);
+        }
+        .tab-content { display: none; animation: fadeIn 0.3s ease; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .form-group { margin-bottom: 24px; }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #6B5B48;
+            font-size: 0.85rem;
+        }
+        .input-wrapper {
+            position: relative;
+        }
+        .input-wrapper i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #C4A27A;
+            font-size: 1rem;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px 14px 44px;
+            border: 2px solid #F0E8DD;
+            border-radius: 28px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 0.3s;
+            background: #FDF8F0;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #C4A27A;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(196, 162, 122, 0.1);
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+        }
+        .checkbox-group .left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .checkbox-group input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #C4A27A;
+        }
+        .checkbox-group label {
+            margin-bottom: 0;
+            cursor: pointer;
+            color: #9B8B75;
+            font-size: 0.85rem;
+        }
+        .forgot-link {
+            color: #A67B5B;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .forgot-link:hover { text-decoration: underline; }
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #C4A27A, #A67B5B);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(139, 69, 19, 0.2);
+        }
+        .error-msg {
+            color: #D4A574;
+            font-size: 0.8rem;
+            margin-top: 8px;
+            display: none;
+            background: #FDF0EC;
+            padding: 10px 14px;
+            border-radius: 20px;
+        }
+        .success-msg {
+            color: #A67B5B;
+            font-size: 0.8rem;
+            margin-top: 8px;
+            display: none;
+            background: #F5EDE0;
+            padding: 10px 14px;
+            border-radius: 20px;
+        }
+        .back-link {
+            text-align: center;
+            margin-top: 24px;
+        }
+        .back-link a {
+            color: #C4A27A;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.2s;
+        }
+        .back-link a:hover { color: #8B5E3C; }
+        .divider {
+            text-align: center;
+            margin: 24px 0;
+            position: relative;
+        }
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #F0E8DD;
+        }
+        .divider span {
+            background: white;
+            padding: 0 16px;
+            color: #C4A27A;
+            font-size: 0.8rem;
+            position: relative;
+            z-index: 1;
+        }
+        .demo-accounts { margin-top: 20px; }
+        .demo-title {
+            font-size: 0.75rem;
+            color: #9B8B75;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+        .demo-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        .demo-btn {
+            padding: 8px 16px;
+            background: #F5EDE0;
+            border: none;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #6B4C3B;
+        }
+        .demo-btn:hover {
+            background: #E8D5B7;
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="logo">
+        <h1>⚡ Максим Ковалёв</h1>
+        <p>репетитор по математике и физике</p>
+    </div>
+    <div class="card">
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="login">🔐 Вход</button>
+            <button class="tab-btn" data-tab="register">📝 Регистрация</button>
+        </div>
+
+        <div id="loginTab" class="tab-content active">
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Логин</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="loginUsername" placeholder="Введите логин" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Пароль</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="loginPassword" placeholder="Введите пароль" required>
+                    </div>
+                </div>
+                <div class="checkbox-group">
+                    <div class="left">
+                        <input type="checkbox" id="rememberMe">
+                        <label for="rememberMe">Запомнить меня</label>
+                    </div>
+                    <a href="#" class="forgot-link" onclick="alert('Свяжитесь с администратором для восстановления пароля: @kovalev_math'); return false;">Забыли пароль?</a>
+                </div>
+                <div id="loginError" class="error-msg"></div>
+                <button type="submit" class="btn">Войти</button>
+            </form>
+            
+            <div class="divider"><span>или</span></div>
+            
+            <div class="demo-accounts">
+                <div class="demo-title">🪄 Быстрый вход</div>
+                <div class="demo-buttons">
+                    <button class="demo-btn" onclick="fillDemo('admin', '20081972')">👑 Админ</button>
+                    <button class="demo-btn" onclick="fillDemo('user', '1234')">👨‍🎓 Демо-ученик</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="registerTab" class="tab-content">
+            <form id="registerForm">
+                <div class="form-group">
+                    <label>Логин</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="regUsername" placeholder="Придумайте логин" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Пароль</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-key"></i>
+                        <input type="password" id="regPassword" placeholder="Придумайте пароль" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Ваше имя</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-smile"></i>
+                        <input type="text" id="regName" placeholder="Как вас зовут?" required>
+                    </div>
+                </div>
+                <div id="regError" class="error-msg"></div>
+                <div id="regSuccess" class="success-msg"></div>
+                <button type="submit" class="btn">Зарегистрироваться</button>
+            </form>
+        </div>
+    </div>
+    <div class="back-link">
+        <a href="index.html"><i class="fas fa-arrow-left"></i> На главную</a>
+    </div>
+</div>
+
+<script>
+    const USERS_KEY = "site_users";
+    const CURRENT_USER_KEY = "current_user";
+    const REMEMBER_KEY = "remembered_user";
+
+    function loadUsers() {
+        const saved = localStorage.getItem(USERS_KEY);
+        if (saved) return JSON.parse(saved);
+        const defaultUsers = [
+            { username: "admin", password: "20081972", name: "Администратор", role: "admin", registeredAt: new Date().toISOString(), stats: { tasksSolved: 0, tasksCorrect: 0, solvedTasks: [] } }
+        ];
+        localStorage.setItem(USERS_KEY, JSON.stringify(defaultUsers));
+        return defaultUsers;
+    }
+
+    function saveUsers(users) { localStorage.setItem(USERS_KEY, JSON.stringify(users)); }
+
+    function loadRememberedUser() {
+        const saved = localStorage.getItem(REMEMBER_KEY);
+        if (saved) {
+            const data = JSON.parse(saved);
+            document.getElementById('loginUsername').value = data.username || '';
+            document.getElementById('loginPassword').value = data.password || '';
+            document.getElementById('rememberMe').checked = true;
+        }
+    }
+
+    function saveRememberedUser(username, password, remember) {
+        if (remember) { localStorage.setItem(REMEMBER_KEY, JSON.stringify({ username, password })); }
+        else { localStorage.removeItem(REMEMBER_KEY); }
+    }
+
+    function fillDemo(username, password) {
+        document.getElementById('loginUsername').value = username;
+        document.getElementById('loginPassword').value = password;
+        document.getElementById('rememberMe').checked = true;
+    }
+    window.fillDemo = fillDemo;
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            const tabId = btn.dataset.tab + 'Tab';
+            document.getElementById(tabId).classList.add('active');
+            document.getElementById('loginError').style.display = 'none';
+            document.getElementById('regError').style.display = 'none';
+            document.getElementById('regSuccess').style.display = 'none';
+        });
+    });
+
+    document.getElementById('registerForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const username = document.getElementById('regUsername').value.trim();
+        const password = document.getElementById('regPassword').value.trim();
+        const name = document.getElementById('regName').value.trim();
+        const errorDiv = document.getElementById('regError');
+        const successDiv = document.getElementById('regSuccess');
+        
+        errorDiv.style.display = 'none';
+        successDiv.style.display = 'none';
+        
+        if (!username || !password || !name) {
+            errorDiv.textContent = 'Заполните все поля!';
+            errorDiv.style.display = 'block';
+            return;
+        }
+        if (username.length < 3) {
+            errorDiv.textContent = 'Логин должен быть не менее 3 символов';
+            errorDiv.style.display = 'block';
+            return;
+        }
+        if (password.length < 4) {
+            errorDiv.textContent = 'Пароль должен быть не менее 4 символов';
+            errorDiv.style.display = 'block';
+            return;
+        }
+        
+        const users = loadUsers();
+        if (users.find(u => u.username === username)) {
+            errorDiv.textContent = 'Пользователь с таким логином уже существует!';
+            errorDiv.style.display = 'block';
+            return;
+        }
+        
+        const newUser = {
+            username, password, name, role: "user",
+            registeredAt: new Date().toISOString(),
+            stats: { tasksSolved: 0, tasksCorrect: 0, solvedTasks: [] }
+        };
+        users.push(newUser);
+        saveUsers(users);
+        
+        successDiv.textContent = '✅ Регистрация успешна! Теперь войдите.';
+        successDiv.style.display = 'block';
+        document.getElementById('regUsername').value = '';
+        document.getElementById('regPassword').value = '';
+        document.getElementById('regName').value = '';
+        
+        setTimeout(() => { document.querySelector('.tab-btn[data-tab="login"]').click(); }, 1500);
+    });
+    
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const username = document.getElementById('loginUsername').value.trim();
+        const password = document.getElementById('loginPassword').value.trim();
+        const remember = document.getElementById('rememberMe').checked;
+        const errorDiv = document.getElementById('loginError');
+        
+        errorDiv.style.display = 'none';
+        if (!username || !password) {
+            errorDiv.textContent = 'Введите логин и пароль!';
+            errorDiv.style.display = 'block';
+            return;
+        }
+        
+        const users = loadUsers();
+        const user = users.find(u => u.username === username && u.password === password);
+        if (!user) {
+            errorDiv.textContent = 'Неверный логин или пароль!';
+            errorDiv.style.display = 'block';
+            return;
+        }
+        
+        saveRememberedUser(username, password, remember);
+        const currentUser = { username: user.username, name: user.name, role: user.role, stats: user.stats || { tasksSolved: 0, tasksCorrect: 0, solvedTasks: [] } };
+        localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(currentUser));
+        window.location.href = 'index.html';
+    });
+    
+    loadRememberedUser();
+</script>
+</body>
+</html>

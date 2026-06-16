@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сборник задач по математике — Максим Ковалёв</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #FDF8F0;
+            color: #4A3728;
+            line-height: 1.5;
+        }
+        .navbar {
+            background: rgba(255, 252, 245, 0.98);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(196, 162, 122, 0.2);
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #5C3D2E;
+        }
+        .logo span {
+            background: linear-gradient(135deg, #8B5E3C, #C4A27A);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #6B4C3B;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover { color: #8B5E3C; }
+        .tasks-btn, .constructor-btn {
+            background: linear-gradient(135deg, #C4A27A, #A67B5B);
+            color: white !important;
+            padding: 8px 20px;
+            border-radius: 40px;
+        }
+        .tasks-hero {
+            background: linear-gradient(135deg, #F5EDE0 0%, #EFE4D5 100%);
+            color: #4A3728;
+            padding: 60px 0;
+            text-align: center;
+            margin-bottom: 40px;
+            border-radius: 0 0 40px 40px;
+        }
+        .tasks-hero h1 { font-size: 2.5rem; margin-bottom: 16px; color: #3D2B1F; }
+        .tasks-hero p { font-size: 1.1rem; color: #5C4B3A; }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #A67B5B;
+            text-decoration: none;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+        .back-link:hover { opacity: 1; color: #8B5E3C; }
+
+        .search-section {
+            background: white;
+            border-radius: 28px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(139, 69, 19, 0.05);
+            border: 1px solid rgba(196, 162, 122, 0.15);
+        }
+        .search-box {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .search-box input {
+            flex: 1;
+            padding: 14px 18px;
+            border: 2px solid #F0E8DD;
+            border-radius: 28px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s;
+            background: #FDF8F0;
+        }
+        .search-box input:focus {
+            outline: none;
+            border-color: #C4A27A;
+            box-shadow: 0 0 0 4px rgba(196, 162, 122, 0.1);
+            background: white;
+        }
+        .search-box button {
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #C4A27A, #A67B5B);
+            color: white;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .search-box button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(139, 69, 19, 0.2);
+        }
+        .search-clear {
+            background: #F0E8DD !important;
+            color: #6B4C3B !important;
+        }
+        .search-info {
+            margin-top: 12px;
+            font-size: 0.8rem;
+            color: #9B8B75;
+        }
+        .search-badge {
+            background: #F5EDE0;
+            padding: 4px 12px;
+            border-radius: 20px;
+            color: #A67B5B;
+            font-weight: 500;
+        }
+
+        .filter-section {
+            background: white;
+            border-radius: 28px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(139, 69, 19, 0.05);
+            border: 1px solid rgba(196, 162, 122, 0.15);
+        }
+        .filter-group { margin-bottom: 20px; }
+        .filter-group:last-child { margin-bottom: 0; }
+        .filter-label {
+            font-weight: 600;
+            color: #6B4C3B;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .filter-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 8px 24px;
+            border: 2px solid #F0E8DD;
+            background: white;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            font-size: 0.85rem;
+            font-family: inherit;
+            color: #6B4C3B;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: linear-gradient(135deg, #C4A27A, #A67B5B);
+            color: white;
+            border-color: transparent;
+            transform: translateY(-2px);
+        }
+        .oge-select-group {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #F0E8DD;
+        }
+        .oge-select, .variant-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #F0E8DD;
+            border-radius: 24px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            background: #FDF8F0;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: all 0.3s;
+        }
+        .oge-select:focus, .variant-select:focus {
+            outline: none;
+            border-color: #C4A27A;
+        }
+        .filter-stats {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #9B8B75;
+            font-size: 0.9rem;
+            background: #FDF8F0;
+            padding: 12px;
+            border-radius: 24px;
+        }
+        
+        .tasks-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            margin-bottom: 40px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .task-card {
+            background: white;
+            border-radius: 28px;
+            overflow: hidden;
+            transition: all 0.3s;
+            box-shadow: 0 8px 25px rgba(139, 69, 19, 0.05);
+            border: 1px solid rgba(196, 162, 122, 0.15);
+            position: relative;
+            width: 100%;
+        }
+        .task-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(139, 69, 19, 0.1);
+            border-color: #C4A27A;
+        }
+        .task-number {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            font-family: monospace;
+            font-size: 0.7rem;
+            color: #B8A88A;
+            background: #FDF8F0;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        .task-header {
+            background: linear-gradient(135deg, #FDF8F0, #F5EDE0);
+            padding: 16px 20px;
+            padding-right: 80px;
+            border-bottom: 1px solid #F0E8DD;
+        }
+        .task-subject {
+            display: inline-block;
+            padding: 4px 12px;
+            background: linear-gradient(135deg, #C4A27A, #A67B5B);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .task-meta {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .task-variant {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            background: #F5EDE0;
+            color: #A67B5B;
+        }
+        .task-body { padding: 20px; }
+        .task-question {
+            font-size: 1rem;
+            background: #FDF8F0;
+            padding: 14px 16px;
+            border-radius: 20px;
+            border-left: 4px solid #C4A27A;
+            margin-bottom: 16px;
+            line-height: 1.5;
+            overflow-x: auto;
+        }
+        .task-question .katex { font-size: 1.2rem; }
+        .task-options {
+            background: #FDF8F0;
+            padding: 12px 16px;
+            border-radius: 20px;
+            margin-bottom: 16px;
+        }
+        .option {
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid #F0E8DD;
+        }
+        .option:last-child { border-bottom: none; }
+        .option-letter { font-weight: 700; color: #A67B5B; min-width: 28px; font-size: 0.9rem; }
+        .option-text { color: #6B4C3B; font-size: 0.95rem; }
+        .option-text .katex { font-size: 1rem; }
+        
+        .answer-checker { margin: 16px 0; }
+        .answer-input-group {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .answer-input {
+            flex: 2;
+            padding: 10px 14px;
+            border: 2px solid #F0E8DD;
+            border-radius: 24px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            transition: all 0.3s;
+            background: #FDF8F0;
+        }
+        .answer-input:focus {
+            outline: none;
+            border-color: #C4A27A;
+            box-shadow: 0 0 0 4px rgba(196, 162, 122, 0.1);
+            background: white;
+        }
+        .answer-input.correct { border-color: #A67B5B; background: #F5EDE0; }
+        .answer-input.incorrect { border-color: #D4A574; background: #FDF0EC; }
+        .check-answer-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #C4A27A, #A67B5B);
+            color: white;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        .check-answer-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(139, 69, 19, 0.2);
+        }
+        .answer-feedback {
+            margin-top: 10px;
+            font-size: 0.85rem;
+            padding: 8px 12px;
+            border-radius: 20px;
+            display: none;
+        }
+        .answer-feedback.show { display: block; }
+        .answer-feedback.correct { background: #F5EDE0; color: #A67B5B; }
+        .answer-feedback.incorrect { background: #FDF0EC; color: #D4A574; }
+        .show-answer-btn {
+            background: none;
+            border: 1px solid #F0E8DD;
+            padding: 8px 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+            margin-top: 12px;
+            color: #6B4C3B;
+        }
+        .show-answer-btn:hover {
+            background: #C4A27A;
+            color: white;
+            border-color: #C4A27A;
+        }
+        .task-answer {
+            background: #FDF8F0;
+            padding: 12px;
+            border-radius: 20px;
+            display: none;
+            margin-top: 12px;
+        }
+        .task-answer.show { display: block; }
+        .task-answer strong { color: #A67B5B; font-size: 0.9rem; }
+        .answer-math { margin-top: 8px; padding: 8px 12px; background: #F5EDE0; border-radius: 16px; font-size: 1rem; }
+        
+        .empty-tasks {
+            text-align: center;
+            padding: 60px;
+            background: white;
+            border-radius: 28px;
+        }
+        footer {
+            background: #3D2B1F;
+            color: #E8D5B7;
+            padding: 48px 0 24px;
+            margin-top: 40px;
+        }
+        .footer-content { text-align: center; }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        .footer-links a { color: #D4B28A; text-decoration: none; opacity: 0.8; transition: opacity 0.3s; }
+        .footer-links a:hover { opacity: 1; }
+        @media (max-width: 768px) {
+            .tasks-hero h1 { font-size: 1.8rem; }
+            .filter-btn { padding: 6px 16px; font-size: 0.75rem; }
+            .search-box { flex-direction: column; }
+            .search-box button { width: 100%; }
+            .answer-input-group { flex-direction: column; }
+            .check-answer-btn { width: 100%; }
+            .tasks-grid { max-width: 100%; }
+            .task-question { font-size: 0.95rem; }
+            .option-text { font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="container">
+        <div class="nav-content">
+            <div class="logo"><span>⚡</span> Максим Ковалёв</div>
+            <div class="nav-links">
+                <a href="index.html">Главная</a>
+                <a href="index.html#about">Обо мне</a>
+                <a href="index.html#subjects">Предметы</a>
+                <a href="index.html#materials">Материалы</a>
+                <a href="index.html#contacts">Контакты</a>
+                <a href="tasks.html" class="tasks-btn"><i class="fas fa-tasks"></i> Задачи</a>
+                <a href="constructor.html" class="constructor-btn"><i class="fas fa-random"></i> Конструктор</a>
+                <a href="profile.html" class="tasks-btn"><i class="fas fa-user"></i> Профиль</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<section class="tasks-hero">
+    <div class="container">
+        <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> На главную</a>
+        <h1><i class="fas fa-tasks"></i> Сборник задач по математике</h1>
+        <p>Задачи для подготовки к ОГЭ с ответами</p>
+    </div>
+</section>
+
+<div class="container">
+    <div class="search-section">
+        <div class="filter-label"><i class="fas fa-search"></i> Поиск по номеру задачи</div>
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Введите номер задачи, например: #000601 или 601" autocomplete="off">
+            <button id="searchBtn"><i class="fas fa-search"></i> Найти</button>
+            <button id="clearSearchBtn" class="search-clear"><i class="fas fa-times"></i> Очистить</button>
+        </div>
+        <div class="search-info" id="searchInfo"></div>
+    </div>
+
+    <div class="filter-section">
+        <div class="filter-group">
+            <div class="filter-label"><i class="fas fa-filter"></i> Тип задач</div>
+            <div class="filter-buttons" id="typeFilterButtons">
+                <button class="filter-btn active" data-type="all">📋 Все задачи</button>
+                <button class="filter-btn" data-type="oge">🎯 Только ОГЭ</button>
+            </div>
+        </div>
+
+        <div class="oge-select-group" id="ogeSelectGroup" style="display: none;">
+            <div class="filter-label"><i class="fas fa-list-ol"></i> Выбор номера задачи ОГЭ</div>
+            <select id="ogeNumberSelect" class="oge-select">
+                <option value="all">📋 Все задания</option>
+                <optgroup label="📦 Группы задач по тексту">
+                    <option value="group-1-5">1-5. Группы задач по тексту</option>
+                </optgroup>
+                <optgroup label="🔢 Алгебра">
+                    <option value="6">6. Числа и вычисления</option>
+                    <option value="7">7. Числовые неравенства, координатная прямая</option>
+                    <option value="8">8. Числа, вычисления и алгебраические выражения</option>
+                    <option value="9">9. Уравнения</option>
+                    <option value="10">10. Теория вероятностей</option>
+                    <option value="11">11. Графики функций</option>
+                    <option value="12">12. Расчеты по формулам</option>
+                    <option value="13">13. Неравенства, системы неравенств</option>
+                    <option value="14">14. Прогрессии</option>
+                    <option value="20">20. Алгебраические выражения, уравнения, неравенства</option>
+                    <option value="21">21. Текстовые задачи</option>
+                    <option value="22">22. Графики функций</option>
+                </optgroup>
+                <optgroup label="📐 Геометрия">
+                    <option value="15">15. Треугольники</option>
+                    <option value="16">16. Окружности</option>
+                    <option value="17">17. Четырёхугольники</option>
+                    <option value="18">18. Фигуры на клетчатой плоскости</option>
+                    <option value="19">19. Анализ геометрических высказываний</option>
+                    <option value="23">23. Геометрические задачи на вычисление</option>
+                    <option value="24">24. Геометрические задачи на доказательство</option>
+                    <option value="25">25. Геометрические задачи повышенной сложности</option>
+                </optgroup>
+            </select>
+            
+            <div class="filter-label" style="margin-top: 15px;"><i class="fas fa-tag"></i> Вид задачи</div>
+            <select id="variantSelect" class="variant-select" disabled>
+                <option value="all">📋 Все виды</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="filter-stats" id="filterStats"></div>
+    <div class="tasks-grid" id="tasksGrid"></div>
+</div>
+
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="index.html">Главная</a>
+                <a href="tasks.html">Сборник задач</a>
+                <a href="constructor.html">Конструктор вариантов</a>
+                <a href="index.html#contacts">Контакты</a>
+            </div>
+            <p>© 2026 Максим Ковалёв · Репетитор по математике и физике</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    const STORAGE_KEY = "math_tasks";
+    const VARIANTS_KEY = "oge_variants";
+    
+    let currentTypeFilter = "all";
+    let currentDifficultyFilter = "all";
+    let currentSearchNumber = null;
+    let currentOgeNumber = "all";
+    let currentVariant = "all";
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        }).replace(/\n/g, '<br>');
+    }
+
+    function formatTaskNumber(id) {
+        return `#${String(id).padStart(6, '0')}`;
+    }
+
+    function renderMathInText(text) {
+        if (!text) return '';
+        if (typeof katex === 'undefined') {
+            return escapeHtml(text);
+        }
+        const regex = /\$\$([^$]+)\$\$/g;
+        let result = '';
+        let lastIndex = 0;
+        let match;
+        while ((match = regex.exec(text)) !== null) {
+            if (match.index > lastIndex) {
+                result += escapeHtml(text.substring(lastIndex, match.index));
+            }
+            const formula = match[1];
+            try {
+                result += katex.renderToString(formula, { throwOnError: false, displayMode: false });
+            } catch(e) {
+                result += escapeHtml(formula);
+            }
+            lastIndex = regex.lastIndex;
+        }
+        if (lastIndex < text.length) {
+            result += escapeHtml(text.substring(lastIndex));
+        }
+        return result || escapeHtml(text);
+    }
+
+    function formatTaskHtml(task) {
+        let questionText = task.text;
+        let optionsHtml = '';
+        const optionsMatch = task.text.match(/(?:1\)[^2]*2\)[^3]*3\)[^4]*4\)[^\n]*)/);
+        if (optionsMatch) {
+            const questionPart = task.text.substring(0, task.text.indexOf('1)'));
+            questionText = questionPart.trim();
+            const optionsPart = optionsMatch[0];
+            const letters = ['А', 'Б', 'В', 'Г'];
+            const optionLines = optionsPart.split(/\d\)/).filter(s => s.trim());
+            optionsHtml = '<div class="task-options">';
+            optionLines.forEach((opt, idx) => {
+                if (idx < 4 && opt.trim()) {
+                    const renderedOpt = renderMathInText(opt.trim());
+                    optionsHtml += `
+                        <div class="option">
+                            <span class="option-letter">${letters[idx]})</span>
+                            <span class="option-text">${renderedOpt}</span>
+                        </div>
+                    `;
+                }
+            });
+            optionsHtml += '</div>';
+        }
+        const renderedQuestion = renderMathInText(questionText);
+        return `
+            <div class="task-card" data-task-id="${task.id}" data-correct-answer="${escapeHtml(task.answer)}">
+                <div class="task-number">${formatTaskNumber(task.id)}</div>
+                <div class="task-header">
+                    <span class="task-subject">📐 Математика${task.exam === 'oge' ? ' · ОГЭ' : ''}</span>
+                    <div class="task-meta">
+                        ${task.variant ? `<span class="task-variant">${escapeHtml(task.variant)}</span>` : ''}
+                    </div>
+                </div>
+                <div class="task-body">
+                    <div class="task-question">${renderedQuestion}</div>
+                    ${optionsHtml}
+                    <div class="answer-checker">
+                        <div class="answer-input-group">
+                            <input type="text" class="answer-input" placeholder="Ваш ответ" id="answer-input-${task.id}">
+                            <button class="check-answer-btn" data-id="${task.id}"><i class="fas fa-check"></i> Проверить</button>
+                        </div>
+                        <div class="answer-feedback" id="feedback-${task.id}"></div>
+                    </div>
+                    <button class="show-answer-btn" data-id="${task.id}"><i class="fas fa-eye"></i> Показать ответ</button>
+                    <div class="task-answer" id="answer-${task.id}">
+                        <strong>Правильный ответ:</strong>
+                        <div class="answer-math">${escapeHtml(task.answer)}</div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    function normalizeAnswer(answer) {
+        if (!answer) return null;
+        let normalized = answer.trim().replace(/\s/g, '');
+        normalized = normalized.replace(',', '.');
+        const optionNum = parseInt(normalized);
+        if (!isNaN(optionNum) && optionNum >= 1 && optionNum <= 4) {
+            return optionNum.toString();
+        }
+        const num = parseFloat(normalized);
+        if (!isNaN(num) && isFinite(num)) return num;
+        const fractionMatch = normalized.match(/^(-?\d+)\/(\d+)$/);
+        if (fractionMatch) {
+            const numerator = parseInt(fractionMatch[1], 10);
+            const denominator = parseInt(fractionMatch[2], 10);
+            if (denominator !== 0) return numerator / denominator;
+        }
+        return null;
+    }
+
+    function isAnswerCorrect(userAnswer, correctAnswer) {
+        let correctNum = parseFloat(correctAnswer.toString().trim().replace(/\s/g, '').replace(',', '.'));
+        let userNum = normalizeAnswer(userAnswer);
+        if (userNum !== null && !isNaN(correctNum)) {
+            return Math.abs(userNum - correctNum) < 0.0001;
+        }
+        const userStr = userAnswer.trim().replace(/\s/g, '');
+        const correctStr = correctAnswer.toString().trim().replace(/\s/g, '');
+        return userStr === correctStr;
+    }
+
+    // БАЗА ЗАДАЧ
+    const TASKS_LIST = [
+        { id: 601, text: "Найдите значение выражения $$\\frac{1}{10} + \\frac{29}{20}$$", exam: "oge", ogeNumber: "6", variant: "Вид 1", difficulty: "easy", difficultyName: "Лёгкий", answer: "1.55" },
+        { id: 602, text: "Найдите значение выражения $$\\frac{1}{2} + \\frac{11}{10}$$", exam: "oge", ogeNumber: "6", variant: "Вид 1", difficulty: "easy", difficultyName: "Лёгкий", answer: "1.6" },
+        { id: 603, text: "Найдите значение выражения $$\\frac{1}{2} + \\frac{33}{50}$$", exam: "oge", ogeNumber: "6", variant: "Вид 1", difficulty: "easy", difficultyName: "Лёгкий", answer: "1.16" },
+        { id: 604, text: "Найдите значение выражения $$\\frac{1}{5} + \\frac{53}{50}$$", exam: "oge", ogeNumber: "6", variant: "Вид 1", difficulty: "easy", difficultyName: "Лёгкий", answer: "1.26" },
+        { id: 605, text: "Найдите значение выражения $$\\frac{1}{4} + \\frac{37}{20}$$", exam: "oge", ogeNumber: "6", variant: "Вид 1", difficulty: "easy", difficultyName: "Лёгкий", answer: "2.1" },
+        { id: 606, text: "Найдите значение выражения $$\\frac{1}{2} + \\frac{31}{20}$$", exam: "oge", ogeNumber: "6", variant: "Вид 1", difficulty: "easy", difficultyName: "Лёгкий", answer: "2.05" },
+        { id: 607, text: "Найдите значение выражения $$\\frac{1}{5} + \\frac{17}{10}$$", exam: "oge", ogeNumber: "6", variant: "Вид 1", difficulty: "easy", difficultyName: "Лёгкий", answer: "1.9" },
+        { id: 608, text: "Найдите значение выражения $$\\frac{1}{25} + \\frac{43}{50}$$", exam: "oge", ogeNumber: "6", variant: "Вид 1", difficulty: "easy", difficultyName: "Лёгкий", answer: "0.9" },
+        { id: 609, text: "Найдите значение выражения $$\\frac{1}{10} + \\frac{21}{50}$$", exam: "oge", ogeNumber: "6", variant: "Вид 1", difficulty: "easy", difficultyName: "Лёгкий", answer: "0.52" },
+        { id: 610, text: "Найдите значение выражения $$\\frac{1}{5} + \\frac{19}{20}$$", exam: "oge", ogeNumber: "6", variant: "Вид 1", difficulty: "easy", difficultyName: "Лёгкий", answer: "1.15" },
+        { id: 611, text: "Найдите значение выражения $$\\frac{1}{5} - \\frac{41}{50}$$", exam: "oge", ogeNumber: "6", variant: "Вид 2", difficulty: "easy", difficultyName: "Лёгкий", answer: "-0.62" },
+        { id: 612, text: "Найдите значение выражения $$\\frac{1}{4} - \\frac{51}{20}$$", exam: "oge", ogeNumber: "6", variant: "Вид 2", difficulty: "easy", difficultyName: "Лёгкий", answer: "-2.3" },
+        { id: 613, text: "Найдите значение выражения $$\\frac{1}{2} - \\frac{49}{20}$$", exam: "oge", ogeNumber: "6", variant: "Вид 2", difficulty: "easy", difficultyName: "Лёгкий", answer: "-1.95" },
+        { id: 614, text: "Найдите значение выражения $$\\frac{1}{2} - \\frac{9}{10}$$", exam: "oge", ogeNumber: "6", variant: "Вид 2", difficulty: "easy", difficultyName: "Лёгкий", answer: "-0.4" },
+        { id: 615, text: "Найдите значение выражения $$\\frac{1}{10} - \\frac{39}{50}$$", exam: "oge", ogeNumber: "6", variant: "Вид 2", difficulty: "easy", difficultyName: "Лёгкий", answer: "-0.68" },
+        { id: 616, text: "Найдите значение выражения $$\\frac{1}{10} - \\frac{23}{20}$$", exam: "oge", ogeNumber: "6", variant: "Вид 2", difficulty: "easy", difficultyName: "Лёгкий", answer: "-1.05" },
+        { id: 617, text: "Найдите значение выражения $$\\frac{1}{25} - \\frac{7}{50}$$", exam: "oge", ogeNumber: "6", variant: "Вид 2", difficulty: "easy", difficultyName: "Лёгкий", answer: "-0.1" },
+        { id: 618, text: "Найдите значение выражения $$\\frac{1}{2} - \\frac{13}{50}$$", exam: "oge", ogeNumber: "6", variant: "Вид 2", difficulty: "easy", difficultyName: "Лёгкий", answer: "0.24" },
+        { id: 619, text: "Найдите значение выражения $$\\frac{1}{5} - \\frac{47}{10}$$", exam: "oge", ogeNumber: "6", variant: "Вид 2", difficulty: "easy", difficultyName: "Лёгкий", answer: "-4.5" },
+        { id: 620, text: "Найдите значение выражения $$\\frac{1}{5} - \\frac{27}{20}$$", exam: "oge", ogeNumber: "6", variant: "Вид 2", difficulty: "easy", difficultyName: "Лёгкий", answer: "-1.15" },
+        { id: 621, text: "Найдите значение выражения $$\\frac{15}{2} \\cdot \\frac{7}{5}$$", exam: "oge", ogeNumber: "6", variant: "Вид 3", difficulty: "easy", difficultyName: "Лёгкий", answer: "10.5" },
+        { id: 622, text: "Найдите значение выражения $$\\frac{9}{5} \\cdot \\frac{2}{3}$$", exam: "oge", ogeNumber: "6", variant: "Вид 3", difficulty: "easy", difficultyName: "Лёгкий", answer: "1.2" },
+        { id: 623, text: "Найдите значение выражения $$\\frac{15}{4} \\cdot \\frac{6}{5}$$", exam: "oge", ogeNumber: "6", variant: "Вид 3", difficulty: "easy", difficultyName: "Лёгкий", answer: "4.5" },
+        { id: 624, text: "Найдите значение выражения $$\\frac{21}{5} \\cdot \\frac{3}{7}$$", exam: "oge", ogeNumber: "6", variant: "Вид 3", difficulty: "easy", difficultyName: "Лёгкий", answer: "1.8" },
+        { id: 625, text: "Найдите значение выражения $$\\frac{7}{6} \\cdot \\frac{9}{5}$$", exam: "oge", ogeNumber: "6", variant: "Вид 3", difficulty: "easy", difficultyName: "Лёгкий", answer: "2.1" },
+        { id: 626, text: "Найдите значение выражения $$\\frac{5}{3} \\cdot \\frac{9}{2}$$", exam: "oge", ogeNumber: "6", variant: "Вид 3", difficulty: "easy", difficultyName: "Лёгкий", answer: "7.5" },
+        { id: 627, text: "Найдите значение выражения $$\\frac{2}{5} \\cdot \\frac{9}{8}$$", exam: "oge", ogeNumber: "6", variant: "Вид 3", difficulty: "easy", difficultyName: "Лёгкий", answer: "0.45" },
+        { id: 628, text: "Найдите значение выражения $$\\frac{3}{5} \\cdot \\frac{25}{4}$$", exam: "oge", ogeNumber: "6", variant: "Вид 3", difficulty: "easy", difficultyName: "Лёгкий", answer: "3.75" },
+        { id: 629, text: "Найдите значение выражения $$\\frac{7}{5} \\cdot \\frac{12}{35}$$", exam: "oge", ogeNumber: "6", variant: "Вид 3", difficulty: "easy", difficultyName: "Лёгкий", answer: "0.48" },
+        { id: 630, text: "Найдите значение выражения $$\\frac{3}{4} \\cdot \\frac{6}{5}$$", exam: "oge", ogeNumber: "6", variant: "Вид 3", difficulty: "easy", difficultyName: "Лёгкий", answer: "0.9" },
+        { id: 701, text: "Какому из данных промежутков принадлежит число $$\\frac{7}{11}$$ ?\n1) [0,4;0,5]\n2) [0,5;0,6]\n3) [0,6;0,7]\n4) [0,7;0,8]", exam: "oge", ogeNumber: "7", variant: "Вид 1", difficulty: "easy", difficultyName: "Лёгкий", answer: "3" },
+        { id: 702, text: "Между какими целыми числами заключено число $$\\frac{110}{13}$$ ?\n1) 8 и 9\n2) 9 и 10\n3) 10 и 11\n4) 11 и 12", exam: "oge", ogeNumber: "7", variant: "Вид 1", difficulty: "easy", difficultyName: "Лёгкий", answer: "1" },
+        { id: 703, text: "Между какими целыми числами заключено число $$\\frac{170}{19}$$ ?\n1) 8 и 9\n2) 9 и 10\n3) 10 и 11\n4) 11 и 12", exam: "oge", ogeNumber: "7", variant: "Вид 1", difficulty: "easy", difficultyName: "Лёгкий", answer: "1" },
+        { id: 704, text: "Между какими целыми числами заключено число $$\\frac{140}{17}$$ ?\n1) 5 и 6\n2) 6 и 7\n3) 7 и 8\n4) 8 и 9", exam: "oge", ogeNumber: "7", variant: "Вид 1", difficulty: "easy", difficultyName: "Лёгкий", answer: "4" },
+        { id: 705, text: "Между какими целыми числами заключено число $$\\frac{130}{11}$$ ?\n1) 10 и 11\n2) 11 и 12\n3) 12 и 13\n4) 13 и 14", exam: "oge", ogeNumber: "7", variant: "Вид 1", difficulty: "easy", difficultyName: "Лёгкий", answer: "2" },
+        { id: 706, text: "Между какими целыми числами заключено число $$\\frac{230}{19}$$ ?\n1) 11 и 12\n2) 12 и 13\n3) 13 и 14\n4) 14 и 15", exam: "oge", ogeNumber: "7", variant: "Вид 1", difficulty: "easy", difficultyName: "Лёгкий", answer: "2" },
+        { id: 707, text: "Между какими целыми числами заключено число $$\\frac{172}{15}$$ ?\n1) 9 и 10\n2) 10 и 11\n3) 11 и 12\n4) 12 и 13", exam: "oge", ogeNumber: "7", variant: "Вид 1", difficulty: "easy", difficultyName: "Лёгкий", answer: "3" },
+        { id: 708, text: "Между какими целыми числами заключено число $$\\frac{190}{17}$$ ?\n1) 10 и 11\n2) 11 и 12\n3) 12 и 13\n4) 13 и 14", exam: "oge", ogeNumber: "7", variant: "Вид 1", difficulty: "easy", difficultyName: "Лёгкий", answer: "2" },
+        { id: 709, text: "Между какими целыми числами заключено число $$\\frac{160}{11}$$ ?\n1) 12 и 13\n2) 13 и 14\n3) 14 и 15\n4) 15 и 16", exam: "oge", ogeNumber: "7", variant: "Вид 1", difficulty: "easy", difficultyName: "Лёгкий", answer: "3" },
+        { id: 710, text: "Какому из данных промежутков принадлежит число $$\\frac{3}{11}$$ ?\n1) [0,1;0,2]\n2) [0,2;0,3]\n3) [0,3;0,4]\n4) [0,4;0,5]", exam: "oge", ogeNumber: "7", variant: "Вид 2", difficulty: "easy", difficultyName: "Лёгкий", answer: "2" },
+        { id: 711, text: "Какому из данных промежутков принадлежит число $$\\frac{5}{13}$$ ?\n1) [0,2;0,3]\n2) [0,3;0,4]\n3) [0,4;0,5]\n4) [0,5;0,6]", exam: "oge", ogeNumber: "7", variant: "Вид 2", difficulty: "easy", difficultyName: "Лёгкий", answer: "3" },
+        { id: 712, text: "Какому из данных промежутков принадлежит число $$\\frac{5}{7}$$ ?\n1) [0,5;0,6]\n2) [0,6;0,7]\n3) [0,7;0,8]\n4) [0,8;0,9]", exam: "oge", ogeNumber: "7", variant: "Вид 2", difficulty: "easy", difficultyName: "Лёгкий", answer: "3" },
+        { id: 713, text: "Какому из данных промежутков принадлежит число $$\\frac{2}{7}$$ ?\n1) [0,1;0,2]\n2) [0,2;0,3]\n3) [0,3;0,4]\n4) [0,4;0,5]", exam: "oge", ogeNumber: "7", variant: "Вид 2", difficulty: "easy", difficultyName: "Лёгкий", answer: "2" },
+        { id: 714, text: "Какому из данных промежутков принадлежит число $$\\frac{2}{9}$$ ?\n1) [0,1;0,2]\n2) [0,2;0,3]\n3) [0,3;0,4]\n4) [0,4;0,5]", exam: "oge", ogeNumber: "7", variant: "Вид 2", difficulty: "easy", difficultyName: "Лёгкий", answer: "2" },
+        { id: 715, text: "Какому из данных промежутков принадлежит число $$\\frac{9}{13}$$ ?\n1) [0,5;0,6]\n2) [0,6;0,7]\n3) [0,7;0,8]\n4) [0,8;0,9]", exam: "oge", ogeNumber: "7", variant: "Вид 2", difficulty: "easy", difficultyName: "Лёгкий", answer: "2" },
+        { id: 716, text: "Какому из данных промежутков принадлежит число $$\\frac{3}{7}$$ ?\n1) [0,1;0,2]\n2) [0,2;0,3]\n3) [0,3;0,4]\n4) [0,4;0,5]", exam: "oge", ogeNumber: "7", variant: "Вид 2", difficulty: "easy", difficultyName: "Лёгкий", answer: "4" },
+        { id: 717, text: "Какому из данных промежутков принадлежит число $$\\frac{5}{9}$$ ?\n1) [0,5;0,6]\n2) [0,6;0,7]\n3) [0,7;0,8]\n4) [0,8;0,9]", exam: "oge", ogeNumber: "7", variant: "Вид 2", difficulty: "easy", difficultyName: "Лёгкий", answer: "2" },
+        { id: 718, text: "Какому из данных промежутков принадлежит число $$\\frac{7}{9}$$ ?\n1) [0,5;0,6]\n2) [0,6;0,7]\n3) [0,7;0,8]\n4) [0,8;0,9]", exam: "oge", ogeNumber: "7", variant: "Вид 2", difficulty: "easy", difficultyName: "Лёгкий", answer: "3" },
+        { id: 719, text: "Какому из данных промежутков принадлежит число $$\\frac{4}{9}$$ ?\n1) [0,1;0,2]\n2) [0,2;0,3]\n3) [0,3;0,4]\n4) [0,4;0,5]", exam: "oge", ogeNumber: "7", variant: "Вид 2", difficulty: "easy", difficultyName: "Лёгкий", answer: "4" },
+        { id: 720, text: "Какое из следующих чисел заключено между числами $$\\frac{4}{11}$$ и $$\\frac{7}{17}$$ ?\n1) 0,1\n2) 0,2\n3) 0,3\n4) 0,4", exam: "oge", ogeNumber: "7", variant: "Вид 3", difficulty: "easy", difficultyName: "Лёгкий", answer: "3" },
+        { id: 721, text: "Какое из следующих чисел заключено между числами $$\\frac{19}{8}$$ и $$\\frac{17}{7}$$ ?\n1) 2,3\n2) 2,4\n3) 2,5\n4) 2,6", exam: "oge", ogeNumber: "7", variant: "Вид 3", difficulty: "easy", difficultyName: "Лёгкий", answer: "2" },
+        { id: 722, text: "Какое из следующих чисел заключено между числами $$\\frac{5}{17}$$ и $$\\frac{7}{19}$$ ?\n1) 0,2\n2) 0,3\n3) 0,4\n4) 0,5", exam: "oge", ogeNumber: "7", variant: "Вид 3", difficulty: "easy", difficultyName: "Лёгкий", answer: "3" },
+        { id: 723, text: "Какое из следующих чисел заключено между числами $$\\frac{15}{11}$$ и $$\\frac{13}{9}$$ ?\n1) 1,4\n2) 1,5\n3) 1,6\n4) 1,7", exam: "oge", ogeNumber: "7", variant: "Вид 3", difficulty: "easy", difficultyName: "Лёгкий", answer: "2" },
+        { id: 724, text: "Какое из следующих чисел заключено между числами $$\\frac{17}{19}$$ и $$\\frac{13}{14}$$ ?\n1) 0,6\n2) 0,7\n3) 0,8\n4) 0,9", exam: "oge", ogeNumber: "7", variant: "Вид 3", difficulty: "easy", difficultyName: "Лёгкий", answer: "4" },
+        { id: 725, text: "Какое из следующих чисел заключено между числами $$\\frac{18}{17}$$ и $$\\frac{17}{15}$$ ?\n1) 1\n2) 1,1\n3) 1,2\n4) 1,3", exam: "oge", ogeNumber: "7", variant: "Вид 3", difficulty: "easy", difficultyName: "Лёгкий", answer: "2" },
+        { id: 726, text: "Какое из следующих чисел заключено между числами $$\\frac{8}{3}$$ и $$\\frac{11}{4}$$ ?\n1) 2,7\n2) 2,8\n3) 2,9\n4) 3", exam: "oge", ogeNumber: "7", variant: "Вид 3", difficulty: "easy", difficultyName: "Лёгкий", answer: "2" },
+        { id: 727, text: "Какое из следующих чисел заключено между числами $$\\frac{17}{15}$$ и $$\\frac{16}{13}$$ ?\n1) 1,2\n2) 1,3\n3) 1,4\n4) 1,5", exam: "oge", ogeNumber: "7", variant: "Вид 3", difficulty: "easy", difficultyName: "Лёгкий", answer: "2" },
+        { id: 728, text: "Какое из следующих чисел заключено между числами $$\\frac{2}{17}$$ и $$\\frac{4}{19}$$ ?\n1) 0\n2) 0,1\n3) 0,2\n4) 0,3", exam: "oge", ogeNumber: "7", variant: "Вид 3", difficulty: "easy", difficultyName: "Лёгкий", answer: "2" },
+        { id: 729, text: "Какое из следующих чисел заключено между числами $$\\frac{8}{13}$$ и $$\\frac{12}{17}$$ ?\n1) 0,6\n2) 0,7\n3) 0,8\n4) 0,9", exam: "oge", ogeNumber: "7", variant: "Вид 3", difficulty: "easy", difficultyName: "Лёгкий", answer: "2" },
+        { id: 730, text: "Какое из следующих чисел заключено между числами $$\\frac{9}{19}$$ и $$\\frac{5}{9}$$ ?\n1) 0,2\n2) 0,3\n3) 0,4\n4) 0,5", exam: "oge", ogeNumber: "7", variant: "Вид 3", difficulty: "easy", difficultyName: "Лёгкий", answer: "3" },
+        { id: 731, text: "Какое из следующих чисел заключено между числами $$\\frac{8}{15}$$ и $$\\frac{12}{19}$$ ?\n1) 0,4\n2) 0,5\n3) 0,6\n4) 0,7", exam: "oge", ogeNumber: "7", variant: "Вид 3", difficulty: "easy", difficultyName: "Лёгкий", answer: "3" }
+    ];
+
+    function loadTasks() {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+            return JSON.parse(saved);
+        }
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(TASKS_LIST));
+        return TASKS_LIST;
+    }
+
+    function filterTasks(tasks) {
+        let filtered = [...tasks];
+        if (currentSearchNumber !== null) {
+            filtered = filtered.filter(task => task.id === currentSearchNumber);
+        }
+        if (currentTypeFilter === "oge") {
+            filtered = filtered.filter(task => task.exam === "oge");
+            if (currentOgeNumber !== "all") {
+                filtered = filtered.filter(task => task.ogeNumber === currentOgeNumber);
+            }
+            if (currentVariant !== "all") {
+                filtered = filtered.filter(task => task.variant === currentVariant);
+            }
+        }
+        return filtered;
+    }
+
+    function updateStats(filteredTasks, allTasks) {
+        const statsDiv = document.getElementById('filterStats');
+        const total = filteredTasks.length;
+        const allTotal = allTasks.length;
+        const ogeCount = filteredTasks.filter(t => t.exam === 'oge').length;
+        let typeText = currentTypeFilter === "oge" ? "🎯 Только ОГЭ • " : "📋 Все задачи • ";
+        let ogeText = (currentTypeFilter === "oge" && currentOgeNumber !== "all") ? `${ogeNumberNames[currentOgeNumber] || currentOgeNumber} • ` : "";
+        let variantText = (currentTypeFilter === "oge" && currentVariant !== "all") ? `${currentVariant} • ` : "";
+        if (currentSearchNumber) {
+            statsDiv.innerHTML = `🔍 Поиск: ${formatTaskNumber(currentSearchNumber)} • ${typeText}${ogeText}${variantText}📊 Найдено: ${total} из ${allTotal} | 🎯 ОГЭ: ${ogeCount}`;
+        } else {
+            statsDiv.innerHTML = `${typeText}${ogeText}${variantText}📊 Найдено: ${total} из ${allTotal} | 🎯 ОГЭ: ${ogeCount}`;
+        }
+    }
+
+    function updateSearchInfo(allTasks) {
+        const searchInfo = document.getElementById('searchInfo');
+        if (currentSearchNumber) {
+            const task = allTasks.find(t => t.id === currentSearchNumber);
+            if (task) {
+                searchInfo.innerHTML = `<span class="search-badge"><i class="fas fa-check-circle"></i> Найдена задача ${formatTaskNumber(currentSearchNumber)}</span>`;
+            } else {
+                searchInfo.innerHTML = `<span class="search-badge" style="background:#FDF0EC; color:#D4A574;"><i class="fas fa-exclamation-triangle"></i> Задача с номером ${formatTaskNumber(currentSearchNumber)} не найдена</span>`;
+            }
+        } else {
+            searchInfo.innerHTML = `<span><i class="fas fa-info-circle"></i> Введите номер задачи в формате #000601 или 601</span>`;
+        }
+    }
+
+    function renderTasks() {
+        const allTasks = loadTasks();
+        const filteredTasks = filterTasks(allTasks);
+        updateStats(filteredTasks, allTasks);
+        updateSearchInfo(allTasks);
+        const grid = document.getElementById('tasksGrid');
+        if (filteredTasks.length === 0) {
+            grid.innerHTML = `<div class="empty-tasks"><i class="fas fa-folder-open"></i><p>Нет задач, соответствующих выбранным фильтрам</p></div>`;
+            return;
+        }
+        let html = '';
+        for (const task of filteredTasks) {
+            html += formatTaskHtml(task);
+        }
+        grid.innerHTML = html;
+        
+        document.querySelectorAll('.check-answer-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const taskId = parseInt(this.dataset.id);
+                const input = document.getElementById(`answer-input-${taskId}`);
+                const feedback = document.getElementById(`feedback-${taskId}`);
+                const card = this.closest('.task-card');
+                const correctAnswer = card.dataset.correctAnswer;
+                const userAnswer = input.value;
+                if (!userAnswer.trim()) {
+                    feedback.innerHTML = '❌ Введите ответ!';
+                    feedback.className = 'answer-feedback show incorrect';
+                    return;
+                }
+                if (isAnswerCorrect(userAnswer, correctAnswer)) {
+                    feedback.innerHTML = '✅ Правильно!';
+                    feedback.className = 'answer-feedback show correct';
+                    input.classList.add('correct');
+                    input.classList.remove('incorrect');
+                } else {
+                    feedback.innerHTML = `❌ Неправильно. Попробуйте ещё раз!`;
+                    feedback.className = 'answer-feedback show incorrect';
+                    input.classList.add('incorrect');
+                    input.classList.remove('correct');
+                }
+            });
+        });
+        document.querySelectorAll('.show-answer-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const taskId = parseInt(this.dataset.id);
+                const answerDiv = document.getElementById(`answer-${taskId}`);
+                answerDiv.classList.toggle('show');
+                this.innerHTML = answerDiv.classList.contains('show') ? '<i class="fas fa-eye-slash"></i> Скрыть ответ' : '<i class="fas fa-eye"></i> Показать ответ';
+            });
+        });
+        document.querySelectorAll('.answer-input').forEach((input) => {
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const taskId = parseInt(input.id.replace('answer-input-', ''));
+                    const btn = document.querySelector(`.check-answer-btn[data-id="${taskId}"]`);
+                    if (btn) btn.click();
+                }
+            });
+        });
+    }
+
+    const ogeNumberNames = {
+        "group-1-5": "1-5. Группы задач по тексту",
+        "6": "6. Числа и вычисления",
+        "7": "7. Числовые неравенства, координатная прямая",
+        "8": "8. Числа, вычисления и алгебраические выражения",
+        "9": "9. Уравнения",
+        "10": "10. Теория вероятностей",
+        "11": "11. Графики функций",
+        "12": "12. Расчеты по формулам",
+        "13": "13. Неравенства, системы неравенств",
+        "14": "14. Прогрессии",
+        "15": "15. Треугольники",
+        "16": "16. Окружности",
+        "17": "17. Четырёхугольники",
+        "18": "18. Фигуры на клетчатой плоскости",
+        "19": "19. Анализ геометрических высказываний",
+        "20": "20. Алгебраические выражения, уравнения, неравенства",
+        "21": "21. Текстовые задачи",
+        "22": "22. Графики функций",
+        "23": "23. Геометрические задачи на вычисление",
+        "24": "24. Геометрические задачи на доказательство",
+        "25": "25. Геометрические задачи повышенной сложности"
+    };
+
+    function loadVariants() {
+        const saved = localStorage.getItem(VARIANTS_KEY);
+        if (saved) return JSON.parse(saved);
+        const defaultVariants = {
+            "group-1-5": ["Дороги", "Сложные дороги", "Квартиры", "Участки", "Шины", "Печи", "Бумага", "Мобильный интернет"],
+            "6": ["Вид 1", "Вид 2", "Вид 3"],
+            "7": ["Вид 1", "Вид 2", "Вид 3"],
+            "8": ["Вид 1", "Вид 2", "Вид 3"],
+            "9": ["Вид 1", "Вид 2", "Вид 3"],
+            "10": ["Вид 1", "Вид 2", "Вид 3"],
+            "11": ["Вид 1", "Вид 2", "Вид 3"],
+            "12": ["Вид 1", "Вид 2", "Вид 3"],
+            "13": ["Вид 1", "Вид 2", "Вид 3"],
+            "14": ["Вид 1", "Вид 2", "Вид 3"],
+            "15": ["Вид 1", "Вид 2", "Вид 3"],
+            "16": ["Вид 1", "Вид 2", "Вид 3"],
+            "17": ["Вид 1", "Вид 2", "Вид 3"],
+            "18": ["Вид 1", "Вид 2", "Вид 3"],
+            "19": ["Вид 1", "Вид 2", "Вид 3"],
+            "20": ["Вид 1", "Вид 2", "Вид 3"],
+            "21": ["Вид 1", "Вид 2", "Вид 3"],
+            "22": ["Вид 1", "Вид 2", "Вид 3"],
+            "23": ["Вид 1", "Вид 2", "Вид 3"],
+            "24": ["Вид 1", "Вид 2", "Вид 3"],
+            "25": ["Вид 1", "Вид 2", "Вид 3"]
+        };
+        localStorage.setItem(VARIANTS_KEY, JSON.stringify(defaultVariants));
+        return defaultVariants;
+    }
+
+    function getVariantsForNumber(ogeNumber) {
+        const variants = loadVariants();
+        return variants[ogeNumber] || [];
+    }
+
+    function updateVariantSelect() {
+        const variantSelect = document.getElementById('variantSelect');
+        if (currentOgeNumber === "all" || currentOgeNumber === null) {
+            variantSelect.disabled = true;
+            variantSelect.innerHTML = '<option value="all">📋 Сначала выберите номер ОГЭ</option>';
+            return;
+        }
+        const variants = getVariantsForNumber(currentOgeNumber);
+        if (variants.length === 0) {
+            variantSelect.disabled = true;
+            variantSelect.innerHTML = '<option value="all">📋 Нет видов для этого номера</option>';
+            return;
+        }
+        variantSelect.disabled = false;
+        variantSelect.innerHTML = '<option value="all">📋 Все виды</option>' + variants.map(v => `<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');
+        variantSelect.value = currentVariant;
+    }
+
+    function toggleOgeSelect() {
+        const ogeSelectGroup = document.getElementById('ogeSelectGroup');
+        if (currentTypeFilter === "oge") {
+            ogeSelectGroup.style.display = 'block';
+            updateVariantSelect();
+        } else {
+            ogeSelectGroup.style.display = 'none';
+            currentOgeNumber = "all";
+            currentVariant = "all";
+            const ogeSelect = document.getElementById('ogeNumberSelect');
+            if (ogeSelect) ogeSelect.value = "all";
+        }
+        renderTasks();
+    }
+
+    function performSearch() {
+        const input = document.getElementById('searchInput').value.trim();
+        if (input === "") {
+            currentSearchNumber = null;
+        } else {
+            let num = input.replace('#', '').replace(/^0+/, '');
+            const parsed = parseInt(num, 10);
+            if (!isNaN(parsed) && parsed > 0) {
+                currentSearchNumber = parsed;
+            } else {
+                currentSearchNumber = null;
+                alert('Введите корректный номер задачи (например: #000601 или 601)');
+            }
+        }
+        renderTasks();
+    }
+
+    function clearSearch() {
+        document.getElementById('searchInput').value = '';
+        currentSearchNumber = null;
+        renderTasks();
+    }
+
+    function setupFilters() {
+        document.querySelectorAll('#typeFilterButtons .filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#typeFilterButtons .filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentTypeFilter = btn.dataset.type;
+                toggleOgeSelect();
+                renderTasks();
+            });
+        });
+        const ogeSelect = document.getElementById('ogeNumberSelect');
+        if (ogeSelect) {
+            ogeSelect.addEventListener('change', () => {
+                currentOgeNumber = ogeSelect.value;
+                currentVariant = "all";
+                updateVariantSelect();
+                renderTasks();
+            });
+        }
+        const variantSelect = document.getElementById('variantSelect');
+        if (variantSelect) {
+            variantSelect.addEventListener('change', () => {
+                currentVariant = variantSelect.value;
+                renderTasks();
+            });
+        }
+        document.getElementById('searchBtn').addEventListener('click', performSearch);
+        document.getElementById('clearSearchBtn').addEventListener('click', clearSearch);
+        document.getElementById('searchInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') performSearch();
+        });
+    }
+
+    setupFilters();
+    renderTasks();
+    
+    window.addEventListener('storage', (e) => { 
+        if (e.key === STORAGE_KEY || e.key === VARIANTS_KEY) renderTasks(); 
+    });
+    
+    let katexCheckInterval = setInterval(() => {
+        if (typeof katex !== 'undefined') {
+            clearInterval(katexCheckInterval);
+            renderTasks();
+        }
+    }, 200);
+    
+    setTimeout(() => {
+        clearInterval(katexCheckInterval);
+        if (typeof katex !== 'undefined') renderTasks();
+    }, 5000);
+</script>
+</body>
+</html>
