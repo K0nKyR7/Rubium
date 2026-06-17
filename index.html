@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rubium - образовательный проект</title>
-    <meta name="description" content="Студент МГТУ им. Баумана. Репетитор по математике и физике. Подготовка к ОГЭ и ЕГЭ 80+, помощь по школьной программе 5-11 класс.">
+    <meta name="description" content="Образовательный проект по математике, информатике и физике. Подготовка к ОГЭ и ЕГЭ 80+, помощь по школьной программе 5-11 класс.">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -62,8 +62,9 @@
         }
 
         .logo {
-            font-size: 1.6rem;
+            font-size: 2rem;
             font-weight: 700;
+            text-decoration: none;
             color: #5C3D2E;
             letter-spacing: -0.5px;
         }
@@ -431,7 +432,7 @@
         }
         .faq-item.active .faq-answer {
             max-height: 200px;
-            padding: 0 28px 22px;
+            padding: 20px 28px 22px;
         }
 
         footer {
@@ -496,7 +497,7 @@
 <nav class="navbar">
     <div class="container">
         <div class="nav-content">
-            <div class="logo"><span>⚡</span> Rubium</div>
+            <a href="#" class="logo"><span>⚡</span> Rubium</a>
             <div class="nav-links" id="navLinks">
                 <a href="#about">О нас</a>
                 <a href="#subjects">Предметы</a>
@@ -584,27 +585,27 @@
     <section id="materials">
         <h2 class="section-title animate-on-scroll"><span>📚</span> Полезные материалы</h2>
         <div class="animate-on-scroll">
-            <a href="algebra.pdf" class="material-link" style="display: flex; align-items: center; gap: 18px; padding: 20px 28px; background: white; border-radius: 28px; text-decoration: none; margin-bottom: 12px; border: 1px solid rgba(196,162,122,0.15); transition: all 0.3s;"><span style="font-size: 2.2rem;">📐</span><div><strong>Шпаргалка по алгебре</strong><br><small>Формулы 7–9 класс (PDF, 497 КБ)</small></div></a>
-            <a href="fizika.pdf" class="material-link" style="display: flex; align-items: center; gap: 18px; padding: 20px 28px; background: white; border-radius: 28px; text-decoration: none; margin-bottom: 12px; border: 1px solid rgba(196,162,122,0.15); transition: all 0.3s;"><span style="font-size: 2.2rem;">⚡</span><div><strong>Формулы по физике</strong><br><small>Механика и электричество (PDF, 2.3 МБ)</small></div></a>
-            <a href="oge.pdf" class="material-link" style="display: flex; align-items: center; gap: 18px; padding: 20px 28px; background: white; border-radius: 28px; text-decoration: none; border: 1px solid rgba(196,162,122,0.15); transition: all 0.3s;"><span style="font-size: 2.2rem;">📝</span><div><strong>Демоверсия ОГЭ</strong><br><small>Официальные демоварианты с ответами (PDF, 567 КБ)</small></div></a>
+            <a href="data/algebra.pdf" class="material-link" style="display: flex; align-items: center; gap: 18px; padding: 20px 28px; background: white; border-radius: 28px; color: #6B5B48; text-decoration: none; margin-bottom: 12px; border: 1px solid rgba(196,162,122,0.15); transition: all 0.3s;"><span style="font-size: 2.2rem;">📐</span><div><strong>Шпаргалка по алгебре</strong><br><small>Формулы 7–9 класс (PDF)</small></div></a>
+            <a href="data/fizika.pdf" class="material-link" style="display: flex; align-items: center; gap: 18px; padding: 20px 28px; background: white; border-radius: 28px; color: #6B5B48; text-decoration: none; margin-bottom: 12px; border: 1px solid rgba(196,162,122,0.15); transition: all 0.3s;"><span style="font-size: 2.2rem;">⚡</span><div><strong>Формулы по физике</strong><br><small>Механика и электричество (PDF)</small></div></a>
+            <a href="data/oge.pdf" class="material-link" style="display: flex; align-items: center; gap: 18px; padding: 20px 28px; background: white; border-radius: 28px; color: #6B5B48; text-decoration: none; border: 1px solid rgba(196,162,122,0.15); transition: all 0.3s;"><span style="font-size: 2.2rem;">📝</span><div><strong>Демоверсия ОГЭ</strong><br><small>Официальные демоварианты с ответами (PDF)</small></div></a>
         </div>
     </section>
 
     <section id="faq">
         <h2 class="section-title animate-on-scroll"><span>❓</span> Часто задаваемые вопросы</h2>
         <div class="animate-on-scroll">
-            <div class="faq-item"><div class="faq-question">Как проходят занятия? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Занятия проходят онлайн через Яндекс Телемост. Я использую виртуальную доску, где пишу и рисую схемы. Ученик всё видит в реальном времени в уютной онлайн-обстановке.</div></div>
+            <div class="faq-item"><div class="faq-question">Как проходят занятия? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Занятия проходят онлайн через Яндекс Телемост.</div></div>
             <div class="faq-item"><div class="faq-question">Сколько длится занятие? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Стандартное занятие длится 60 минут. При необходимости можем увеличить до 90 минут.</div></div>
             <div class="faq-item"><div class="faq-question">Есть ли пробное занятие? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Да, первое занятие — ознакомительное и бесплатное (30 минут).</div></div>
             <div class="faq-item"><div class="faq-question">Как оплачивать занятия? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Оплата после каждого занятия переводом на карту любого банка.</div></div>
-            <div class="faq-item"><div class="faq-question">Что если нужно отменить занятие? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Предупредите меня минимум за 3 часа — и мы перенесём занятие на другое удобное время.</div></div>
+            <div class="faq-item"><div class="faq-question">Что если нужно отменить занятие? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Предупредите преподавателя минимум за 3 часа — и мы перенесём занятие на другое удобное время.</div></div>
         </div>
     </section>
 
     <section id="contacts">
         <h2 class="section-title animate-on-scroll"><span>📞</span> Соц сети и контакты</h2>
         <div class="contact-grid animate-on-scroll">
-            <a href="https://t.me/kovalev_math" target="_blank" class="contact-card"><div class="contact-icon"><i class="fab fa-telegram-plane"></i></div><div class="contact-info"><h4>Telegram</h4><p>@наш_тгк</p></div></a>
+            <a href="https://t.me/rubium_education" target="_blank" class="contact-card"><div class="contact-icon"><i class="fab fa-telegram-plane"></i></div><div class="contact-info"><h4>Telegram</h4><p>Rubium Education</p></div></a>
             <a href="https://vk.com/kovalev_math" target="_blank" class="contact-card"><div class="contact-icon"><i class="fab fa-vk"></i></div><div class="contact-info"><h4>ВКонтакте</h4><p>vk.com/ХЗ чё</p></div></a>
             <div class="contact-card" style="cursor: pointer;"><div class="contact-icon"><i class="fas fa-phone-alt"></i></div><div class="contact-info"><h4>Телефон</h4><p>не надо</p></div></div>
         </div>
