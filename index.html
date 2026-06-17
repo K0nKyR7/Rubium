@@ -119,41 +119,6 @@
             box-shadow: 0 8px 20px rgba(139, 69, 19, 0.2);
         }
 
-        .login-link {
-            background: transparent;
-            border: 2px solid #C4A27A;
-            color: #A67B5B !important;
-            padding: 8px 22px;
-            border-radius: 40px;
-        }
-
-        .logout-nav-btn {
-            background: rgba(139, 69, 19, 0.08);
-            border: none;
-            padding: 8px 22px;
-            border-radius: 40px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s;
-            font-family: inherit;
-            font-size: inherit;
-            color: #6B4C3B;
-        }
-
-        .logout-nav-btn:hover {
-            background: #E8D5B7;
-            color: #5C3D2E;
-            transform: translateY(-2px);
-        }
-
-        .admin-link-nav {
-            background: linear-gradient(135deg, #D4A574, #B8734A);
-            color: white;
-            padding: 8px 20px;
-            border-radius: 40px;
-            text-decoration: none;
-        }
-
         /* Hero Section */
         .hero {
             background: linear-gradient(135deg, #F5EDE0 0%, #EFE4D5 100%);
@@ -229,11 +194,11 @@
             overflow: hidden;
             border: 4px solid rgba(196, 162, 122, 0.4);
             background: rgba(196, 162, 122, 0.1);
+            box-shadow: 0 15px 35px rgba(139, 69, 19, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
             animation: gentleFloat 5s ease-in-out infinite;
-            box-shadow: 0 15px 35px rgba(139, 69, 19, 0.1);
         }
         .hero-avatar img { width: 100%; height: 100%; object-fit: cover; }
         .hero-avatar .avatar-placeholder { font-size: 80px; }
@@ -286,6 +251,7 @@
         .card {
             background: white;
             border-radius: 32px;
+            text-align: center;
             padding: 32px;
             box-shadow: 0 8px 25px rgba(139, 69, 19, 0.05);
             transition: all 0.4s;
@@ -296,9 +262,27 @@
             box-shadow: 0 20px 40px rgba(139, 69, 19, 0.1);
             border-color: rgba(196, 162, 122, 0.3);
         }
-        .card-icon { font-size: 2.6rem; margin-bottom: 20px; }
+        .card-icon { 
+            width : 100%; 
+            height : 55%; 
+            margin-bottom: 20px; 
+            border: 4px solid rgba(196, 162, 122, 0.4);
+            background: rgba(196, 162, 122, 0.1);
+            box-shadow: 20px 15px 35px rgba(139, 69, 19, 0.1);
+            overflow: hidden;
+            border-radius: 20%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+
+        .card-icon img { width : 100%; height : 100%; object-fit: cover; }
+        .card a { text-decoration: none; }
         .card h3 { font-size: 1.3rem; margin-bottom: 12px; color: #4A3728; }
-        .card p { color: #7B6B55; line-height: 1.6; }
+        .card p { color: #7B6B55; line-height: 2; }
+        .card ul { list-style: none; text-align: center;}
+        .card li { padding: 8px 0; color: #7B6B55; }
 
         .subject-card {
             text-align: center;
@@ -505,7 +489,6 @@
                 <a href="#contacts">Контакты</a>
                 <a href="tasks.html" class="tasks-btn"><i class="fas fa-tasks"></i> Задачи</a>
                 <a href="constructor.html" class="constructor-btn"><i class="fas fa-random"></i> Конструктор</a>
-                <a href="profile.html" class="profile-btn"><i class="fas fa-user"></i> Профиль</a>
             </div>
         </div>
     </div>
@@ -540,23 +523,17 @@
     <section id="about">
         <h2 class="section-title animate-on-scroll"><span>📖</span> О нас</h2>
         <div class="grid-2 animate-on-scroll">
-            <div class="card"><div class="card-icon">🎯</div><h3>Наш подход</h3><p>Мы считаем, что главное — научить думать, а не заучивать формулы. На занятиях мы разбираем темы до полного понимания, решаем задачи разного уровня сложности и закрепляем материал на практике в комфортной обстановке.</p></div>
-            <div class="card"><div class="card-icon">💡</div><h3>Почему мы?</h3><p>Сами прошли через огромное количество экзаменов, от ОГЭ и ЕГЭ до Университетских сессий и CSCA(China Scholastic Competency Assessment). Хорошо понимаем, с какими трудностями сталкиваются школьники, и знаем, как объяснить сложные вещи простым и понятным языком.</p></div>
+            <div class="card"><h3>Наш подход</h3><p>Мы считаем, что главное — научить думать, а не заучивать формулы. На занятиях мы разбираем темы до полного понимания, решаем задачи разного уровня сложности и закрепляем материал на практике в комфортной обстановке.</p></div>
+            <div class="card"><h3>Почему мы?</h3><p>Сами прошли через огромное количество экзаменов. Хорошо понимаем, с какими трудностями сталкиваются школьники, и знаем, как объяснить сложные вещи простым и понятным языком.</p></div>
         </div>
     </section>
 
     <section>
-        <h2 class="section-title animate-on-scroll"><span>🎓</span> Образование и достижения</h2>
+        <h2 class="section-title animate-on-scroll"><span>🎓</span> Преподаватели</h2>
         <div class="grid-3 animate-on-scroll">
-            <div class="card"><div class="card-icon">🏫</div><h3>Школа</h3><p>Промышленно-коммерческий лицей, физико-математический класс</p></div>
-            <div class="card"><div class="card-icon">🎓</div><h3>МГТУ им. Баумана</h3><p>Факультет «Энергомашиностроение», бюджетная форма обучения</p></div>
-            <div class="card"><div class="card-icon">⛩️</div><h3>BIT (Beijing)</h3><p>Специальность «Компьютерные науки и технологии», стипендия с полным покрытием</p></div>
-            <div class="card"><div class="card-icon">📈</div><h3>Результаты ЕГЭ</h3><p>Математика — 90+ | Физика — 92 | Русский язык — 91</p></div>
-            <div class="card"><div class="card-icon">⭐</div><h3>Результаты ОГЭ</h3><p>Математика — 5 | Физика — 5 (отлично)</p></div>
-            <div class="card"><div class="card-icon">🇨🇳 </div><h3>Результаты CSCA</h3><p>Математика — 92 | Физика — 90 </p></div>
-            <div class="card"><div class="card-icon">👨‍🏫</div><h3>Опыт</h3><p>Кураторы в крупной онлайн-школе, помощь ученикам</p></div>
-            <div class="card"><div class="card-icon">🏆</div><h3>Достижения</h3><p>Призёры олимпиад по математике, информатике и физике</p></div>
-            <div class="card"><div class="card-icon">🌐</div><h3>Международный опыт</h3><p>Подтверждёные уровни английского и китайского</p></div>
+            <div class="card"><div class="card-icon"><img src="data/maxim.jpg" alt="#"></div><a href="maxim_page.html"><h3>Ковалев Максим</h3></a><ul><li>МГТУ им. Баумана</li><li>Факультет «Энергомашиностроение»</li><li>Бюджетная форма обучения</li><li>Преподаватель математики и физики</li></ul></div>
+            <div class="card"><div class="card-icon"><img src="data/temporary.jpeg" alt="#"></div><a href="ilya_page.html"><h3>Емельянов Илья</h3></a><ul><li>Beijing Institute of Technology</li><li>Специальность «Компьютерные науки»</li><li>Грант с полным покрытием</li><li>Преподаватель информатики</li></ul></div>
+            <div class="card"><div class="card-icon"><img src="data/maxim.jpg" alt="#"></div><a href="#"><h3>Коняхин Михаил</h3></a><ul><li>МГТУ им. Баумана</li><li>Факультет «Фундаментальные науки»</li><li>Бюджетная форма обучения</li><li>Преподаватель высшей математики</li></ul></div>
         </div>
     </section>
 
@@ -566,19 +543,6 @@
             <div class="subject-card"><div class="subject-icon">📐</div><h3>Математика</h3><ul><li>5–11 классы (алгебра, геометрия)</li><li>Подготовка к ОГЭ</li><li>Подготовка к ЕГЭ 80+</li><li>Повышение успеваемости</li></ul></div>
             <div class="subject-card"><div class="subject-icon">⚡</div><h3>Физика</h3><ul><li>7–11 классы</li><li>Подготовка к ОГЭ</li><li>Подготовка к ЕГЭ 80+</li><li>Разбор сложных тем</li></ul></div>
             <div class="subject-card"><div class="subject-icon">💻</div><h3>Информатика</h3><ul><li>7–11 классы</li><li>Подготовка к ОГЭ</li><li>Подготовка к ЕГЭ 80+</li><li>Курс программирования на языке Python</li></ul></div>
-        </div>
-    </section>
-
-    <section>
-        <h2 class="section-title animate-on-scroll"><span>💰</span> Стоимость занятий</h2>
-        <div class="animate-on-scroll">
-            <div class="price-table">
-                <div class="price-row"><span class="price-name">5–9 класс (60 минут)</span><span class="price-value">1000 ₽</span></div>
-                <div class="price-row"><span class="price-name">Подготовка к ОГЭ (60 минут)</span><span class="price-value">1000 ₽</span></div>
-                <div class="price-row"><span class="price-name">10–11 класс / Подготовка к ЕГЭ 80+ (60 минут)</span><span class="price-value">1350 ₽</span></div>
-            </div>
-            <p class="price-note">💳 Оплата после каждого занятия переводом на карту (Сбер, Т-Банк, ВТБ, РСХБ)</p>
-            <p class="price-note">🎁 Приведи друга — скидка 20% на следующий урок для вас обоих</p>
         </div>
     </section>
 
