@@ -16,21 +16,18 @@
             color: #4A3728;
             line-height: 1.5;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+        img { pointer-events: none; }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 clamp(16px, 4vw, 32px);
         }
 
-        @keyframes gentleFloat {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
-        }
-
-        .container { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
-
-        /* Навбар */
+        /* ============ NAVBAR ============ */
         .navbar {
             background: rgba(255, 252, 245, 0.98);
             backdrop-filter: blur(12px);
@@ -45,17 +42,21 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px 0;
-            flex-wrap: wrap;
-            gap: 20px;
+            padding: clamp(10px, 2vh, 16px) 0;
+            flex-wrap: nowrap;
+            gap: 16px;
         }
 
         .logo {
-            font-size: 2rem;
+            font-size: clamp(1.3rem, 3vw, 2rem);
             font-weight: 700;
             text-decoration: none;
             color: #5C3D2E;
             letter-spacing: -0.5px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            z-index: 1;
+            position: relative;
         }
 
         .logo span {
@@ -67,8 +68,8 @@
 
         .nav-links {
             display: flex;
-            gap: 28px;
-            flex-wrap: wrap;
+            gap: clamp(12px, 2vw, 28px);
+            flex-wrap: nowrap;
             align-items: center;
         }
 
@@ -77,31 +78,21 @@
             color: #6B4C3B;
             font-weight: 500;
             transition: all 0.3s;
-            position: relative;
+            white-space: nowrap;
+            font-size: clamp(0.8rem, 1.5vw, 1rem);
+            padding: 6px 4px;
         }
 
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: linear-gradient(135deg, #C4A27A, #8B5E3C);
-            transition: width 0.3s ease;
-            border-radius: 2px;
-        }
-
-        .nav-links a:hover::after { width: 100%; }
         .nav-links a:hover { color: #8B5E3C; }
 
         .back-btn {
             background: transparent;
             border: 2px solid #C4A27A;
             color: #A67B5B !important;
-            padding: 8px 22px;
+            padding: clamp(6px, 1vw, 8px) clamp(14px, 2.5vw, 22px) !important;
             border-radius: 40px;
             transition: all 0.3s !important;
+            font-size: clamp(0.75rem, 1.4vw, 0.95rem) !important;
         }
 
         .back-btn:hover {
@@ -109,14 +100,12 @@
             transform: translateY(-2px);
         }
 
-        .back-btn::after { display: none !important; }
-
-        /* Шапка профиля */
+        /* ============ PROFILE HEADER ============ */
         .profile-header {
             background: linear-gradient(135deg, #F5EDE0 0%, #EFE4D5 100%);
-            padding: 70px 0 60px;
-            border-radius: 0 0 50px 50px;
-            margin-bottom: 50px;
+            padding: clamp(40px, 8vh, 70px) 0 clamp(35px, 7vh, 60px);
+            border-radius: 0 0 clamp(30px, 5vw, 50px) clamp(30px, 5vw, 50px);
+            margin-bottom: clamp(30px, 5vw, 50px);
             position: relative;
             overflow: hidden;
         }
@@ -136,15 +125,15 @@
         .profile-content {
             display: flex;
             align-items: center;
-            gap: 50px;
+            gap: clamp(30px, 5vw, 50px);
             flex-wrap: wrap;
             position: relative;
             z-index: 1;
         }
 
         .profile-avatar {
-            width: 280px;
-            height: 280px;
+            width: clamp(180px, 30vw, 280px);
+            height: clamp(180px, 30vw, 280px);
             border-radius: 50%;
             overflow: hidden;
             border: 4px solid rgba(196, 162, 122, 0.5);
@@ -157,6 +146,11 @@
             justify-content: center;
         }
 
+        @keyframes gentleFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+
         .profile-avatar img {
             width: 100%;
             height: 100%;
@@ -164,28 +158,28 @@
         }
 
         .profile-avatar .avatar-placeholder {
-            font-size: 100px;
+            font-size: clamp(50px, 10vw, 100px);
         }
 
         .profile-info {
-            flex: 1;
-            min-width: 280px;
+            flex: 1 1 300px;
+            min-width: 0;
         }
 
         .profile-badge {
             display: inline-block;
             background: rgba(196, 162, 122, 0.2);
             backdrop-filter: blur(10px);
-            padding: 6px 18px;
+            padding: 6px clamp(10px, 2vw, 18px);
             border-radius: 40px;
-            font-size: 0.85rem;
+            font-size: clamp(0.7rem, 1.3vw, 0.85rem);
             font-weight: 500;
             color: #8B5E3C;
-            margin-bottom: 16px;
+            margin-bottom: clamp(12px, 2vw, 16px);
         }
 
         .profile-info h1 {
-            font-size: 2.8rem;
+            font-size: clamp(1.6rem, 5vw, 2.8rem);
             font-weight: 700;
             margin-bottom: 10px;
             color: #3D2B1F;
@@ -193,36 +187,34 @@
         }
 
         .profile-info .university {
-            font-size: 1.2rem;
+            font-size: clamp(0.95rem, 1.5vw, 1.2rem);
             color: #A67B5B;
             font-weight: 600;
-            margin-bottom: 18px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            margin-bottom: clamp(12px, 2vw, 18px);
         }
 
         .profile-info .bio {
-            font-size: 1.05rem;
+            font-size: clamp(0.9rem, 1.4vw, 1.05rem);
             color: #6B5B48;
             line-height: 1.7;
-            margin-bottom: 24px;
+            margin-bottom: clamp(16px, 2.5vw, 24px);
         }
 
         .profile-stats {
             display: flex;
-            gap: 20px;
+            gap: clamp(8px, 2vw, 20px);
             flex-wrap: wrap;
         }
 
         .stat-item {
             background: rgba(255, 252, 245, 0.8);
             backdrop-filter: blur(10px);
-            padding: 12px 22px;
+            padding: clamp(8px, 1.5vw, 12px) clamp(14px, 2.5vw, 22px);
             border-radius: 40px;
             text-align: center;
             box-shadow: 0 2px 10px rgba(139, 69, 19, 0.05);
             transition: all 0.3s;
+            flex: 0 0 auto;
         }
 
         .stat-item:hover {
@@ -232,42 +224,48 @@
         }
 
         .stat-value {
-            font-size: 1.6rem;
+            font-size: clamp(1.2rem, 2.5vw, 1.6rem);
             font-weight: 700;
             color: #A67B5B;
         }
 
         .stat-label {
-            font-size: 0.75rem;
+            font-size: clamp(0.65rem, 1.1vw, 0.75rem);
             color: #8B7355;
         }
 
-        /* Секции */
+        /* ============ SECTIONS ============ */
         section {
-            padding: 60px 0;
+            padding: clamp(40px, 7vh, 60px) 0;
         }
 
         .section-title {
-            font-size: 2rem;
+            font-size: clamp(1.4rem, 3.5vw, 2rem);
             font-weight: 700;
-            margin-bottom: 40px;
+            margin-bottom: clamp(30px, 5vw, 40px);
             color: #3D2B1F;
             text-align: center;
         }
 
-        .section-title span {
-            color: #A67B5B;
+        .section-title span { color: #A67B5B; }
+
+        /* ============ EDUCATION ============ */
+        .education-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto;
         }
 
-        /* Образование */
         .education-card {
             background: white;
-            border-radius: 32px;
-            padding: 36px;
+            border-radius: clamp(24px, 3vw, 32px);
+            padding: clamp(24px, 3vw, 36px);
             box-shadow: 0 8px 25px rgba(139, 69, 19, 0.05);
             border: 1px solid rgba(196, 162, 122, 0.15);
             display: flex;
-            gap: 24px;
+            gap: clamp(16px, 2.5vw, 24px);
             align-items: flex-start;
             transition: all 0.3s;
         }
@@ -279,20 +277,20 @@
         }
 
         .edu-icon {
-            width: 60px;
-            height: 60px;
+            width: clamp(45px, 7vw, 60px);
+            height: clamp(45px, 7vw, 60px);
             background: linear-gradient(135deg, #C4A27A, #A67B5B);
             border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.8rem;
+            font-size: clamp(1.4rem, 2.5vw, 1.8rem);
             color: white;
             flex-shrink: 0;
         }
 
         .edu-content h3 {
-            font-size: 1.3rem;
+            font-size: clamp(1.1rem, 1.6vw, 1.3rem);
             margin-bottom: 8px;
             color: #4A3728;
         }
@@ -301,18 +299,27 @@
             color: #A67B5B;
             font-weight: 500;
             margin-bottom: 8px;
+            font-size: clamp(0.85rem, 1.2vw, 0.95rem);
         }
 
         .edu-content p {
             color: #7B6B55;
             line-height: 1.6;
+            font-size: clamp(0.85rem, 1.1vw, 0.95rem);
         }
 
-        /* Скиллы */
+        /* ============ SKILLS ============ */
         .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
             gap: 20px;
+        }
+
+        .skills-grid > * {
+            flex: 0 1 160px;
+            min-width: 140px;
+            max-width: 200px;
         }
 
         .skill-card {
@@ -332,27 +339,34 @@
         }
 
         .skill-icon {
-            font-size: 2.5rem;
+            font-size: clamp(2rem, 3.5vw, 2.5rem);
             margin-bottom: 12px;
         }
 
         .skill-card h4 {
-            font-size: 1rem;
+            font-size: clamp(0.85rem, 1.2vw, 1rem);
             color: #4A3728;
             font-weight: 600;
         }
 
-        /* Программы */
-        .grid-3 {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        /* ============ PROGRAMS ============ */
+        .programs-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
             gap: 25px;
+        }
+
+        .programs-grid > * {
+            flex: 0 1 340px;
+            min-width: 280px;
+            max-width: 400px;
         }
 
         .program-card {
             background: white;
             border-radius: 32px;
-            padding: 32px;
+            padding: 32px 24px;
             text-align: center;
             box-shadow: 0 8px 25px rgba(139, 69, 19, 0.05);
             border: 1px solid rgba(196, 162, 122, 0.15);
@@ -366,12 +380,12 @@
         }
 
         .program-icon {
-            font-size: 3.2rem;
+            font-size: clamp(2.5rem, 4vw, 3.2rem);
             margin-bottom: 20px;
         }
 
         .program-card h3 {
-            font-size: 1.4rem;
+            font-size: clamp(1.1rem, 1.6vw, 1.4rem);
             margin-bottom: 16px;
             color: #4A3728;
         }
@@ -384,17 +398,30 @@
         .program-card li {
             padding: 8px 0;
             color: #7B6B55;
-            font-size: 0.95rem;
+            font-size: clamp(0.85rem, 1.2vw, 0.95rem);
         }
 
         .program-price {
             margin-top: 18px;
             font-weight: 700;
             color: #A67B5B;
-            font-size: 1.2rem;
+            font-size: clamp(1.1rem, 1.6vw, 1.2rem);
         }
 
-        /* Отзывы */
+        /* ============ REVIEWS ============ */
+        .reviews-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .reviews-grid > * {
+            flex: 0 1 340px;
+            min-width: 280px;
+            max-width: 400px;
+        }
+
         .review-card {
             background: white;
             border-radius: 28px;
@@ -421,11 +448,13 @@
             color: white;
             font-weight: 700;
             font-size: 1.2rem;
+            flex-shrink: 0;
         }
 
         .review-author {
             font-weight: 600;
             color: #4A3728;
+            font-size: clamp(0.9rem, 1.2vw, 1rem);
         }
 
         .review-stars {
@@ -437,32 +466,93 @@
             color: #7B6B55;
             line-height: 1.6;
             font-style: italic;
+            font-size: clamp(0.85rem, 1.1vw, 0.95rem);
         }
 
-        /* CTA */
+        /* ============ CONTACTS ============ */
+        .contacts-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .contacts-grid > * {
+            flex: 0 1 320px;
+            min-width: 260px;
+            max-width: 380px;
+        }
+
+        .contact-card {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 22px;
+            background: white;
+            border-radius: 28px;
+            text-decoration: none;
+            transition: all 0.3s;
+            border: 1px solid rgba(196, 162, 122, 0.15);
+        }
+
+        .contact-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px rgba(139, 69, 19, 0.1);
+            border-color: #C4A27A;
+        }
+
+        .contact-icon {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #C4A27A, #A67B5B);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        .contact-info h4 {
+            font-size: 0.85rem;
+            color: #9B8B75;
+            margin-bottom: 5px;
+        }
+
+        .contact-info p {
+            font-weight: 600;
+            color: #4A3728;
+            font-size: clamp(0.85rem, 1.1vw, 1rem);
+        }
+
+        /* ============ CTA ============ */
         .cta-section {
             background: linear-gradient(135deg, #E8D5B7, #D4B28A);
-            border-radius: 40px;
-            padding: 50px 40px;
+            border-radius: clamp(30px, 4vw, 40px);
+            padding: clamp(35px, 5vw, 50px) clamp(25px, 4vw, 40px);
             text-align: center;
             color: #3D2B1F;
         }
 
         .cta-section h2 {
-            font-size: 2rem;
+            font-size: clamp(1.4rem, 3.5vw, 2rem);
             margin-bottom: 16px;
             color: #3D2B1F;
         }
 
         .cta-section p {
             margin-bottom: 28px;
-            font-size: 1.1rem;
+            font-size: clamp(0.9rem, 1.3vw, 1.1rem);
             color: #5C3D2E;
         }
 
         .btn {
-            display: inline-block;
-            padding: 14px 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: clamp(12px, 2vw, 14px) clamp(24px, 4vw, 32px);
             border-radius: 50px;
             font-weight: 600;
             text-decoration: none;
@@ -470,7 +560,8 @@
             cursor: pointer;
             border: none;
             font-family: inherit;
-            font-size: 1rem;
+            font-size: clamp(0.85rem, 1.3vw, 1rem);
+            white-space: nowrap;
         }
 
         .btn-primary {
@@ -495,307 +586,214 @@
             transform: translateY(-3px);
         }
 
+        /* ============ FOOTER ============ */
         footer {
             background: #3D2B1F;
             color: #E8D5B7;
-            padding: 60px 0 30px;
-            margin-top: 60px;
+            padding: clamp(40px, 6vh, 60px) 0 clamp(20px, 3vh, 30px);
+            margin-top: clamp(40px, 6vh, 60px);
             text-align: center;
         }
 
         footer a {
             color: #D4B28A;
             text-decoration: none;
+            transition: color 0.3s;
+            font-size: clamp(0.8rem, 1.1vw, 0.95rem);
         }
 
-        footer a:hover {
-            color: #F0E8DD;
+        footer a:hover { color: #F0E8DD; }
+
+        footer p {
+            font-size: clamp(0.8rem, 1.1vw, 0.95rem);
+            margin-top: 8px;
+        }
+
+        /* ============ MEDIA ============ */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .nav-content {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 12px;
+            }
+            .logo { order: 1; }
+            .nav-links { order: 2; width: 100%; justify-content: center; }
         }
 
         @media (max-width: 768px) {
-            .container { padding: 0 20px; }
-            .profile-content { flex-direction: column; text-align: center; }
-            .profile-avatar { width: 200px; height: 200px; }
-            .profile-info h1 { font-size: 2rem; }
+            .profile-content {
+                flex-direction: column;
+                text-align: center;
+            }
             .profile-stats { justify-content: center; }
-            .section-title { font-size: 1.6rem; }
-            .grid-3 { grid-template-columns: 1fr; }
-            .skills-grid { grid-template-columns: repeat(2, 1fr); }
+            .profile-avatar {
+                width: clamp(150px, 40vw, 200px);
+                height: clamp(150px, 40vw, 200px);
+                order: -1;
+            }
+            .programs-grid > *,
+            .reviews-grid > *,
+            .contacts-grid > * {
+                flex: 0 1 100%;
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .skills-grid > * {
+                flex: 0 1 120px;
+                min-width: 100px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- Навбар -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="nav-content">
-                <a href="index.html" class="logo"><span>⚡</span> Rubium</a>
-                <div class="nav-links">
-                    <a href="index.html#about">О нас</a>
-                    <a href="index.html#subjects">Предметы</a>
-                    <a href="index.html#contacts">Контакты</a>
-                    <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> На главную</a>
-                </div>
+<nav class="navbar">
+    <div class="container">
+        <div class="nav-content">
+            <a href="index.html" class="logo"><span>⚡</span> Rubium</a>
+            <div class="nav-links">
+                <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> На главную</a>
             </div>
         </div>
-    </nav>
+    </div>
+</nav>
 
-    <!-- Шапка профиля -->
-    <section class="profile-header">
-        <div class="container">
-            <div class="profile-content">
-                <div class="profile-avatar">
-                    <img src="data/maxim.jpg" alt="Максим Ковалёв" onerror="this.parentElement.innerHTML='<div class=\'avatar-placeholder\'>👨‍🏫</div>'">
+<section class="profile-header">
+    <div class="container">
+        <div class="profile-content">
+            <div class="profile-avatar">
+                <img src="data/maxim.jpg" alt="Максим Ковалёв" onerror="this.parentElement.innerHTML='<div class=\'avatar-placeholder\'>👨‍🏫</div>'">
+            </div>
+            <div class="profile-info">
+                <span class="profile-badge">🇷🇺 Преподаватель математики и физики</span>
+                <h1>Максим Ковалёв</h1>
+                <div class="university">🏛️ МГТУ им. Н.Э. Баумана</div>
+                <p class="bio">
+                    Помогаю школьникам 5-11 классов понять математику и физику — от основ до уверенной подготовки к ОГЭ и ЕГЭ на 80+ баллов.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+
+    <section>
+        <h2 class="section-title"><span>🎓</span> Образование</h2>
+        <div class="education-grid">
+            <div class="education-card">
+                <div class="edu-icon">🏛️</div>
+                <div class="edu-content">
+                    <h3>МГТУ им. Н.Э. Баумана</h3>
+                    <div class="edu-detail">Москва, Россия · 2025–2029</div>
+                    <p>Факультет «Энергомашиностроение», бюджетная форма обучения. Один из ведущих технических университетов России с сильнейшей математической базой.</p>
                 </div>
-                <div class="profile-info">
-                    <span class="profile-badge">🇷🇺 Преподаватель математики и физики</span>
-                    <h1>Максим Ковалёв</h1>
-                    <div class="university">
-                        <span>🏛️</span> МГТУ им. Н.Э. Баумана
-                    </div>
-                    <p class="bio">
-                        Студент Московского государственного технического университета им. Н.Э. Баумана, факультет «Энергомашиностроение», бюджетная форма обучения. Помогаю школьникам 5-11 классов понять математику и физику — от основ до уверенной подготовки к ОГЭ и ЕГЭ на 80+ баллов.
-                    </p>
+            </div>
+            <div class="education-card">
+                <div class="edu-icon">📐</div>
+                <div class="edu-content">
+                    <h3>Физико-математическая подготовка</h3>
+                    <div class="edu-detail">Высшая математика, теоретическая физика, прикладная механика</div>
+                    <p>Углублённое изучение математического анализа, линейной алгебры, дифференциальных уравнений, теоретической механики и физики. Постоянная практика решения сложных задач.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <div class="container">
-
-        <!-- Образование и достижения -->
-        <section>
-            <h2 class="section-title"><span>🎓</span> Образование и достижения</h2>
-            <div style="display: flex; flex-direction: column; gap: 20px;">
-                <div class="education-card">
-                    <div class="edu-icon">🏛️</div>
-                    <div class="edu-content">
-                        <h3>МГТУ им. Н.Э. Баумана</h3>
-                        <div class="edu-detail">Москва, Россия · 2025–2029</div>
-                        <p>Факультет «Энергомашиностроение», бюджетная форма обучения. Один из ведущих технических университетов России с богатой историей и сильнейшей математической базой.</p>
-                    </div>
-                </div>
-                <div class="education-card">
-                    <div class="edu-icon">📐</div>
-                    <div class="edu-content">
-                        <h3>Физико-математическая подготовка</h3>
-                        <div class="edu-detail">Высшая математика, теоретическая физика, прикладная механика</div>
-                        <p>Углублённое изучение математического анализа, линейной алгебры, дифференциальных уравнений, теоретической механики и физики. Постоянная практика решения сложных задач.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Навыки -->
-        <section>
-            <h2 class="section-title"><span>⚡</span> Ключевые навыки</h2>
-            <div class="skills-grid">
-                <div class="skill-card">
-                    <div class="skill-icon">📐</div>
-                    <h4>Алгебра</h4>
-                </div>
-                <div class="skill-card">
-                    <div class="skill-icon">📏</div>
-                    <h4>Геометрия</h4>
-                </div>
-                <div class="skill-card">
-                    <div class="skill-icon">⚡</div>
-                    <h4>Физика</h4>
-                </div>
-                <div class="skill-card">
-                    <div class="skill-icon">🎯</div>
-                    <h4>Подготовка к ЕГЭ</h4>
-                </div>
-                <div class="skill-card">
-                    <div class="skill-icon">📝</div>
-                    <h4>Подготовка к ОГЭ</h4>
-                </div>
-                <div class="skill-card">
-                    <div class="skill-icon">🧮</div>
-                    <h4>Высшая математика</h4>
-                </div>
-            </div>
-        </section>
-
-        <!-- Программы обучения -->
-        <section id="programs">
-            <h2 class="section-title"><span>📚</span> Мои программы обучения</h2>
-            <div class="grid-3">
-                <div class="program-card">
-                    <div class="program-icon">📐</div>
-                    <h3>Математика<br>5–11 класс</h3>
-                    <ul>
-                        <li>Алгебра и геометрия</li>
-                        <li>Повышение успеваемости</li>
-                        <li>Разбор сложных тем</li>
-                        <li>Индивидуальный подход</li>
-                    </ul>
-                    <div class="program-price">от 1000 ₽ / 60 мин</div>
-                </div>
-                <div class="program-card">
-                    <div class="program-icon">⚡</div>
-                    <h3>Физика<br>7–11 класс</h3>
-                    <ul>
-                        <li>Механика и электричество</li>
-                        <li>Лабораторные работы</li>
-                        <li>Решение задач любой сложности</li>
-                        <li>Подготовка к контрольным</li>
-                    </ul>
-                    <div class="program-price">от 1000 ₽ / 60 мин</div>
-                </div>
-                <div class="program-card">
-                    <div class="program-icon">🎯</div>
-                    <h3>Подготовка к ОГЭ и ЕГЭ</h3>
-                    <ul>
-                        <li>Разбор всех типов заданий</li>
-                        <li>Стратегия решения</li>
-                        <li>Пробные варианты каждую неделю</li>
-                        <li>Цель — 80+ баллов</li>
-                    </ul>
-                    <div class="program-price">от 1350 ₽ / 60 мин</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Как проходят занятия -->
-        <section>
-            <h2 class="section-title"><span>🖥️</span> Как проходят занятия</h2>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px;">
-                <div class="skill-card" style="padding: 32px 24px;">
-                    <div class="skill-icon">🎥</div>
-                    <h4>Онлайн формат</h4>
-                    <p style="color: #7B6B55; margin-top: 8px; font-size: 0.9rem;">Занятия проходят через Яндекс Телемост. Нужен только компьютер и интернет.</p>
-                </div>
-                <div class="skill-card" style="padding: 32px 24px;">
-                    <div class="skill-icon">📝</div>
-                    <h4>Практика и теория</h4>
-                    <p style="color: #7B6B55; margin-top: 8px; font-size: 0.9rem;">20% теории, 80% практики. Разбираем задачи от простых до олимпиадных.</p>
-                </div>
-                <div class="skill-card" style="padding: 32px 24px;">
-                    <div class="skill-icon">📊</div>
-                    <h4>Отслеживание прогресса</h4>
-                    <p style="color: #7B6B55; margin-top: 8px; font-size: 0.9rem;">Регулярные тесты и пробные экзамены, чтобы видеть реальный рост.</p>
-                </div>
-                <div class="skill-card" style="padding: 32px 24px;">
-                    <div class="skill-icon">🤝</div>
-                    <h4>Поддержка 24/7</h4>
-                    <p style="color: #7B6B55; margin-top: 8px; font-size: 0.9rem;">Всегда на связи в Telegram — помогу с домашним заданием или сложным вопросом.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Отзывы
-        <section>
-            <h2 class="section-title"><span>⭐</span> Отзывы учеников</h2>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-                <div class="review-card">
-                    <div class="review-header">
-                        <div class="review-avatar">К</div>
-                        <div>
-                            <div class="review-author">Катя, 11 класс</div>
-                            <div class="review-stars">★★★★★</div>
-                        </div>
-                    </div>
-                    <p class="review-text">«Максим подготовил меня к ЕГЭ по математике за полгода. Объясняет даже самые сложные темы простым языком. Итог — 88 баллов! Очень благодарна!»</p>
-                </div>
-                <div class="review-card">
-                    <div class="review-header">
-                        <div class="review-avatar">Н</div>
-                        <div>
-                            <div class="review-author">Никита, 9 класс</div>
-                            <div class="review-stars">★★★★★</div>
-                        </div>
-                    </div>
-                    <p class="review-text">«Готовились к ОГЭ по физике. Максим очень терпеливый, всегда отвечает на вопросы и разбирает ошибки. Сдал на отлично!»</p>
-                </div>
-                <div class="review-card">
-                    <div class="review-header">
-                        <div class="review-avatar">А</div>
-                        <div>
-                            <div class="review-author">Аня, 8 класс</div>
-                            <div class="review-stars">★★★★★</div>
-                        </div>
-                    </div>
-                    <p class="review-text">«Подтянули школьную программу по алгебре и геометрии. С тройки перешла на твёрдую четвёрку за два месяца. Очень нравится, как Максим объясняет!»</p>
-                </div>
-            </div>
-        </section> -->
-
-        <!-- Контакты -->
-        <section id="maxim-contacts">
-            <h2 class="section-title"><span>📞</span> Связь со мной</h2>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
-                <a href="https://t.me/Ch0p_Xx" target="_blank" style="display: flex; align-items: center; gap: 18px; padding: 22px; background: white; border-radius: 28px; text-decoration: none; transition: all 0.3s; border: 1px solid rgba(196, 162, 122, 0.15);" 
-                   onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 15px 30px rgba(139, 69, 19, 0.1)'; this.style.borderColor='#C4A27A';" 
-                   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'; this.style.borderColor='rgba(196, 162, 122, 0.15)';">
-                    <div style="width: 55px; height: 55px; background: linear-gradient(135deg, #C4A27A, #A67B5B); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.4rem;">
-                        <i class="fab fa-telegram-plane"></i>
-                    </div>
-                    <div>
-                        <h4 style="font-size: 0.85rem; color: #9B8B75; margin-bottom: 5px;">Telegram</h4>
-                        <p style="font-weight: 600; color: #4A3728;">Kovalev_math</p>
-                    </div>
-                </a>
-
-                <a href="https://vk.com/kovalev_math" target="_blank" style="display: flex; align-items: center; gap: 18px; padding: 22px; background: white; border-radius: 28px; text-decoration: none; transition: all 0.3s; border: 1px solid rgba(196, 162, 122, 0.15);"
-                   onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 15px 30px rgba(139, 69, 19, 0.1)'; this.style.borderColor='#C4A27A';"
-                   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'; this.style.borderColor='rgba(196, 162, 122, 0.15)';">
-                    <div style="width: 55px; height: 55px; background: linear-gradient(135deg, #C4A27A, #A67B5B); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.4rem;">
-                        <i class="fab fa-vk"></i>
-                    </div>
-                    <div>
-                        <h4 style="font-size: 0.85rem; color: #9B8B75; margin-bottom: 5px;">ВКонтакте</h4>
-                        <p style="font-weight: 600; color: #4A3728;">Максим Ковалёв</p>
-                    </div>
-                </a>
-
-                <a href="mailto:maxim@rubium.ru" style="display: flex; align-items: center; gap: 18px; padding: 22px; background: white; border-radius: 28px; text-decoration: none; transition: all 0.3s; border: 1px solid rgba(196, 162, 122, 0.15);"
-                   onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 15px 30px rgba(139, 69, 19, 0.1)'; this.style.borderColor='#C4A27A';"
-                   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'; this.style.borderColor='rgba(196, 162, 122, 0.15)';">
-                    <div style="width: 55px; height: 55px; background: linear-gradient(135deg, #C4A27A, #A67B5B); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.4rem;">
-                        <i class="fas fa-envelope"></i>
-                    </div>
-                    <div>
-                        <h4 style="font-size: 0.85rem; color: #9B8B75; margin-bottom: 5px;">Email</h4>
-                        <p style="font-weight: 600; color: #4A3728;">your_email@rubium.ru</p>
-                    </div>
-                </a>
-
-                <div style="display: flex; align-items: center; gap: 18px; padding: 22px; background: white; border-radius: 28px; border: 1px solid rgba(196, 162, 122, 0.15); transition: all 0.3s;"
-                     onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 15px 30px rgba(139, 69, 19, 0.1)'; this.style.borderColor='#C4A27A';"
-                     onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'; this.style.borderColor='rgba(196, 162, 122, 0.15)';">
-                    <div style="width: 55px; height: 55px; background: linear-gradient(135deg, #C4A27A, #A67B5B); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.4rem;">
-                        <i class="fas fa-phone-alt"></i>
-                    </div>
-                    <div>
-                        <h4 style="font-size: 0.85rem; color: #9B8B75; margin-bottom: 5px;">Телефон</h4>
-                        <p style="font-weight: 600; color: #4A3728;">+7 (999) 123-45-67</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- CTA -->
-        <section>
-            <div class="cta-section">
-                <h2>Готовы начать?</h2>
-                <p>Запишитесь на бесплатное пробное занятие (30 минут). Познакомимся, определим ваш уровень и составим план обучения.</p>
-                <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
-                    <a href="index.html#contacts" class="btn btn-primary">📝 Записаться на пробный урок</a>
-                    <a href="https://t.me/rubium_education" target="_blank" class="btn btn-outline"><i class="fab fa-telegram-plane"></i> Написать в Telegram</a>
-                </div>
-            </div>
-        </section>
-
-    </div>
-
-    <footer>
-        <div class="container">
-            <p>© 2026 Rubium · образовательный проект</p>
-            <p><a href="index.html">← Вернуться на главную</a></p>
+    <section>
+        <h2 class="section-title"><span>⚡</span> Ключевые навыки</h2>
+        <div class="skills-grid">
+            <div class="skill-card"><div class="skill-icon">📐</div><h4>Алгебра</h4></div>
+            <div class="skill-card"><div class="skill-icon">📏</div><h4>Геометрия</h4></div>
+            <div class="skill-card"><div class="skill-icon">⚡</div><h4>Физика</h4></div>
+            <div class="skill-card"><div class="skill-icon">🎯</div><h4>Подготовка к ЕГЭ</h4></div>
+            <div class="skill-card"><div class="skill-icon">📝</div><h4>Подготовка к ОГЭ</h4></div>
+            <div class="skill-card"><div class="skill-icon">🧮</div><h4>Высшая математика</h4></div>
         </div>
-    </footer>
+    </section>
+
+    <section>
+        <h2 class="section-title"><span>📚</span> Программы обучения</h2>
+        <div class="programs-grid">
+            <div class="program-card">
+                <div class="program-icon">📐</div>
+                <h3>Математика<br>(5-9 класс)</h3>
+                <ul>
+                    <li>Алгебра и геометрия</li>
+                    <li>Повышение успеваемости</li>
+                    <li>Разбор сложных тем</li>
+                    <li>Подготовка к ОГЭ</li>
+                </ul>
+                <div class="program-price">от 1000 ₽ / 60 мин</div>
+            </div>
+            <div class="program-card">
+                <div class="program-icon">⚡</div>
+                <h3>Физика<br>(7-9 класс)</h3>
+                <ul>
+                    <li>Механика и электричество</li>
+                    <li>Решение задач любой сложности</li>
+                    <li>Подготовка к ОГЭ</li>
+                    <li>Цель — 5</li>
+                </ul>
+                <div class="program-price">от 1000 ₽ / 60 мин</div>
+            </div>
+            <div class="program-card">
+                <div class="program-icon">🎯</div>
+                <h3>Подготовка к ЕГЭ<br>(10-11 класс)</h3>
+                <ul>
+                    <li>Математика и физика</li>
+                    <li>Разбор всех типов заданий</li>
+                    <li>Пробные варианты</li>
+                    <li>Цель — 80+ баллов</li>
+                </ul>
+                <div class="program-price">от 1350 ₽ / 60 мин</div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="section-title"><span>📞</span> Связь со мной</h2>
+        <div class="contacts-grid">
+            <a href="https://t.me/kovalev_math" target="_blank" class="contact-card">
+                <div class="contact-icon"><i class="fab fa-telegram-plane"></i></div>
+                <div class="contact-info"><h4>Telegram</h4><p>kovalev_math</p></div>
+            </a>
+            <a href="https://vk.com/kovalev_math" target="_blank" class="contact-card">
+                <div class="contact-icon"><i class="fab fa-vk"></i></div>
+                <div class="contact-info"><h4>ВКонтакте</h4><p>Максим Ковалёв</p></div>
+            </a>
+            <a href="mailto:makskov456@gmail.com" class="contact-card">
+                <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                <div class="contact-info"><h4>Email</h4><p>makskov456@gmail.com</p></div>
+            </a>
+            <div class="contact-card">
+                <div class="contact-icon"><i class="fas fa-phone-alt"></i></div>
+                <div class="contact-info"><h4>Телефон</h4><p>+7 (900) 480-26-12</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="cta-section">
+            <h2>Готовы начать?</h2>
+            <p>Запишитесь на бесплатное пробное занятие (30 минут). Познакомимся, определим ваш уровень и составим план обучения.</p>
+            <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                <a href="index.html#contacts" class="btn btn-primary">📝 Записаться на пробный урок</a>
+                <a href="https://t.me/rubium_education" target="_blank" class="btn btn-outline"><i class="fab fa-telegram-plane"></i> Написать в Telegram</a>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<footer>
+    <div class="container">
+        <p>© 2026 Rubium · образовательный проект</p>
+        <p><a href="index.html">← Вернуться на главную</a></p>
+    </div>
+</footer>
 
 </body>
 </html>

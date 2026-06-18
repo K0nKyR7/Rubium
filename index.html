@@ -16,7 +16,10 @@
             color: #4A3728;
             line-height: 1.5;
             min-height: 100vh;
+            overflow-x: hidden;
         }
+
+        img { pointer-events: none; }
 
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(30px); }
@@ -39,9 +42,13 @@
             transform: translateY(0);
         }
 
-        .container { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 clamp(16px, 4vw, 32px);
+        }
 
-        /* Navbar */
+        /* ============ NAVBAR ============ */
         .navbar {
             background: rgba(255, 252, 245, 0.98);
             backdrop-filter: blur(12px);
@@ -56,17 +63,21 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px 0;
-            flex-wrap: wrap;
-            gap: 20px;
+            padding: clamp(10px, 2vh, 16px) 0;
+            flex-wrap: nowrap;
+            gap: 16px;
         }
 
         .logo {
-            font-size: 2rem;
+            font-size: clamp(1.3rem, 3vw, 2rem);
             font-weight: 700;
             text-decoration: none;
             color: #5C3D2E;
             letter-spacing: -0.5px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            z-index: 1;
+            position: relative;
         }
 
         .logo span {
@@ -78,10 +89,17 @@
 
         .nav-links {
             display: flex;
-            gap: 28px;
-            flex-wrap: wrap;
+            gap: clamp(12px, 2vw, 28px);
+            flex-wrap: nowrap;
             align-items: center;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding: 4px 0;
         }
+
+        .nav-links::-webkit-scrollbar { display: none; }
 
         .nav-links a {
             text-decoration: none;
@@ -89,12 +107,15 @@
             font-weight: 500;
             transition: all 0.3s;
             position: relative;
+            white-space: nowrap;
+            font-size: clamp(0.8rem, 1.5vw, 1rem);
+            padding: 6px 4px;
         }
 
         .nav-links a::after {
             content: '';
             position: absolute;
-            bottom: -5px;
+            bottom: -3px;
             left: 0;
             width: 0;
             height: 2px;
@@ -106,26 +127,108 @@
         .nav-links a:hover::after { width: 100%; }
         .nav-links a:hover { color: #8B5E3C; }
 
-        .tasks-btn, .constructor-btn, .profile-btn {
-            background: linear-gradient(135deg, #C4A27A, #A67B5B);
+        .tasks-btn, .constructor-btn, .profile-btn,
+        .profile-link-nav, .admin-link-nav {
+            background: linear-gradient(135deg, #C4A27A, #A67B5B) !important;
             color: white !important;
-            padding: 8px 22px;
-            border-radius: 40px;
+            padding: clamp(6px, 1vw, 8px) clamp(14px, 2.5vw, 22px) !important;
+            border-radius: 40px !important;
             transition: all 0.3s !important;
+            font-size: clamp(0.75rem, 1.4vw, 0.95rem) !important;
         }
 
-        .tasks-btn:hover, .constructor-btn:hover, .profile-btn:hover {
+        .tasks-btn:hover, .constructor-btn:hover, .profile-btn:hover,
+        .profile-link-nav:hover, .admin-link-nav:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(139, 69, 19, 0.2);
         }
 
-        /* Hero Section */
+        .tasks-btn::after, .constructor-btn::after, .profile-btn::after,
+        .profile-link-nav::after, .admin-link-nav::after { display: none !important; }
+
+        .login-link {
+            background: transparent !important;
+            border: 2px solid #C4A27A !important;
+            color: #A67B5B !important;
+            padding: clamp(6px, 1vw, 8px) clamp(14px, 2.5vw, 22px) !important;
+            border-radius: 40px !important;
+            font-size: clamp(0.75rem, 1.4vw, 0.95rem) !important;
+        }
+
+        .login-link::after { display: none !important; }
+
+        .logout-nav-btn {
+            background: rgba(139, 69, 19, 0.08);
+            border: none;
+            padding: clamp(6px, 1vw, 8px) clamp(14px, 2.5vw, 22px);
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            font-family: inherit;
+            font-size: clamp(0.75rem, 1.4vw, 0.95rem);
+            color: #6B4C3B;
+            white-space: nowrap;
+        }
+
+        .logout-nav-btn:hover {
+            background: #E8D5B7;
+            color: #5C3D2E;
+            transform: translateY(-2px);
+        }
+
+        .burger-btn {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            z-index: 1001;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .burger-btn span {
+            display: block;
+            width: 24px;
+            height: 2.5px;
+            background: #5C3D2E;
+            margin: 5px 0;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .burger-btn.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+        .burger-btn.active span:nth-child(2) {
+            opacity: 0;
+        }
+        .burger-btn.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+
+        .nav-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(61, 43, 31, 0.4);
+            backdrop-filter: blur(3px);
+            z-index: 999;
+        }
+
+        .nav-overlay.active { display: block; }
+
+        /* ============ HERO ============ */
         .hero {
             background: linear-gradient(135deg, #F5EDE0 0%, #EFE4D5 100%);
             color: #4A3728;
-            padding: 80px 0 70px;
-            border-radius: 0 0 50px 50px;
-            margin-bottom: 50px;
+            padding: clamp(40px, 8vh, 80px) 0 clamp(35px, 7vh, 70px);
+            border-radius: 0 0 clamp(30px, 5vw, 50px) clamp(30px, 5vw, 50px);
+            margin-bottom: clamp(30px, 5vw, 50px);
             position: relative;
             overflow: hidden;
         }
@@ -147,30 +250,48 @@
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 50px;
+            gap: clamp(30px, 5vw, 50px);
             position: relative;
             z-index: 1;
         }
 
-        .hero-text { flex: 1; min-width: 280px; }
-        .hero-text h1 { font-size: 3rem; font-weight: 700; margin-bottom: 20px; line-height: 1.2; color: #3D2B1F; }
+        .hero-text {
+            flex: 1 1 300px;
+            min-width: 0;
+        }
+
+        .hero-text h1 {
+            font-size: clamp(1.6rem, 5vw, 3rem);
+            font-weight: 700;
+            margin-bottom: clamp(12px, 2vw, 20px);
+            line-height: 1.2;
+            color: #3D2B1F;
+        }
+
         .hero-text .highlight {
             background: rgba(196, 162, 122, 0.2);
             backdrop-filter: blur(10px);
-            padding: 5px 16px;
+            padding: 5px clamp(10px, 2vw, 16px);
             border-radius: 40px;
             display: inline-block;
-            font-size: 0.85rem;
-            margin-bottom: 24px;
+            font-size: clamp(0.7rem, 1.3vw, 0.85rem);
+            margin-bottom: clamp(16px, 3vw, 24px);
             font-weight: 500;
             color: #8B5E3C;
         }
-        .hero-text p { font-size: 1.1rem; opacity: 0.85; margin-bottom: 28px; line-height: 1.6; color: #5C4B3A; }
+
+        .hero-text p {
+            font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+            opacity: 0.85;
+            margin-bottom: clamp(20px, 3vw, 28px);
+            line-height: 1.6;
+            color: #5C4B3A;
+        }
 
         .hero-stats {
             display: flex;
-            gap: 24px;
-            margin-top: 32px;
+            gap: clamp(8px, 2vw, 24px);
+            margin-top: clamp(20px, 3vw, 32px);
             flex-wrap: wrap;
         }
 
@@ -178,18 +299,33 @@
             text-align: center;
             background: rgba(255, 252, 245, 0.8);
             backdrop-filter: blur(10px);
-            padding: 12px 24px;
+            padding: clamp(8px, 1.5vw, 12px) clamp(12px, 2.5vw, 24px);
             border-radius: 40px;
             transition: all 0.3s;
             box-shadow: 0 2px 10px rgba(139, 69, 19, 0.05);
+            flex: 0 0 auto;
         }
-        .stat:hover { transform: translateY(-4px); background: white; box-shadow: 0 8px 25px rgba(139, 69, 19, 0.1); }
-        .stat-number { font-size: 1.8rem; font-weight: 700; color: #A67B5B; }
-        .stat-label { font-size: 0.8rem; color: #8B7355; }
+
+        .stat:hover {
+            transform: translateY(-4px);
+            background: white;
+            box-shadow: 0 8px 25px rgba(139, 69, 19, 0.1);
+        }
+
+        .stat-number {
+            font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+            font-weight: 700;
+            color: #A67B5B;
+        }
+
+        .stat-label {
+            font-size: clamp(0.65rem, 1.1vw, 0.8rem);
+            color: #8B7355;
+        }
 
         .hero-avatar {
-            width: 300px;
-            height: 300px;
+            width: clamp(180px, 30vw, 300px);
+            height: clamp(180px, 30vw, 300px);
             border-radius: 50%;
             overflow: hidden;
             border: 4px solid rgba(196, 162, 122, 0.4);
@@ -199,13 +335,26 @@
             align-items: center;
             justify-content: center;
             animation: gentleFloat 5s ease-in-out infinite;
+            flex-shrink: 0;
         }
-        .hero-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .hero-avatar .avatar-placeholder { font-size: 80px; }
 
+        .hero-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hero-avatar .avatar-placeholder {
+            font-size: clamp(50px, 10vw, 80px);
+        }
+
+        /* ============ КНОПКИ ============ */
         .btn {
-            display: inline-block;
-            padding: 14px 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: clamp(12px, 2vw, 14px) clamp(24px, 4vw, 32px);
             border-radius: 50px;
             font-weight: 600;
             text-decoration: none;
@@ -213,59 +362,130 @@
             cursor: pointer;
             border: none;
             font-family: inherit;
-            font-size: 1rem;
+            font-size: clamp(0.85rem, 1.3vw, 1rem);
+            white-space: nowrap;
         }
+
         .btn-primary {
             background: linear-gradient(135deg, #C4A27A, #A67B5B);
             color: white;
             box-shadow: 0 4px 15px rgba(139, 69, 19, 0.15);
         }
+
         .btn-primary:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 25px rgba(139, 69, 19, 0.25);
         }
+
         .btn-outline {
             background: transparent;
             border: 2px solid #C4A27A;
             color: #A67B5B;
         }
+
         .btn-outline:hover {
             background: rgba(196, 162, 122, 0.1);
             transform: translateY(-3px);
         }
 
-        section { padding: 70px 0; }
+        /* ============ СЕКЦИИ ============ */
+        section {
+            padding: clamp(40px, 7vh, 70px) 0;
+        }
+
         .section-title {
-            font-size: 2.2rem;
+            font-size: clamp(1.4rem, 3.5vw, 2.2rem);
             font-weight: 700;
-            margin-bottom: 50px;
+            margin-bottom: clamp(30px, 5vw, 50px);
             text-align: center;
             color: #3D2B1F;
         }
+
         .section-title span { color: #A67B5B; }
 
-        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; }
-        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
-        .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; }
+        /* ============ ГРИДЫ С ЦЕНТРИРОВАНИЕМ ============ */
+        .grid-2 {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: clamp(20px, 3vw, 30px);
+        }
 
+        .grid-2 > * {
+            flex: 0 1 500px;
+            min-width: 320px;
+            max-width: 600px;
+        }
+
+        .grid-3 {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .grid-3 > * {
+            flex: 0 1 380px;
+            min-width: 300px;
+            max-width: 420px;
+        }
+
+        .grid-4 {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: clamp(16px, 2.5vw, 25px);
+        }
+
+        .grid-4 > * {
+            flex: 0 1 280px;
+            min-width: 240px;
+            max-width: 320px;
+        }
+
+        /* ============ КАРТОЧКИ ПРЕПОДАВАТЕЛЕЙ ============ */
         .card {
             background: white;
             border-radius: 32px;
             text-align: center;
-            padding: 32px;
+            padding: 32px 24px;
             box-shadow: 0 8px 25px rgba(139, 69, 19, 0.05);
             transition: all 0.4s;
             border: 1px solid rgba(196, 162, 122, 0.15);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            width: 100%;
+            min-width: 0;
         }
+
         .card:hover {
             transform: translateY(-6px);
             box-shadow: 0 20px 40px rgba(139, 69, 19, 0.1);
             border-color: rgba(196, 162, 122, 0.3);
         }
-        .card-icon { 
-            width : 100%; 
-            height : 55%; 
-            margin-bottom: 20px; 
+
+        .card-link {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            text-decoration: none;
+            border-radius: inherit;
+        }
+
+        .card:hover h3 {
+            color: #A67B5B;
+        }
+
+        .card-icon {
+            width: 100%;
+            max-width: 260px;
+            aspect-ratio: 1 / 1;
+            margin-bottom: 20px;
             border: 4px solid rgba(196, 162, 122, 0.4);
             background: rgba(196, 162, 122, 0.1);
             box-shadow: 20px 15px 35px rgba(139, 69, 19, 0.1);
@@ -274,16 +494,46 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            pointer-events: none;
+            position: relative;
+            z-index: 1;
         }
 
-        .card-icon img { width : 100%; height : 100%; object-fit: cover; }
-        .card a { text-decoration: none; }
-        .card h3 { font-size: 1.3rem; margin-bottom: 12px; color: #4A3728; }
-        .card p { color: #7B6B55; line-height: 2; }
-        .card ul { list-style: none; text-align: center;}
-        .card li { padding: 8px 0; color: #7B6B55; }
+        .card-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
+        .card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            color: #4A3728;
+            transition: color 0.3s;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card p {
+            color: #7B6B55;
+            line-height: 1.8;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card ul {
+            list-style: none;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card li {
+            padding: 8px 0;
+            color: #7B6B55;
+            font-size: 0.95rem;
+        }
+
+        /* ============ ПРЕДМЕТЫ ============ */
         .subject-card {
             text-align: center;
             background: white;
@@ -291,23 +541,45 @@
             padding: 36px 24px;
             transition: all 0.4s;
             border: 1px solid rgba(196, 162, 122, 0.15);
+            width: 100%;
         }
+
         .subject-card:hover {
             transform: translateY(-6px);
             box-shadow: 0 20px 40px rgba(139, 69, 19, 0.1);
             border-color: #C4A27A;
         }
-        .subject-icon { font-size: 3.2rem; margin-bottom: 20px; }
-        .subject-card h3 { font-size: 1.4rem; margin-bottom: 16px; color: #4A3728; }
-        .subject-card ul { list-style: none; text-align: center; }
-        .subject-card li { padding: 8px 0; color: #7B6B55; }
 
+        .subject-icon {
+            font-size: clamp(2.5rem, 4vw, 3.2rem);
+            margin-bottom: 20px;
+        }
+
+        .subject-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 16px;
+            color: #4A3728;
+        }
+
+        .subject-card ul {
+            list-style: none;
+            text-align: center;
+        }
+
+        .subject-card li {
+            padding: 8px 0;
+            color: #7B6B55;
+            font-size: 0.95rem;
+        }
+
+        /* ============ ЦЕНЫ ============ */
         .price-table {
             background: white;
             border-radius: 32px;
             overflow: hidden;
             box-shadow: 0 8px 25px rgba(139, 69, 19, 0.05);
         }
+
         .price-row {
             display: flex;
             justify-content: space-between;
@@ -318,16 +590,26 @@
             gap: 12px;
             transition: background 0.3s;
         }
+
         .price-row:hover { background: #FDF8F0; }
         .price-name { font-weight: 500; color: #6B5B48; }
         .price-value { font-weight: 700; color: #A67B5B; font-size: 1.3rem; }
         .price-note { text-align: center; margin-top: 20px; color: #9B8B75; font-size: 0.85rem; }
 
+        /* ============ КОНТАКТЫ ============ */
         .contact-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: clamp(16px, 2.5vw, 25px);
         }
+
+        .contact-grid > * {
+            flex: 0 1 350px;
+            min-width: 280px;
+            max-width: 400px;
+        }
+
         .contact-card {
             display: flex;
             align-items: center;
@@ -339,11 +621,13 @@
             transition: all 0.3s;
             border: 1px solid rgba(196, 162, 122, 0.15);
         }
+
         .contact-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 15px 30px rgba(139, 69, 19, 0.1);
             border-color: #C4A27A;
         }
+
         .contact-icon {
             width: 55px;
             height: 55px;
@@ -354,36 +638,13 @@
             justify-content: center;
             color: white;
             font-size: 1.4rem;
+            flex-shrink: 0;
         }
+
         .contact-info h4 { font-size: 0.85rem; color: #9B8B75; margin-bottom: 5px; }
         .contact-info p { font-weight: 600; color: #4A3728; }
 
-        .form-card {
-            background: white;
-            border-radius: 36px;
-            padding: 45px;
-            box-shadow: 0 15px 35px rgba(139, 69, 19, 0.05);
-            transition: all 0.3s;
-        }
-        .form-card:hover { box-shadow: 0 20px 40px rgba(139, 69, 19, 0.08); }
-        .form-group { margin-bottom: 22px; }
-        .form-group input, .form-group textarea {
-            width: 100%;
-            padding: 15px 20px;
-            border: 2px solid #F0E8DD;
-            border-radius: 28px;
-            font-size: 1rem;
-            font-family: inherit;
-            transition: all 0.3s;
-            background: #FDF8F0;
-        }
-        .form-group input:focus, .form-group textarea:focus {
-            outline: none;
-            border-color: #C4A27A;
-            box-shadow: 0 0 0 4px rgba(196, 162, 122, 0.1);
-            background: white;
-        }
-
+        /* ============ FAQ ============ */
         .faq-item {
             background: white;
             border-radius: 28px;
@@ -392,7 +653,9 @@
             border: 1px solid rgba(196, 162, 122, 0.15);
             transition: all 0.3s;
         }
+
         .faq-item:hover { border-color: #C4A27A; }
+
         .faq-question {
             display: flex;
             justify-content: space-between;
@@ -403,9 +666,11 @@
             color: #4A3728;
             transition: background 0.3s;
         }
+
         .faq-question:hover { background: #FDF8F0; }
         .faq-question i { transition: transform 0.3s; color: #A67B5B; }
         .faq-item.active .faq-question i { transform: rotate(180deg); }
+
         .faq-answer {
             max-height: 0;
             overflow: hidden;
@@ -414,18 +679,43 @@
             color: #7B6B55;
             line-height: 1.6;
         }
+
         .faq-item.active .faq-answer {
-            max-height: 200px;
+            max-height: 300px;
             padding: 20px 28px 22px;
         }
 
+        /* ============ МАТЕРИАЛЫ ============ */
+        .material-link {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 20px 28px;
+            background: white;
+            border-radius: 28px;
+            color: #6B5B48;
+            text-decoration: none;
+            margin-bottom: 12px;
+            border: 1px solid rgba(196,162,122,0.15);
+            transition: all 0.3s;
+        }
+
+        .material-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(139, 69, 19, 0.08);
+            border-color: #C4A27A;
+        }
+
+        /* ============ FOOTER ============ */
         footer {
             background: #3D2B1F;
             color: #E8D5B7;
             padding: 60px 0 30px;
             margin-top: 60px;
         }
+
         .footer-content { text-align: center; }
+
         .footer-links {
             display: flex;
             justify-content: center;
@@ -433,9 +723,16 @@
             margin-bottom: 28px;
             flex-wrap: wrap;
         }
-        .footer-links a { color: #D4B28A; text-decoration: none; transition: color 0.3s; }
+
+        .footer-links a {
+            color: #D4B28A;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
         .footer-links a:hover { color: #F0E8DD; }
 
+        /* ============ МОДАЛКА ============ */
         .modal {
             display: none;
             position: fixed;
@@ -449,7 +746,9 @@
             justify-content: center;
             z-index: 1100;
         }
+
         .modal.show { display: flex; }
+
         .modal-content {
             background: white;
             padding: 45px;
@@ -459,20 +758,176 @@
             width: 90%;
             animation: fadeInUp 0.4s ease;
         }
+
         .modal-icon { font-size: 3.5rem; margin-bottom: 20px; }
 
+        /* ============ МЕДИА-ЗАПРОСЫ ============ */
+        @media (max-width: 1024px) {
+            .nav-links {
+                gap: clamp(8px, 1.5vw, 18px);
+            }
+
+            .grid-2 > * {
+                flex: 0 1 450px;
+                max-width: 550px;
+            }
+
+            .grid-3 > * {
+                flex: 0 1 340px;
+                max-width: 380px;
+            }
+        }
+
+        /* Планшеты */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .nav-content {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 12px;
+            }
+
+            .logo {
+                order: 1;
+            }
+
+            .nav-links {
+                order: 2;
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+        }
+
         @media (max-width: 768px) {
-            .container { padding: 0 20px; }
-            .hero { padding: 50px 0 45px; }
-            .hero-text h1 { font-size: 2rem; }
-            .hero-avatar { width: 200px; height: 200px; }
-            .section-title { font-size: 1.6rem; }
-            .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
-            .nav-content { flex-direction: column; text-align: center; }
-            .nav-links { justify-content: center; }
-            .hero-stats { gap: 12px; justify-content: center; }
-            .stat { padding: 8px 16px; }
-            .stat-number { font-size: 1.3rem; }
+            .nav-content {
+                padding: 10px 0;
+                gap: 12px;
+            }
+
+            .burger-btn {
+                display: block;
+                order: 2;
+            }
+
+            .logo {
+                order: 1;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 75%;
+                max-width: 320px;
+                height: 100vh;
+                height: 100dvh;
+                background: rgba(255, 252, 245, 0.99);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                justify-content: flex-start;
+                padding: 80px 28px 30px;
+                gap: 8px;
+                transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: -10px 0 30px rgba(139, 69, 19, 0.1);
+                z-index: 1000;
+                overflow-y: auto;
+                align-items: stretch;
+                flex-wrap: nowrap;
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-links a {
+                font-size: 1rem;
+                padding: 14px 16px;
+                border-radius: 16px;
+                transition: all 0.3s;
+                text-align: center;
+                display: block;
+            }
+
+            .nav-links a:hover {
+                background: rgba(196, 162, 122, 0.1);
+            }
+
+            .nav-links a::after {
+                display: none;
+            }
+
+            .tasks-btn, .constructor-btn, .profile-btn,
+            .profile-link-nav, .admin-link-nav,
+            .login-link {
+                padding: 14px 20px !important;
+                font-size: 1rem !important;
+                text-align: center;
+                margin: 4px 0;
+            }
+
+            .logout-nav-btn {
+                padding: 14px 20px;
+                font-size: 1rem;
+                text-align: center;
+                width: 100%;
+                margin: 4px 0;
+            }
+
+            .hero-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .hero-stats {
+                justify-content: center;
+            }
+
+            .hero-avatar {
+                order: -1;
+                width: clamp(150px, 40vw, 220px);
+                height: clamp(150px, 40vw, 220px);
+            }
+
+            .hero-text .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .hero-text div:last-child {
+                flex-direction: column;
+            }
+
+            .grid-2 > * {
+                flex: 0 1 100%;
+                max-width: 100%;
+            }
+
+            .grid-3 > * {
+                flex: 0 1 100%;
+                max-width: 100%;
+            }
+
+            .grid-4 > *,
+            .contact-grid > * {
+                flex: 0 1 100%;
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-links {
+                width: 85%;
+                padding: 70px 20px 25px;
+            }
+
+            .nav-links a {
+                font-size: 0.95rem;
+                padding: 12px 14px;
+            }
+
+            .stat {
+                padding: 6px 12px;
+            }
         }
     </style>
 </head>
@@ -482,6 +937,13 @@
     <div class="container">
         <div class="nav-content">
             <a href="#" class="logo"><span>⚡</span> Rubium</a>
+
+            <button class="burger-btn" id="burgerBtn" aria-label="Меню">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
             <div class="nav-links" id="navLinks">
                 <a href="#about">О нас</a>
                 <a href="#subjects">Предметы</a>
@@ -492,6 +954,7 @@
             </div>
         </div>
     </div>
+    <div class="nav-overlay" id="navOverlay"></div>
 </nav>
 
 <section class="hero">
@@ -512,9 +975,9 @@
                     <a href="tasks.html" class="btn btn-outline"><i class="fas fa-tasks"></i> Решать задачи</a>
                 </div>
             </div>
-            <div class="hero-avatar animate-on-scroll">
+            <!-- <div class="hero-avatar animate-on-scroll">
                 <img src="data/maxim.jpg" alt="Максим Ковалёв" onerror="this.parentElement.innerHTML='<div class=\'avatar-placeholder\'>👨‍🏫</div>'">
-            </div>
+            </div> -->
         </div>
     </div>
 </section>
@@ -523,23 +986,53 @@
     <section id="about">
         <h2 class="section-title animate-on-scroll"><span>📖</span> О нас</h2>
         <div class="grid-2 animate-on-scroll">
-            <div class="card"><h3>Наш подход</h3><p>Мы считаем, что главное — научить думать, а не заучивать формулы. На занятиях мы разбираем темы до полного понимания, решаем задачи разного уровня сложности и закрепляем материал на практике в комфортной обстановке.</p></div>
-            <div class="card"><h3>Почему мы?</h3><p>Сами прошли через огромное количество экзаменов. Хорошо понимаем, с какими трудностями сталкиваются школьники, и знаем, как объяснить сложные вещи простым и понятным языком.</p></div>
+            <div class="card" style="cursor: default;"><h3>Наш подход</h3><p>Мы считаем, что главное — научить думать, а не заучивать формулы. На занятиях мы разбираем темы до полного понимания, решаем задачи разного уровня сложности и закрепляем материал на практике в комфортной обстановке.</p></div>
+            <div class="card" style="cursor: default;"><h3>Почему мы?</h3><p>Сами прошли через огромное количество экзаменов. Хорошо понимаем, с какими трудностями сталкиваются школьники, и знаем, как объяснить сложные вещи простым и понятным языком.</p></div>
         </div>
     </section>
 
     <section>
         <h2 class="section-title animate-on-scroll"><span>🎓</span> Преподаватели</h2>
         <div class="grid-3 animate-on-scroll">
-            <div class="card"><div class="card-icon"><img src="data/maxim.jpg" alt="#"></div><a href="maxim_page.html"><h3>Ковалев Максим</h3></a><ul><li>МГТУ им. Баумана</li><li>Факультет «Энергомашиностроение»</li><li>Бюджетная форма обучения</li><li>Преподаватель математики и физики</li></ul></div>
-            <div class="card"><div class="card-icon"><img src="data/temporary.jpeg" alt="#"></div><a href="ilya_page.html"><h3>Емельянов Илья</h3></a><ul><li>Beijing Institute of Technology</li><li>Специальность «Компьютерные науки»</li><li>Грант с полным покрытием</li><li>Преподаватель информатики</li></ul></div>
-            <div class="card"><div class="card-icon"><img src="data/maxim.jpg" alt="#"></div><a href="#"><h3>Коняхин Михаил</h3></a><ul><li>МГТУ им. Баумана</li><li>Факультет «Фундаментальные науки»</li><li>Бюджетная форма обучения</li><li>Преподаватель высшей математики</li></ul></div>
+            <div class="card">
+                <a href="maxim_page.html" class="card-link"></a>
+                <div class="card-icon"><img src="data/maxim.jpg" alt="Максим Ковалёв"></div>
+                <h3>Ковалев Максим</h3>
+                <ul>
+                    <li>МГТУ им. Баумана</li>
+                    <li>Факультет «Энергомашиностроение»</li>
+                    <li>Бюджетная форма обучения</li>
+                    <li>Преподаватель математики и физики</li>
+                </ul>
+            </div>
+            <div class="card">
+                <a href="ilya_page.html" class="card-link"></a>
+                <div class="card-icon"><img src="data/temporary.jpeg" alt="Илья Емельянов"></div>
+                <h3>Емельянов Илья</h3>
+                <ul>
+                    <li>Beijing Institute of Technology</li>
+                    <li>Специальность «Компьютерные науки»</li>
+                    <li>Грант с полным покрытием</li>
+                    <li>Преподаватель информатики</li>
+                </ul>
+            </div>
+            <div class="card">
+                <a href="#" class="card-link"></a>
+                <div class="card-icon"><img src="data/maxim.jpg" alt="Михаил Коняхин"></div>
+                <h3>Коняхин Михаил</h3>
+                <ul>
+                    <li>МГТУ им. Баумана</li>
+                    <li>Факультет «Фундаментальные науки»</li>
+                    <li>Бюджетная форма обучения</li>
+                    <li>Преподаватель высшей математики</li>
+                </ul>
+            </div>
         </div>
     </section>
 
     <section id="subjects">
         <h2 class="section-title animate-on-scroll"><span>📚</span> Какие предметы мы преподаём?</h2>
-        <div class="grid-2 animate-on-scroll">
+        <div class="grid-3 animate-on-scroll">
             <div class="subject-card"><div class="subject-icon">📐</div><h3>Математика</h3><ul><li>5–11 классы (алгебра, геометрия)</li><li>Подготовка к ОГЭ</li><li>Подготовка к ЕГЭ 80+</li><li>Повышение успеваемости</li></ul></div>
             <div class="subject-card"><div class="subject-icon">⚡</div><h3>Физика</h3><ul><li>7–11 классы</li><li>Подготовка к ОГЭ</li><li>Подготовка к ЕГЭ 80+</li><li>Разбор сложных тем</li></ul></div>
             <div class="subject-card"><div class="subject-icon">💻</div><h3>Информатика</h3><ul><li>7–11 классы</li><li>Подготовка к ОГЭ</li><li>Подготовка к ЕГЭ 80+</li><li>Курс программирования на языке Python</li></ul></div>
@@ -549,9 +1042,9 @@
     <section id="materials">
         <h2 class="section-title animate-on-scroll"><span>📚</span> Полезные материалы</h2>
         <div class="animate-on-scroll">
-            <a href="data/algebra.pdf" class="material-link" style="display: flex; align-items: center; gap: 18px; padding: 20px 28px; background: white; border-radius: 28px; color: #6B5B48; text-decoration: none; margin-bottom: 12px; border: 1px solid rgba(196,162,122,0.15); transition: all 0.3s;"><span style="font-size: 2.2rem;">📐</span><div><strong>Шпаргалка по алгебре</strong><br><small>Формулы 7–9 класс (PDF)</small></div></a>
-            <a href="data/fizika.pdf" class="material-link" style="display: flex; align-items: center; gap: 18px; padding: 20px 28px; background: white; border-radius: 28px; color: #6B5B48; text-decoration: none; margin-bottom: 12px; border: 1px solid rgba(196,162,122,0.15); transition: all 0.3s;"><span style="font-size: 2.2rem;">⚡</span><div><strong>Формулы по физике</strong><br><small>Механика и электричество (PDF)</small></div></a>
-            <a href="data/oge.pdf" class="material-link" style="display: flex; align-items: center; gap: 18px; padding: 20px 28px; background: white; border-radius: 28px; color: #6B5B48; text-decoration: none; border: 1px solid rgba(196,162,122,0.15); transition: all 0.3s;"><span style="font-size: 2.2rem;">📝</span><div><strong>Демоверсия ОГЭ</strong><br><small>Официальные демоварианты с ответами (PDF)</small></div></a>
+            <a href="data/algebra.pdf" class="material-link"><span style="font-size: 2.2rem;">📐</span><div><strong>Шпаргалка по алгебре</strong><br><small>Формулы 7–9 класс (PDF)</small></div></a>
+            <a href="data/fizika.pdf" class="material-link"><span style="font-size: 2.2rem;">⚡</span><div><strong>Формулы по физике</strong><br><small>Механика и электричество (PDF)</small></div></a>
+            <a href="data/oge.pdf" class="material-link"><span style="font-size: 2.2rem;">📝</span><div><strong>Демоверсия ОГЭ</strong><br><small>Официальные демоварианты с ответами (PDF)</small></div></a>
         </div>
     </section>
 
@@ -608,112 +1101,97 @@
     (function() {
         const animatedElements = document.querySelectorAll('.animate-on-scroll');
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+            entries.forEach(entry => { 
+                if (entry.isIntersecting) entry.target.classList.add('visible'); 
+            });
         }, { threshold: 0.1 });
         animatedElements.forEach(el => observer.observe(el));
 
-        const phoneInput = document.getElementById('phoneInput');
-        if (phoneInput) {
-            phoneInput.addEventListener('input', function(e) {
-                let val = this.value.replace(/\D/g, '');
-                if (val.length > 11) val = val.slice(0, 11);
-                let formatted = '';
-                if (val.length > 0) formatted = '+' + val;
-                if (val.length > 1) formatted = '+' + val.slice(0,1) + ' (' + val.slice(1,4);
-                if (val.length > 4) formatted = '+' + val.slice(0,1) + ' (' + val.slice(1,4) + ') ' + val.slice(4,7);
-                if (val.length > 7) formatted = '+' + val.slice(0,1) + ' (' + val.slice(1,4) + ') ' + val.slice(4,7) + '-' + val.slice(7,9);
-                if (val.length > 9) formatted = '+' + val.slice(0,1) + ' (' + val.slice(1,4) + ') ' + val.slice(4,7) + '-' + val.slice(7,9) + '-' + val.slice(9,11);
-                this.value = formatted;
-            });
+        const burgerBtn = document.getElementById('burgerBtn');
+        const navLinks = document.getElementById('navLinks');
+        const navOverlay = document.getElementById('navOverlay');
+
+        function toggleMenu() {
+            burgerBtn.classList.toggle('active');
+            navLinks.classList.toggle('active');
+            navOverlay.classList.toggle('active');
+            document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
         }
 
-        const form = document.getElementById('contactForm');
-        const modal = document.getElementById('successModal');
-        const formMessage = document.getElementById('formMessage');
-
-        if (form) {
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const btn = form.querySelector('button');
-                btn.disabled = true;
-                btn.textContent = 'Отправка...';
-                try {
-                    const formData = new FormData(form);
-                    const response = await fetch(form.action, {
-                        method: 'POST',
-                        body: formData,
-                        headers: { 'Accept': 'application/json' }
-                    });
-                    if (response.ok) {
-                        form.reset();
-                        modal.classList.add('show');
-                        setTimeout(() => modal.classList.remove('show'), 4000);
-                    } else throw new Error();
-                } catch (e) {
-                    formMessage.style.display = 'block';
-                    formMessage.style.background = '#FDF0EC';
-                    formMessage.style.color = '#B8734A';
-                    formMessage.style.padding = '12px';
-                    formMessage.style.borderRadius = '24px';
-                    formMessage.style.marginTop = '16px';
-                    formMessage.textContent = '❌ Ошибка отправки. Попробуйте позже.';
-                    setTimeout(() => { formMessage.style.display = 'none'; }, 3000);
-                } finally {
-                    btn.disabled = false;
-                    btn.textContent = '📤 Отправить сообщение';
-                }
-            });
+        function closeMenu() {
+            burgerBtn.classList.remove('active');
+            navLinks.classList.remove('active');
+            navOverlay.classList.remove('active');
+            document.body.style.overflow = '';
         }
 
-        document.querySelectorAll('.modal-close, .modal-close-btn').forEach(el => {
-            el.addEventListener('click', () => modal.classList.remove('show'));
+        burgerBtn?.addEventListener('click', toggleMenu);
+        navOverlay?.addEventListener('click', closeMenu);
+
+        navLinks?.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 768) closeMenu();
+            });
         });
-        modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('show'); });
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768 && navLinks?.classList.contains('active')) {
+                closeMenu();
+            }
+        });
 
         document.querySelectorAll('.faq-item').forEach(item => {
-            item.querySelector('.faq-question').addEventListener('click', () => { item.classList.toggle('active'); });
+            item.querySelector('.faq-question')?.addEventListener('click', () => { 
+                item.classList.toggle('active'); 
+            });
         });
 
         document.getElementById('contactBtnNav')?.addEventListener('click', () => {
-            document.getElementById('contacts').scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('contacts')?.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        const modal = document.getElementById('successModal');
+        document.querySelectorAll('.modal-close, .modal-close-btn').forEach(el => {
+            el.addEventListener('click', () => modal?.classList.remove('show'));
+        });
+        modal?.addEventListener('click', (e) => { 
+            if (e.target === modal) modal.classList.remove('show'); 
         });
 
         window.addToFavorites = function() {
             try {
-                if (window.external && 'AddFavorite' in window.external) window.external.AddFavorite(window.location.href, document.title);
-                else alert('Нажмите Ctrl+D (или Cmd+D на Mac), чтобы добавить сайт в закладки.');
-            } catch (e) { alert('Нажмите Ctrl+D (или Cmd+D на Mac)'); }
+                if (window.external && 'AddFavorite' in window.external) 
+                    window.external.AddFavorite(window.location.href, document.title);
+                else 
+                    alert('Нажмите Ctrl+D (или Cmd+D на Mac), чтобы добавить сайт в закладки.');
+            } catch (e) { 
+                alert('Нажмите Ctrl+D (или Cmd+D на Mac)'); 
+            }
         };
 
         const CURRENT_USER_KEY = "current_user";
-        const navLinks = document.getElementById('navLinks');
+        const navLinksContainer = document.getElementById('navLinks');
 
         function updateNavBar() {
             const currentUser = localStorage.getItem(CURRENT_USER_KEY);
-            const oldProfileLink = document.querySelector('.profile-link-nav');
-            const oldLogoutBtn = document.querySelector('.logout-nav-btn');
-            const oldAdminLink = document.querySelector('.admin-link-nav');
-            const oldLoginLink = document.querySelector('.login-link');
-            if (oldProfileLink) oldProfileLink.remove();
-            if (oldLogoutBtn) oldLogoutBtn.remove();
-            if (oldAdminLink) oldAdminLink.remove();
-            if (oldLoginLink) oldLoginLink.remove();
+            const removable = navLinksContainer?.querySelectorAll('.profile-link-nav, .logout-nav-btn, .admin-link-nav, .login-link');
+            removable?.forEach(el => el.remove());
 
             if (currentUser) {
                 const user = JSON.parse(currentUser);
+                
                 const profileLink = document.createElement('a');
                 profileLink.href = 'profile.html';
                 profileLink.className = 'profile-link-nav';
-                profileLink.style.cssText = 'background: linear-gradient(135deg, #C4A27A, #A67B5B); color: white; padding: 8px 20px; border-radius: 30px;';
                 profileLink.innerHTML = '<i class="fas fa-user"></i> ' + (user.name || user.username);
-                navLinks.appendChild(profileLink);
+                navLinksContainer?.appendChild(profileLink);
 
                 if (user.role === 'admin') {
                     const adminLink = document.createElement('a');
                     adminLink.href = 'admin.html';
                     adminLink.className = 'admin-link-nav';
                     adminLink.innerHTML = '<i class="fas fa-crown"></i> Админ-панель';
-                    navLinks.appendChild(adminLink);
+                    navLinksContainer?.appendChild(adminLink);
                 }
 
                 const logoutBtn = document.createElement('button');
@@ -723,13 +1201,7 @@
                     localStorage.removeItem(CURRENT_USER_KEY);
                     window.location.reload();
                 };
-                navLinks.appendChild(logoutBtn);
-            } else {
-                const loginLink = document.createElement('a');
-                loginLink.href = 'login.html';
-                loginLink.className = 'login-link';
-                loginLink.innerHTML = '<i class="fas fa-sign-in-alt"></i> Войти';
-                navLinks.appendChild(loginLink);
+                navLinksContainer?.appendChild(logoutBtn);
             }
         }
         updateNavBar();
