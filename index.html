@@ -10,13 +10,18 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+            position: relative;
+        }
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: #FDF8F0;
             color: #4A3728;
             line-height: 1.5;
             min-height: 100vh;
-            overflow-x: hidden;
         }
 
         img { pointer-events: none; }
@@ -827,16 +832,18 @@
                 justify-content: flex-start;
                 padding: 80px 28px 30px;
                 gap: 8px;
-                transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.4s;
                 box-shadow: -10px 0 30px rgba(139, 69, 19, 0.1);
                 z-index: 1000;
                 overflow-y: auto;
                 align-items: stretch;
                 flex-wrap: nowrap;
+                visibility: hidden;
             }
 
             .nav-links.active {
                 right: 0;
+                visibility: visible;
             }
 
             .nav-links a {
@@ -1115,7 +1122,15 @@
             burgerBtn.classList.toggle('active');
             navLinks.classList.toggle('active');
             navOverlay.classList.toggle('active');
-            document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
+            if (navLinks.classList.contains('active')) {
+                document.body.style.overflow = 'hidden';
+                document.body.style.position = 'fixed';
+                document.body.style.width = '100%';
+            } else {
+                document.body.style.overflow = '';
+                document.body.style.position = '';
+                document.body.style.width = '';
+            }
         }
 
         function closeMenu() {
@@ -1123,6 +1138,8 @@
             navLinks.classList.remove('active');
             navOverlay.classList.remove('active');
             document.body.style.overflow = '';
+            document.body.style.position = '';
+            document.body.style.width = '';
         }
 
         burgerBtn?.addEventListener('click', toggleMenu);
