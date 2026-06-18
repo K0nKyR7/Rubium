@@ -135,6 +135,7 @@
             gap: clamp(12px, 2vw, 28px);
             flex-wrap: nowrap;
             align-items: center;
+            margin-left: auto;
         }
 
         .nav-links a {
@@ -531,9 +532,19 @@
 
         /* ============ MEDIA ============ */
         @media (min-width: 769px) and (max-width: 1024px) {
-            .nav-content { flex-wrap: wrap; justify-content: center; gap: 12px; }
+            .nav-content {
+                flex-wrap: wrap;
+                justify-content: space-between;
+                gap: 12px;
+            }
             .logo { order: 1; }
-            .nav-links { order: 2; width: 100%; justify-content: center; }
+            .nav-links {
+                order: 2;
+                width: auto;
+                justify-content: flex-end;
+                margin-left: 0;
+            }
+            .theme-toggle { order: 3; }
         }
 
         @media (max-width: 768px) {
