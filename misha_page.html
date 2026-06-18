@@ -3,12 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Максим Ковалёв — Rubium</title>
-    <meta name="description" content="Максим Ковалёв — преподаватель математики и физики в Rubium. Студент МГТУ им. Н.Э. Баумана.">
+    <title>Михаил Коняхин — Rubium</title>
+    <meta name="description" content="Михаил Коняхин — преподаватель высшей математики в Rubium. Студент МГТУ им. Н.Э. Баумана.">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+            position: relative;
+        }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -16,7 +22,6 @@
             color: #4A3728;
             line-height: 1.5;
             min-height: 100vh;
-            overflow-x: hidden;
         }
 
         img { pointer-events: none; }
@@ -200,40 +205,6 @@
             margin-bottom: clamp(16px, 2.5vw, 24px);
         }
 
-        .profile-stats {
-            display: flex;
-            gap: clamp(8px, 2vw, 20px);
-            flex-wrap: wrap;
-        }
-
-        .stat-item {
-            background: rgba(255, 252, 245, 0.8);
-            backdrop-filter: blur(10px);
-            padding: clamp(8px, 1.5vw, 12px) clamp(14px, 2.5vw, 22px);
-            border-radius: 40px;
-            text-align: center;
-            box-shadow: 0 2px 10px rgba(139, 69, 19, 0.05);
-            transition: all 0.3s;
-            flex: 0 0 auto;
-        }
-
-        .stat-item:hover {
-            transform: translateY(-3px);
-            background: white;
-            box-shadow: 0 8px 20px rgba(139, 69, 19, 0.1);
-        }
-
-        .stat-value {
-            font-size: clamp(1.2rem, 2.5vw, 1.6rem);
-            font-weight: 700;
-            color: #A67B5B;
-        }
-
-        .stat-label {
-            font-size: clamp(0.65rem, 1.1vw, 0.75rem);
-            color: #8B7355;
-        }
-
         /* ============ SECTIONS ============ */
         section {
             padding: clamp(40px, 7vh, 60px) 0;
@@ -317,9 +288,9 @@
         }
 
         .skills-grid > * {
-            flex: 0 1 160px;
-            min-width: 140px;
-            max-width: 200px;
+            flex: 0 1 180px;
+            min-width: 150px;
+            max-width: 220px;
         }
 
         .skill-card {
@@ -665,7 +636,6 @@
                 flex-direction: column;
                 text-align: center;
             }
-            .profile-stats { justify-content: center; }
             .profile-avatar {
                 width: clamp(150px, 40vw, 200px);
                 height: clamp(150px, 40vw, 200px);
@@ -681,8 +651,8 @@
 
         @media (max-width: 480px) {
             .skills-grid > * {
-                flex: 0 1 120px;
-                min-width: 100px;
+                flex: 0 1 140px;
+                min-width: 120px;
             }
         }
     </style>
@@ -704,14 +674,14 @@
     <div class="container">
         <div class="profile-content">
             <div class="profile-avatar">
-                <img src="data/maxim.jpg" alt="Максим Ковалёв" onerror="this.parentElement.innerHTML='<div class=\'avatar-placeholder\'>👨‍🏫</div>'">
+                <img src="data/Misha.jpg" alt="Михаил Коняхин" onerror="this.parentElement.innerHTML='<div class=\'avatar-placeholder\'>👨‍🏫</div>'">
             </div>
             <div class="profile-info">
-                <span class="profile-badge">🇷🇺 Преподаватель математики и физики</span>
-                <h1>Максим Ковалёв</h1>
+                <span class="profile-badge">🇷🇺 Преподаватель высшей математики</span>
+                <h1>Михаил Коняхин</h1>
                 <div class="university">🏛️ МГТУ им. Н.Э. Баумана</div>
                 <p class="bio">
-                    Помогаю школьникам 5-11 классов понять математику и физику — от основ до уверенной подготовки к ОГЭ и ЕГЭ на 80+ баллов.
+                    Помогаю студентам младших курсов освоить высшую математику — от интегралов до линейной алгебры. Объясняю сложные темы простым языком.
                 </p>
             </div>
         </div>
@@ -727,16 +697,16 @@
                 <div class="edu-icon">🏛️</div>
                 <div class="edu-content">
                     <h3>МГТУ им. Н.Э. Баумана</h3>
-                    <div class="edu-detail">Москва, Россия · 2025–2029</div>
-                    <p>Факультет «Энергомашиностроение», бюджетная форма обучения. Один из ведущих технических университетов России с сильнейшей математической базой.</p>
+                    <div class="edu-detail">Москва, Россия · 2024–2028</div>
+                    <p>Факультет «Фундаментальные науки», бюджетная форма обучения. Один из ведущих технических университетов России с сильнейшей математической школой.</p>
                 </div>
             </div>
             <div class="education-card">
-                <div class="edu-icon">📐</div>
+                <div class="edu-icon">🧮</div>
                 <div class="edu-content">
-                    <h3>Физико-математическая подготовка</h3>
-                    <div class="edu-detail">Высшая математика, теоретическая физика, прикладная механика</div>
-                    <p>Углублённое изучение математического анализа, линейной алгебры, дифференциальных уравнений, теоретической механики и физики. Постоянная практика решения сложных задач.</p>
+                    <h3>Высшая математика</h3>
+                    <div class="edu-detail">Матанализ, аналитическая геометрия, линейная алгебра, дифференциальные уравнения</div>
+                    <p>Углублённое изучение фундаментальной математики. Опыт решения задач повышенной сложности и подготовки студентов к экзаменам.</p>
                 </div>
             </div>
         </div>
@@ -745,12 +715,10 @@
     <section>
         <h2 class="section-title"><span>⚡</span> Ключевые навыки</h2>
         <div class="skills-grid">
-            <div class="skill-card"><div class="skill-icon">📐</div><h4>Алгебра</h4></div>
-            <div class="skill-card"><div class="skill-icon">📏</div><h4>Геометрия</h4></div>
-            <div class="skill-card"><div class="skill-icon">⚡</div><h4>Физика</h4></div>
-            <div class="skill-card"><div class="skill-icon">🎯</div><h4>Подготовка к ЕГЭ</h4></div>
-            <div class="skill-card"><div class="skill-icon">📝</div><h4>Подготовка к ОГЭ</h4></div>
-            <div class="skill-card"><div class="skill-icon">🧮</div><h4>Высшая математика</h4></div>
+            <div class="skill-card"><div class="skill-icon">📐</div><h4>Математический анализ</h4></div>
+            <div class="skill-card"><div class="skill-icon">📏</div><h4>Аналитическая геометрия</h4></div>
+            <div class="skill-card"><div class="skill-icon">∫</div><h4>Интегралы и диффуры</h4></div>
+            <div class="skill-card"><div class="skill-icon">📊</div><h4>Линейная алгебра</h4></div>
         </div>
     </section>
 
@@ -759,36 +727,47 @@
         <div class="programs-grid">
             <div class="program-card">
                 <div class="program-icon">📐</div>
-                <h3>Математика<br>(5-9 класс)</h3>
+                <h3>Математический анализ</h3>
                 <ul>
-                    <li>Алгебра и геометрия</li>
-                    <li>Повышение успеваемости</li>
-                    <li>Разбор сложных тем</li>
-                    <li>Подготовка к ОГЭ</li>
+                    <li>Пределы и непрерывность</li>
+                    <li>Производные</li>
+                    <li>Интегралы</li>
+                    <li>Ряды</li>
                 </ul>
-                <div class="program-price">от 1000 ₽ / 60 мин</div>
+                <div class="program-price">1700 ₽ / 60 мин</div>
             </div>
             <div class="program-card">
-                <div class="program-icon">⚡</div>
-                <h3>Физика<br>(7-9 класс)</h3>
+                <div class="program-icon">📏</div>
+                <h3>Аналитическая геометрия</h3>
                 <ul>
-                    <li>Механика и электричество</li>
-                    <li>Решение задач любой сложности</li>
-                    <li>Подготовка к ОГЭ</li>
-                    <li>Цель — 5</li>
+                    <li>Векторы и координаты</li>
+                    <li>Прямые и плоскости</li>
+                    <li>Кривые второго порядка</li>
+                    <li>Поверхности</li>
                 </ul>
-                <div class="program-price">от 1000 ₽ / 60 мин</div>
+                <div class="program-price">1700 ₽ / 60 мин</div>
             </div>
             <div class="program-card">
-                <div class="program-icon">🎯</div>
-                <h3>Подготовка к ЕГЭ<br>(10-11 класс)</h3>
+                <div class="program-icon">∫</div>
+                <h3>Интегралы и дифференциальные уравнения</h3>
                 <ul>
-                    <li>Математика и физика</li>
-                    <li>Разбор всех типов заданий</li>
-                    <li>Пробные варианты</li>
-                    <li>Цель — 80+ баллов</li>
+                    <li>Неопределённые интегралы</li>
+                    <li>Определённые интегралы</li>
+                    <li>ДУ первого порядка</li>
+                    <li>ДУ высших порядков</li>
                 </ul>
-                <div class="program-price">от 1350 ₽ / 60 мин</div>
+                <div class="program-price">1700 ₽ / 60 мин</div>
+            </div>
+            <div class="program-card">
+                <div class="program-icon">📊</div>
+                <h3>Линейная алгебра</h3>
+                <ul>
+                    <li>Матрицы и определители</li>
+                    <li>Системы уравнений</li>
+                    <li>Собственные значения</li>
+                    <li>Квадратичные формы</li>
+                </ul>
+                <div class="program-price">1700 ₽ / 60 мин</div>
             </div>
         </div>
     </section>
@@ -796,21 +775,21 @@
     <section>
         <h2 class="section-title"><span>📞</span> Связь со мной</h2>
         <div class="contacts-grid">
-            <a href="https://t.me/kovalev_math" target="_blank" class="contact-card">
+            <a href="https://t.me/misha_konyakhin" target="_blank" class="contact-card">
                 <div class="contact-icon"><i class="fab fa-telegram-plane"></i></div>
-                <div class="contact-info"><h4>Telegram</h4><p>kovalev_math</p></div>
+                <div class="contact-info"><h4>Telegram</h4><p>@misha_konyakhin</p></div>
             </a>
-            <a href="https://vk.com/kovalev_math" target="_blank" class="contact-card">
+            <a href="https://vk.com/misha_konyakhin" target="_blank" class="contact-card">
                 <div class="contact-icon"><i class="fab fa-vk"></i></div>
-                <div class="contact-info"><h4>ВКонтакте</h4><p>Максим Ковалёв</p></div>
+                <div class="contact-info"><h4>ВКонтакте</h4><p>Михаил Коняхин</p></div>
             </a>
-            <a href="mailto:makskov456@gmail.com" class="contact-card">
+            <a href="mailto:misha@rubium.ru" class="contact-card">
                 <div class="contact-icon"><i class="fas fa-envelope"></i></div>
-                <div class="contact-info"><h4>Email</h4><p>makskov456@gmail.com</p></div>
+                <div class="contact-info"><h4>Email</h4><p>misha@rubium.ru</p></div>
             </a>
             <div class="contact-card">
                 <div class="contact-icon"><i class="fas fa-phone-alt"></i></div>
-                <div class="contact-info"><h4>Телефон</h4><p>+7 (900) 480-26-12</p></div>
+                <div class="contact-info"><h4>Телефон</h4><p>+7 (999) 123-45-67</p></div>
             </div>
         </div>
     </section>
@@ -818,7 +797,7 @@
     <section>
         <div class="cta-section">
             <h2>Готовы начать?</h2>
-            <p>Запишитесь на бесплатное пробное занятие (30 минут). Познакомимся, определим ваш уровень и составим план обучения.</p>
+            <p>Запишитесь на бесплатное пробное занятие (30 минут). Определим ваш уровень и составим план подготовки.</p>
             <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
                 <a href="index.html#contacts" class="btn btn-primary">📝 Записаться на пробный урок</a>
                 <a href="https://t.me/rubium_education" target="_blank" class="btn btn-outline"><i class="fab fa-telegram-plane"></i> Написать в Telegram</a>

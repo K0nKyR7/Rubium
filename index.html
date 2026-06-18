@@ -921,6 +921,46 @@
             }
         }
 
+                /* ============ КНОПКА НАВЕРХ ============ */
+        .scroll-top-btn {
+            position: fixed;
+            bottom: clamp(20px, 4vh, 30px);
+            right: clamp(20px, 4vw, 30px);
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #C4A27A, #A67B5B);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.3rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(139, 69, 19, 0.2);
+            transition: all 0.3s;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .scroll-top-btn.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .scroll-top-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(139, 69, 19, 0.3);
+            background: linear-gradient(135deg, #A67B5B, #8B5E3C);
+        }
+
+        .scroll-top-btn:active {
+            transform: translateY(-2px);
+        }
+
         @media (max-width: 480px) {
             .nav-links {
                 width: 85%;
@@ -1024,8 +1064,8 @@
                 </ul>
             </div>
             <div class="card">
-                <a href="#" class="card-link"></a>
-                <div class="card-icon"><img src="data/maxim.jpg" alt="Михаил Коняхин"></div>
+                <a href="misha_page.html" class="card-link"></a>
+                <div class="card-icon"><img src="data/Misha.jpg" alt="Михаил Коняхин"></div>
                 <h3>Коняхин Михаил</h3>
                 <ul>
                     <li>МГТУ им. Баумана</li>
@@ -1075,6 +1115,10 @@
         </div>
     </section>
 </div>
+
+<button class="scroll-top-btn" id="scrollTopBtn" aria-label="Наверх">
+    <i class="fas fa-arrow-up"></i>
+</button>
 
 <footer>
     <div class="container">
@@ -1222,7 +1266,30 @@
             }
         }
         updateNavBar();
+                // ===== Кнопка Наверх =====
+        const scrollTopBtn = document.getElementById('scrollTopBtn');
+
+        function toggleScrollTopBtn() {
+            if (window.scrollY > 500) {
+                scrollTopBtn?.classList.add('visible');
+            } else {
+                scrollTopBtn?.classList.remove('visible');
+            }
+        }
+
+        window.addEventListener('scroll', toggleScrollTopBtn);
+
+        scrollTopBtn?.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Проверка при загрузке
+        toggleScrollTopBtn();
     })();
+
 </script>
 </body>
 </html>
