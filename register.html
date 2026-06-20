@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация — Rubium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/auth.js"></script>
+    <style>
+        :root {
+            --bg: #FDF8F0;
+            --bg-card: #ffffff;
+            --text: #4A3728;
+            --text-secondary: #6B4C3B;
+            --heading: #3D2B1F;
+            --accent: #A67B5B;
+            --accent-light: #C4A27A;
+            --accent-gradient: linear-gradient(135deg, #C4A27A, #A67B5B);
+            --border: rgba(196, 162, 122, 0.2);
+            --shadow: rgba(139, 69, 19, 0.08);
+            --shadow-hover: rgba(139, 69, 19, 0.15);
+            --hero-gradient: linear-gradient(135deg, #F5EDE0 0%, #EFE4D5 100%);
+        }
+
+        [data-theme="dark"] {
+            --bg: #1a1a2e;
+            --bg-card: #1f2937;
+            --text: #e0d6c8;
+            --text-secondary: #c4b8a8;
+            --heading: #f0e6d8;
+            --accent: #d4a574;
+            --accent-light: #b8885a;
+            --accent-gradient: linear-gradient(135deg, #b8885a, #d4a574);
+            --border: rgba(180, 140, 100, 0.2);
+            --shadow: rgba(0, 0, 0, 0.2);
+            --shadow-hover: rgba(0, 0, 0, 0.35);
+            --hero-gradient: linear-gradient(135deg, #16213e 0%, #1a1a2e 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--hero-gradient);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s, color 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: -40%;
+            right: -30%;
+            width: 80%;
+            height: 150%;
+            background: radial-gradient(circle, rgba(196, 162, 122, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .register-box {
+            background: var(--bg-card);
+            padding: 44px 36px;
+            border-radius: 36px;
+            width: 90%;
+            max-width: 420px;
+            box-shadow: 0 20px 50px var(--shadow);
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--heading);
+            margin-bottom: 6px;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            opacity: 0.6;
+            margin-bottom: 32px;
+            font-size: 0.95rem;
+        }
+
+        .form-group { margin-bottom: 18px; position: relative; }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--heading);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.7;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid var(--border);
+            border-radius: 18px;
+            font-family: inherit;
+            font-size: 1rem;
+            background: var(--bg);
+            color: var(--text);
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent-light);
+            box-shadow: 0 0 0 4px rgba(196, 162, 122, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 50px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: white;
+            margin: 8px 0 20px;
+            box-shadow: 0 6px 20px var(--shadow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px var(--shadow-hover);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 22px 0;
+            color: var(--text-secondary);
+            opacity: 0.4;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .oauth-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn-oauth {
+            background: var(--bg);
+            border: 2px solid var(--border);
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-weight: 500;
+            padding: 13px;
+            border-radius: 50px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .btn-oauth:hover {
+            border-color: var(--accent-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 18px;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .checkbox-group input {
+            margin-top: 2px;
+            accent-color: var(--accent);
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+        }
+
+        .checkbox-group a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .checkbox-group a:hover { text-decoration: underline; }
+
+        .link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .link a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.3s;
+        }
+
+        .link a:hover { border-color: var(--accent); }
+
+        .error {
+            background: rgba(220, 60, 60, 0.06);
+            color: #c44;
+            padding: 14px 18px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 0.85rem;
+            border: 1px solid rgba(220, 60, 60, 0.15);
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 0.85rem;
+        }
+
+        .back-link a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            opacity: 0.5;
+            transition: opacity 0.3s;
+        }
+
+        .back-link a:hover { opacity: 1; }
+    </style>
+</head>
+<body>
+
+<div class="register-box">
+    <div class="logo"><span>⚡</span> Rubium</div>
+    <p class="subtitle">Создать аккаунт</p>
+
+    <div class="error" id="error"></div>
+
+    <form id="registerForm">
+        <div class="form-group">
+            <label>Имя</label>
+            <input type="text" id="name" required autocomplete="name">
+        </div>
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="email" required autocomplete="email">
+        </div>
+        <div class="form-group">
+            <label>Пароль</label>
+            <input type="password" id="password" required minlength="6" autocomplete="new-password">
+        </div>
+
+        <div class="checkbox-group">
+            <input type="checkbox" id="agree" required>
+            <label for="agree">Я согласен на обработку персональных данных и принимаю <a href="#">политику конфиденциальности</a></label>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+    </form>
+
+    <div class="link">
+        Уже есть аккаунт? <a href="login.html">Войти</a>
+    </div>
+
+    <div class="back-link">
+        <a href="index.html">← На главную</a>
+    </div>
+</div>
+
+<script>
+    const errorEl = document.getElementById('error');
+
+    function showError(msg) {
+        errorEl.textContent = msg;
+        errorEl.style.display = 'block';
+        setTimeout(() => errorEl.style.display = 'none', 5000);
+    }
+
+    (async () => {
+        const user = await AUTH.getUser();
+        if (user) window.location.href = 'profile.html';
+    })();
+
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        const { data, error } = await supabase.auth.signUp({ email, password });
+
+        if (error) {
+            showError(error.message === 'User already registered' ? 'Пользователь с таким email уже существует' : error.message);
+            return;
+        }
+
+        const { error: profileError } = await supabase.from('users').insert({
+            id: data.user.id,
+            email: email,
+            name: name,
+            role: 'student',
+            auth_provider: 'email'
+        });
+
+        if (profileError) {
+            showError('Ошибка при создании профиля: ' + profileError.message);
+            return;
+        }
+
+        window.location.href = 'profile.html';
+    });
+
+    async function registerWithOAuth(provider) {
+        const { error } = await supabase.auth.signInWithOAuth({ provider });
+        if (error) showError(error.message);
+    }
+
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+</script>
+</body>
+</html>

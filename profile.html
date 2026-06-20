@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль — Rubium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/auth.js"></script>
+    <style>
+        :root {
+            --bg: #FDF8F0;
+            --text: #4A3728;
+            --heading: #3D2B1F;
+            --accent: #A67B5B;
+            --accent-gradient: linear-gradient(135deg, #C4A27A, #A67B5B);
+            --border: rgba(196, 162, 122, 0.3);
+            --card-bg: #ffffff;
+            --shadow: rgba(139, 69, 19, 0.08);
+        }
+
+        [data-theme="dark"] {
+            --bg: #1a1a2e;
+            --text: #e0d6c8;
+            --heading: #f0e6d8;
+            --accent: #d4a574;
+            --border: rgba(180, 140, 100, 0.3);
+            --card-bg: #1f2937;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .header h1 { color: var(--heading); font-size: 1.8rem; }
+        .header a { color: var(--accent); text-decoration: none; }
+
+        .logout-btn {
+            background: none;
+            border: 2px solid var(--border);
+            color: var(--text);
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 15px var(--shadow);
+        }
+
+        .card h3 { color: var(--heading); margin-bottom: 8px; }
+        .card p { opacity: 0.7; font-size: 0.9rem; }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge-active { background: #e8f5e9; color: #2e7d32; }
+        .badge-expired { background: #fce4ec; color: #c62828; }
+
+        .section-title {
+            font-size: 1.3rem;
+            color: var(--heading);
+            margin-bottom: 20px;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 40px;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>👤 <span id="profileName">Профиль</span></h1>
+        <div>
+            <a href="index.html">← На главную</a>
+            <button class="logout-btn" onclick="AUTH.logout()" style="margin-left: 12px;">Выйти</button>
+        </div>
+    </div>
+
+    <div class="card" id="userInfo">
+        <p>Загрузка...</p>
+    </div>
+
+    <h2 class="section-title">📚 Мои подписки</h2>
+    <div id="subscriptions">
+        <p class="empty">Загрузка...</p>
+    </div>
+</div>
+
+<script>
+    async function loadProfile() {
+        const profile = await AUTH.requireAuth();
+        if (!profile) return;
+
+        document.getElementById('profileName').textContent = profile.name || profile.email;
+        document.getElementById('userInfo').innerHTML = `
+            <h3>${profile.name || 'Без имени'}</h3>
+            <p>${profile.email}</p>
+            <p>Роль: <strong>${profile.role === 'admin' ? 'Администратор' : profile.role === 'teacher' ? 'Преподаватель' : 'Ученик'}</strong></p>
+            <p>На сайте с ${new Date(profile.created_at).toLocaleDateString('ru-RU')}</p>
+        `;
+
+        const { data: subs, error } = await supabase
+            .from('subscriptions')
+            .select('*, programs(title, slug)')
+            .eq('user_id', profile.id);
+
+        const container = document.getElementById('subscriptions');
+
+        if (error || !subs || subs.length === 0) {
+            container.innerHTML = '<p class="empty">У вас пока нет активных подписок</p>';
+            return;
+        }
+
+        container.innerHTML = subs.map(sub => {
+            const isActive = sub.status === 'active' && (!sub.expires_at || new Date(sub.expires_at) > new Date());
+            return `
+                <div class="card">
+                    <h3>${sub.programs?.title || sub.program_id}</h3>
+                    <p>Статус: <span class="badge ${isActive ? 'badge-active' : 'badge-expired'}">${isActive ? 'Активна' : 'Истекла'}</span></p>
+                    <p>Куплена: ${new Date(sub.purchased_at).toLocaleDateString('ru-RU')}</p>
+                    ${sub.expires_at ? `<p>Истекает: ${new Date(sub.expires_at).toLocaleDateString('ru-RU')}</p>` : ''}
+                </div>
+            `;
+        }).join('');
+    }
+
+    loadProfile();
+</script>
+</body>
+</html>

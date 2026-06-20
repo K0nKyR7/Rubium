@@ -900,6 +900,10 @@
             .stat { padding: 6px 12px; }
         }
     </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/auth.js"></script>
 </head>
 <body>
 
@@ -1054,7 +1058,6 @@
                 <a href="#contacts">Контакты</a>
                 <a href="tasks.html">Сборник задач</a>
                 <a href="constructor.html">Конструктор вариантов</a>
-                <a href="profile.html">Профиль</a>
             </div>
             <p>© 2026 Rubium · образовательный проект</p>
             <p><a onclick="addToFavorites()" style="color: var(--footer-link); cursor: pointer;">⭐ Добавить сайт в закладки</a></p>
@@ -1115,15 +1118,7 @@
             burgerBtn.classList.toggle('active');
             navLinks.classList.toggle('active');
             navOverlay.classList.toggle('active');
-            if (navLinks.classList.contains('active')) {
-                document.body.style.overflow = 'hidden';
-                document.body.style.position = 'fixed';
-                document.body.style.width = '100%';
-            } else {
-                document.body.style.overflow = '';
-                document.body.style.position = '';
-                document.body.style.width = '';
-            }
+            document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
         }
 
         function closeMenu() {
@@ -1131,8 +1126,6 @@
             navLinks.classList.remove('active');
             navOverlay.classList.remove('active');
             document.body.style.overflow = '';
-            document.body.style.position = '';
-            document.body.style.width = '';
         }
 
         burgerBtn?.addEventListener('click', toggleMenu);
@@ -1142,12 +1135,6 @@
             link.addEventListener('click', () => {
                 if (window.innerWidth <= 768) closeMenu();
             });
-        });
-
-        window.addEventListener('resize', () => {
-            if (window.innerWidth > 768 && navLinks?.classList.contains('active')) {
-                closeMenu();
-            }
         });
 
         // ===== FAQ =====
@@ -1183,25 +1170,30 @@
             }
         };
 
-        // ===== НАВБАР ПОЛЬЗОВАТЕЛЯ =====
-        const CURRENT_USER_KEY = "current_user";
-        const navLinksContainer = document.getElementById('navLinks');
+                // ===== НАВБАР ПОЛЬЗОВАТЕЛЯ (Supabase) =====
+        async function updateNavBar() {
+            const navLinksContainer = document.getElementById('navLinks');
+            navLinksContainer?.querySelectorAll('.profile-link-nav, .logout-nav-btn, .admin-link-nav, .login-link').forEach(el => el.remove());
 
-        function updateNavBar() {
-            const currentUser = localStorage.getItem(CURRENT_USER_KEY);
-            const removable = navLinksContainer?.querySelectorAll('.profile-link-nav, .logout-nav-btn, .admin-link-nav, .login-link');
-            removable?.forEach(el => el.remove());
+            const { data: { user } } = await supabase.auth.getUser();
 
-            if (currentUser) {
-                const user = JSON.parse(currentUser);
-                
+            if (user) {
+                const { data: profile } = await supabase
+                    .from('users')
+                    .select('name, role')
+                    .eq('id', user.id)
+                    .single();
+
+                const displayName = profile?.name || user.email?.split('@')[0] || 'Профиль';
+                const role = profile?.role || 'student';
+
                 const profileLink = document.createElement('a');
                 profileLink.href = 'profile.html';
                 profileLink.className = 'profile-link-nav';
-                profileLink.innerHTML = '<i class="fas fa-user"></i> ' + (user.name || user.username);
+                profileLink.innerHTML = '<i class="fas fa-user"></i> ' + displayName;
                 navLinksContainer?.appendChild(profileLink);
 
-                if (user.role === 'admin') {
+                if (role === 'admin') {
                     const adminLink = document.createElement('a');
                     adminLink.href = 'admin.html';
                     adminLink.className = 'admin-link-nav';
@@ -1212,32 +1204,35 @@
                 const logoutBtn = document.createElement('button');
                 logoutBtn.className = 'logout-nav-btn';
                 logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Выйти';
-                logoutBtn.onclick = () => {
-                    localStorage.removeItem(CURRENT_USER_KEY);
-                    window.location.reload();
-                };
+                logoutBtn.onclick = () => AUTH.logout();
                 navLinksContainer?.appendChild(logoutBtn);
+            } else {
+                const loginLink = document.createElement('a');
+                loginLink.href = 'login.html';
+                loginLink.className = 'login-link';
+                loginLink.textContent = 'Войти';
+                navLinksContainer?.appendChild(loginLink);
             }
         }
-        updateNavBar();
+
+        // Ждём загрузки AUTH, потом вызываем
+        if (typeof AUTH !== 'undefined') {
+            updateNavBar();
+        } else {
+            window.addEventListener('load', updateNavBar);
+        }
 
         // ===== КНОПКА НАВЕРХ =====
         const scrollTopBtn = document.getElementById('scrollTopBtn');
 
         function toggleScrollTopBtn() {
-            if (window.scrollY > 500) {
-                scrollTopBtn?.classList.add('visible');
-            } else {
-                scrollTopBtn?.classList.remove('visible');
-            }
+            scrollTopBtn?.classList.toggle('visible', window.scrollY > 500);
         }
 
         window.addEventListener('scroll', toggleScrollTopBtn);
-
         scrollTopBtn?.addEventListener('click', () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
-
         toggleScrollTopBtn();
     })();
 </script>
