@@ -196,6 +196,7 @@
             scrollbar-width: none;
             -ms-overflow-style: none;
             padding: 4px 0;
+            margin-left: auto;
         }
 
         .nav-links::-webkit-scrollbar {
@@ -368,7 +369,7 @@
             display: block;
         }
 
-                /* ============ HERO ============ */
+        /* ============ HERO ============ */
         .hero {
             background: var(--hero-gradient);
             color: var(--text);
@@ -539,9 +540,18 @@
         }
 
         @media (max-width: 768px) {
-            .hero-text { align-items: center; }
-            .hero-text .btn { width: auto; }
-            .hero-text div:last-child { flex-direction: row; justify-content: center; }
+            .hero-text {
+                align-items: center;
+            }
+
+            .hero-text .btn {
+                width: auto;
+            }
+
+            .hero-text div:last-child {
+                flex-direction: row;
+                justify-content: center;
+            }
         }
 
         /* ============ КНОПКИ ============ */
@@ -1611,9 +1621,7 @@
 
             function updateThemeIcon(theme) {
                 const icon = themeToggle?.querySelector('i');
-                if (icon) {
-                    icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-                }
+                if (icon) icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
             }
 
             // ===== АНИМАЦИИ =====
@@ -1646,7 +1654,6 @@
 
             burgerBtn?.addEventListener('click', toggleMenu);
             navOverlay?.addEventListener('click', closeMenu);
-
             navLinks?.querySelectorAll('a').forEach(link => {
                 link.addEventListener('click', () => {
                     if (window.innerWidth <= 768) closeMenu();
@@ -1656,18 +1663,14 @@
             // ===== FAQ =====
             document.querySelectorAll('.faq-item').forEach(item => {
                 const wrapper = item.querySelector('.faq-answer-wrapper');
-
                 item.querySelector('.faq-question')?.addEventListener('click', () => {
                     const isActive = item.classList.contains('active');
-
                     if (!isActive) {
                         item.classList.add('active');
                         wrapper.style.maxHeight = wrapper.scrollHeight + 'px';
                     } else {
                         wrapper.style.maxHeight = wrapper.scrollHeight + 'px';
-                        requestAnimationFrame(() => {
-                            wrapper.style.maxHeight = '0';
-                        });
+                        requestAnimationFrame(() => { wrapper.style.maxHeight = '0'; });
                         item.classList.remove('active');
                     }
                 });
@@ -1692,44 +1695,23 @@
                 try {
                     if (window.external && 'AddFavorite' in window.external)
                         window.external.AddFavorite(window.location.href, document.title);
-                    else
-                        alert('Нажмите Ctrl+D (или Cmd+D на Mac), чтобы добавить сайт в закладки.');
-                } catch (e) {
-                    alert('Нажмите Ctrl+D (или Cmd+D на Mac)');
-                }
+                    else alert('Нажмите Ctrl+D (или Cmd+D на Mac)');
+                } catch (e) { alert('Нажмите Ctrl+D (или Cmd+D на Mac)'); }
             };
 
-            // ===== НАВБАР ПОЛЬЗОВАТЕЛЯ (Supabase) =====
-            async function updateNavBar() {
+            // ===== НАВБАР ПОЛЬЗОВАТЕЛЯ =====
+            function updateNavBar() {
                 const navLinksContainer = document.getElementById('navLinks');
-                navLinksContainer?.querySelectorAll('.profile-link-nav, .logout-nav-btn, .admin-link-nav, .login-link').forEach(el => el.remove());
+                navLinksContainer?.querySelectorAll('.profile-link-nav, .admin-link-nav, .login-link').forEach(el => el.remove());
 
-                const { data: { user } } = await supabase.auth.getUser();
+                const loggedIn = localStorage.getItem('logged_in') === 'true';
 
-                if (user) {
-                    const { data: profile } = await supabase
-                        .from('users')
-                        .select('name, role')
-                        .eq('id', user.id)
-                        .single();
-
-                    const displayName = profile?.name || user.email?.split('@')[0] || 'Профиль';
-                    const role = profile?.role || 'student';
-
+                if (loggedIn) {
                     const profileLink = document.createElement('a');
                     profileLink.href = 'profile.html';
                     profileLink.className = 'profile-link-nav';
-                    profileLink.innerHTML = '<i class="fas fa-user"></i> ' + displayName;
+                    profileLink.innerHTML = '<i class="fas fa-user"></i> Профиль';
                     navLinksContainer?.appendChild(profileLink);
-
-                    if (role === 'admin') {
-                        const adminLink = document.createElement('a');
-                        adminLink.href = 'admin.html';
-                        adminLink.className = 'admin-link-nav';
-                        adminLink.innerHTML = '<i class="fas fa-crown"></i> Админ-панель';
-                        navLinksContainer?.appendChild(adminLink);
-                    }
-
                 } else {
                     const loginLink = document.createElement('a');
                     loginLink.href = 'login.html';
@@ -1739,26 +1721,20 @@
                 }
             }
 
-            // Ждём загрузки AUTH, потом вызываем
-            if (typeof AUTH !== 'undefined') {
-                updateNavBar();
-            } else {
-                window.addEventListener('load', updateNavBar);
-            }
+            updateNavBar();
 
             // ===== КНОПКА НАВЕРХ =====
             const scrollTopBtn = document.getElementById('scrollTopBtn');
-
             function toggleScrollTopBtn() {
                 scrollTopBtn?.classList.toggle('visible', window.scrollY > 500);
             }
-
             window.addEventListener('scroll', toggleScrollTopBtn);
             scrollTopBtn?.addEventListener('click', () => {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
             toggleScrollTopBtn();
         })();
+    </script>
     </script>
 </body>
 

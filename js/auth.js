@@ -10,18 +10,19 @@ const AUTH = {
     async getProfile() {
         const user = await this.getUser();
         if (!user) return null;
-        
+
         const { data, error } = await supabase
             .from('users')
             .select('*')
             .eq('id', user.id)
             .single();
-        
+
         if (error || !data) return null;
         return data;
     },
 
     async logout() {
+        localStorage.removeItem('logged_in');
         await supabase.auth.signOut();
         window.location.href = 'index.html';
     },

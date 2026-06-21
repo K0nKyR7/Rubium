@@ -356,6 +356,7 @@
 
         console.log('User ID from auth:', data.user.id);
 
+        localStorage.setItem('logged_in', 'true');
         window.location.href = 'profile.html';
     });
 

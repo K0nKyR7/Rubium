@@ -334,6 +334,7 @@
             role: 'student'
         }, { onConflict: 'id' });
 
+        localStorage.setItem('logged_in', 'true');
         window.location.href = 'profile.html';
     });
 

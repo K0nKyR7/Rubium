@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Профиль — Rubium</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase.js"></script>
@@ -12,26 +15,41 @@
     <style>
         :root {
             --bg: #FDF8F0;
+            --bg-card: #ffffff;
+            --bg-topbar: #F5EDE0;
             --text: #4A3728;
+            --text-secondary: #6B4C3B;
+            --text-muted: #7B6B55;
             --heading: #3D2B1F;
             --accent: #A67B5B;
+            --accent-light: #C4A27A;
             --accent-gradient: linear-gradient(135deg, #C4A27A, #A67B5B);
-            --border: rgba(196, 162, 122, 0.3);
-            --card-bg: #ffffff;
-            --shadow: rgba(139, 69, 19, 0.08);
+            --border: rgba(196, 162, 122, 0.15);
+            --shadow: rgba(139, 69, 19, 0.06);
+            --shadow-hover: rgba(139, 69, 19, 0.12);
         }
 
         [data-theme="dark"] {
             --bg: #1a1a2e;
+            --bg-card: #1f2937;
+            --bg-topbar: #15192b;
             --text: #e0d6c8;
+            --text-secondary: #c4b8a8;
+            --text-muted: #a89880;
             --heading: #f0e6d8;
             --accent: #d4a574;
-            --border: rgba(180, 140, 100, 0.3);
-            --card-bg: #1f2937;
-            --shadow: rgba(0, 0, 0, 0.3);
+            --accent-light: #b8885a;
+            --accent-gradient: linear-gradient(135deg, #b8885a, #d4a574);
+            --border: rgba(180, 140, 100, 0.15);
+            --shadow: rgba(0, 0, 0, 0.2);
+            --shadow-hover: rgba(0, 0, 0, 0.35);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -42,132 +60,474 @@
         }
 
         .container {
-            max-width: 700px;
+            max-width: 100%;
             margin: 0 auto;
-            padding: 40px 20px;
+            padding: 40px;
         }
 
-        .header {
+        /* Топ-бар */
+        .topbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 32px;
+            padding: 16px 40px;
+            background: var(--bg-topbar);
+            border-bottom: 1px solid var(--border);
+            margin: -40px -40px 40px -40px;
+            flex-wrap: wrap;
+            gap: 12px;
+            transition: background 0.3s;
         }
 
-        .header h1 { color: var(--heading); font-size: 1.8rem; }
-        .header a { color: var(--accent); text-decoration: none; }
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .back-arrow {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid transparent;
+        }
+
+        .back-arrow:hover {
+            color: var(--accent);
+            border-color: var(--border);
+            background: var(--bg-card);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-decoration: none;
+            color: var(--heading);
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: 2px solid var(--border);
+            color: var(--text-secondary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--accent-light);
+            color: var(--accent);
+            transform: rotate(30deg);
+        }
 
         .logout-btn {
             background: none;
             border: 2px solid var(--border);
-            color: var(--text);
-            padding: 10px 20px;
+            color: var(--text-secondary);
+            padding: 10px 18px;
             border-radius: 50px;
             cursor: pointer;
             font-family: inherit;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 500;
             transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        .logout-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .logout-btn:hover {
+            border-color: #e88;
+            color: #e55;
+            background: rgba(238, 130, 130, 0.04);
+        }
 
-        .card {
-            background: var(--card-bg);
-            border-radius: 24px;
-            padding: 24px;
-            margin-bottom: 16px;
+        /* Карточка профиля */
+        .profile-card {
+            background: var(--bg-card);
+            border-radius: 36px;
+            padding: 40px 36px;
             border: 1px solid var(--border);
-            box-shadow: 0 4px 15px var(--shadow);
+            box-shadow: 0 8px 30px var(--shadow);
+            display: inline-block;
+            min-width: 360px;
+            max-width: 480px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
         }
 
-        .card h3 { color: var(--heading); margin-bottom: 8px; }
-        .card p { opacity: 0.7; font-size: 0.9rem; }
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: -60%;
+            right: -40%;
+            width: 100%;
+            height: 180%;
+            background: radial-gradient(circle at center, rgba(196, 162, 122, 0.04) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
 
-        .badge {
+        .profile-card:hover {
+            box-shadow: 0 16px 45px var(--shadow-hover);
+            border-color: var(--accent-light);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .username {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--heading);
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+        }
+
+        .role-badge {
             display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
+            padding: 5px 14px;
+            border-radius: 50px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            flex-shrink: 0;
+        }
+
+        .role-admin {
+            background: linear-gradient(135deg, rgba(196, 162, 122, 0.2), rgba(196, 162, 122, 0.08));
+            color: var(--accent);
+            border: 1px solid rgba(196, 162, 122, 0.25);
+        }
+
+        .role-teacher {
+            background: linear-gradient(135deg, rgba(100, 149, 237, 0.15), rgba(100, 149, 237, 0.05));
+            color: #6495ed;
+            border: 1px solid rgba(100, 149, 237, 0.2);
+        }
+
+        .role-student {
+            background: linear-gradient(135deg, rgba(72, 199, 142, 0.15), rgba(72, 199, 142, 0.05));
+            color: #48c78e;
+            border: 1px solid rgba(72, 199, 142, 0.2);
+        }
+
+        .email {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            margin-bottom: 4px;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .email i {
             font-size: 0.8rem;
+            opacity: 0.5;
+        }
+
+        .joined {
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            opacity: 0.6;
+            margin-bottom: 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Статистика */
+        .profile-stats {
+            display: flex;
+            gap: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .pstat {
+            text-align: center;
+            background: var(--bg);
+            padding: 16px 12px;
+            border-radius: 22px;
+            flex: 1;
+            border: 1px solid var(--border);
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+            cursor: default;
+        }
+
+        .pstat:hover {
+            border-color: var(--accent-light);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px var(--shadow);
+            background: var(--bg-card);
+        }
+
+        .pstat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--heading);
+            letter-spacing: -0.5px;
+            transition: color 0.3s;
+        }
+
+        .pstat:hover .pstat-number {
+            color: var(--accent);
+        }
+
+        .pstat-label {
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-top: 4px;
             font-weight: 600;
         }
 
-        .badge-active { background: #e8f5e9; color: #2e7d32; }
-        .badge-expired { background: #fce4ec; color: #c62828; }
-
-        .section-title {
-            font-size: 1.3rem;
-            color: var(--heading);
-            margin-bottom: 20px;
+        /* Секции */
+        .section-placeholder {
+            background: var(--bg-card);
+            border-radius: 28px;
+            padding: 60px 30px;
+            border: 1px solid var(--border);
+            text-align: center;
+            margin-top: 24px;
+            color: var(--text-muted);
+            box-shadow: 0 4px 15px var(--shadow);
+            transition: all 0.3s;
         }
 
-        .empty {
-            text-align: center;
-            padding: 40px;
+        .section-placeholder i {
+            font-size: 2.5rem;
+            margin-bottom: 14px;
+            opacity: 0.3;
+        }
+
+        .section-placeholder p {
+            font-size: 0.95rem;
             opacity: 0.5;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            .topbar {
+                margin: -20px -20px 28px -20px;
+                padding: 14px 20px;
+            }
+
+            .profile-card {
+                min-width: auto;
+                max-width: 100%;
+                padding: 28px 22px;
+            }
+
+            .username {
+                font-size: 1.5rem;
+            }
+
+            .profile-stats {
+                flex-wrap: wrap;
+            }
+
+            .pstat {
+                min-width: 80px;
+            }
         }
     </style>
 </head>
+
 <body>
 
-<div class="container">
-    <div class="header">
-        <h1>👤 <span id="profileName">Профиль</span></h1>
-        <div>
-            <a href="index.html">← На главную</a>
-            <button class="logout-btn" onclick="AUTH.logout()" style="margin-left: 12px;">Выйти</button>
+    <div class="container">
+        <div class="topbar">
+            <div class="topbar-left">
+                <a href="index.html" class="back-arrow" title="На главную">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <a href="index.html" class="logo"><span>⚡</span> Rubium</a>
+            </div>
+            <div class="topbar-right">
+                <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button class="logout-btn" onclick="AUTH.logout()">
+                    <i class="fas fa-sign-out-alt"></i> Выйти
+                </button>
+            </div>
+        </div>
+
+        <!-- Карточка профиля -->
+        <div class="profile-card" id="profileCard">
+            <div class="card-header">
+                <div>
+                    <div class="username" id="displayName">Загрузка...</div>
+                </div>
+                <span class="role-badge" id="roleBadge"></span>
+            </div>
+            <div class="email">
+                <i class="fas fa-envelope"></i> <span id="displayEmail"></span>
+            </div>
+            <div class="joined" id="joinedDate"></div>
+            <div class="profile-stats">
+                <div class="pstat">
+                    <div class="pstat-number" id="stat1">—</div>
+                    <div class="pstat-label" id="stat1Label">курсов</div>
+                </div>
+                <div class="pstat">
+                    <div class="pstat-number" id="stat2">—</div>
+                    <div class="pstat-label" id="stat2Label">задач</div>
+                </div>
+                <div class="pstat">
+                    <div class="pstat-number" id="stat3">—</div>
+                    <div class="pstat-label" id="stat3Label">прогресс</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Заглушки -->
+        <div class="section-placeholder" id="studentSection" style="display:none;">
+            <i class="fas fa-graduation-cap"></i>
+            <p>Твои домашки, прогресс и подписки будут тут</p>
+        </div>
+        <div class="section-placeholder" id="teacherSection" style="display:none;">
+            <i class="fas fa-chalkboard-teacher"></i>
+            <p>Ученики, домашки и статистика — скоро</p>
+        </div>
+        <div class="section-placeholder" id="adminSection" style="display:none;">
+            <i class="fas fa-crown"></i>
+            <p>Админ-панель — <a href="admin.html" style="color: var(--accent);">открыть</a></p>
         </div>
     </div>
 
-    <div class="card" id="userInfo">
-        <p>Загрузка...</p>
-    </div>
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
 
-    <h2 class="section-title">📚 Мои подписки</h2>
-    <div id="subscriptions">
-        <p class="empty">Загрузка...</p>
-    </div>
-</div>
+        themeToggle?.addEventListener('click', () => {
+            const current = html.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+            updateThemeIcon(next);
+        });
 
-<script>
-    async function loadProfile() {
-        const profile = await AUTH.requireAuth();
-        if (!profile) return;
-
-        document.getElementById('profileName').textContent = profile.name || profile.email;
-        document.getElementById('userInfo').innerHTML = `
-            <h3>${profile.name || 'Без имени'}</h3>
-            <p>${profile.email}</p>
-            <p>Роль: <strong>${profile.role === 'admin' ? 'Администратор' : profile.role === 'teacher' ? 'Преподаватель' : 'Ученик'}</strong></p>
-            <p>На сайте с ${new Date(profile.created_at).toLocaleDateString('ru-RU')}</p>
-        `;
-
-        const { data: subs, error } = await supabase
-            .from('subscriptions')
-            .select('*, programs(title, slug)')
-            .eq('user_id', profile.id);
-
-        const container = document.getElementById('subscriptions');
-
-        if (error || !subs || subs.length === 0) {
-            container.innerHTML = '<p class="empty">У вас пока нет активных подписок</p>';
-            return;
+        function updateThemeIcon(theme) {
+            const icon = themeToggle?.querySelector('i');
+            if (icon) icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
         }
 
-        container.innerHTML = subs.map(sub => {
-            const isActive = sub.status === 'active' && (!sub.expires_at || new Date(sub.expires_at) > new Date());
-            return `
-                <div class="card">
-                    <h3>${sub.programs?.title || sub.program_id}</h3>
-                    <p>Статус: <span class="badge ${isActive ? 'badge-active' : 'badge-expired'}">${isActive ? 'Активна' : 'Истекла'}</span></p>
-                    <p>Куплена: ${new Date(sub.purchased_at).toLocaleDateString('ru-RU')}</p>
-                    ${sub.expires_at ? `<p>Истекает: ${new Date(sub.expires_at).toLocaleDateString('ru-RU')}</p>` : ''}
-                </div>
-            `;
-        }).join('');
-    }
+        async function loadProfile() {
+            const { data: { user }, error: userError } = await supabase.auth.getUser();
+            if (userError || !user) {
+                window.location.href = 'login.html';
+                return;
+            }
 
-    loadProfile();
-</script>
+            const { data: profile, error: profileError } = await supabase
+                .from('users')
+                .select('*')
+                .eq('id', user.id)
+                .single();
+
+            console.log('Profile from DB:', profile);
+            console.log('Auth UID:', user.id);
+
+            if (profileError || !profile) {
+                console.error('Profile error:', profileError);
+                if (profileError?.code === 'PGRST116') {
+                    const name = user.email.split('@')[0];
+                    const { error: insertError } = await supabase.from('users').insert({
+                        id: user.id,
+                        email: user.email,
+                        name: name,
+                        role: 'student',
+                        auth_provider: 'email'
+                    });
+                    console.log('Insert result:', insertError);
+                    location.reload();
+                    return;
+                }
+                document.getElementById('displayName').textContent = user.email.split('@')[0];
+                document.getElementById('displayEmail').textContent = user.email;
+                document.getElementById('roleBadge').textContent = 'ученик';
+                document.getElementById('roleBadge').className = 'role-badge role-student';
+                document.getElementById('joinedDate').textContent = '';
+                return;
+            }
+
+            document.getElementById('displayName').textContent = profile.name || profile.email.split('@')[0];
+            document.getElementById('displayEmail').textContent = profile.email;
+            document.getElementById('joinedDate').textContent = '🎂 На сайте с ' + new Date(profile.created_at).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long' });
+
+            const roleLabels = { student: 'ученик', teacher: 'препод', admin: 'админ' };
+            const badge = document.getElementById('roleBadge');
+            badge.textContent = roleLabels[profile.role] || profile.role;
+            badge.className = 'role-badge role-' + (profile.role || 'student');
+
+            if (profile.role === 'student') {
+                document.getElementById('studentSection').style.display = '';
+                document.getElementById('stat1Label').textContent = 'курсов';
+                document.getElementById('stat2Label').textContent = 'задач';
+                document.getElementById('stat3Label').textContent = 'прогресс';
+            }
+            if (profile.role === 'teacher') {
+                document.getElementById('teacherSection').style.display = '';
+                document.getElementById('stat1Label').textContent = 'учеников';
+                document.getElementById('stat2Label').textContent = 'домашек';
+                document.getElementById('stat3Label').textContent = 'сдано';
+            }
+            if (profile.role === 'admin') {
+                document.getElementById('teacherSection').style.display = '';
+                document.getElementById('adminSection').style.display = '';
+                document.getElementById('stat1Label').textContent = 'юзеров';
+                document.getElementById('stat2Label').textContent = 'курсов';
+                document.getElementById('stat3Label').textContent = 'доход';
+            }
+        }
+
+        loadProfile();
+    </script>
 </body>
+
 </html>
