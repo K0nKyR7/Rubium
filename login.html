@@ -331,8 +331,7 @@
             id: data.user.id,
             email: data.user.email,
             name: data.user.user_metadata?.name || email.split('@')[0],
-            role: 'student'
-        }, { onConflict: 'id' });
+        }, { onConflict: 'id', ignoreDuplicates: false });
 
         localStorage.setItem('logged_in', 'true');
         window.location.href = 'profile.html';
