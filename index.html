@@ -1,16 +1,25 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rubium - образовательный проект</title>
-    <meta name="description" content="Образовательный проект по математике, информатике и физике. Подготовка к ОГЭ и ЕГЭ 80+, помощь по школьной программе 5-11 класс.">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <meta name="description"
+        content="Образовательный проект по математике, информатике и физике. Подготовка к ОГЭ и ЕГЭ 80+, помощь по школьной программе 5-11 класс.">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        html, body {
+        html,
+        body {
             overflow-x: hidden;
             width: 100%;
             position: relative;
@@ -91,16 +100,32 @@
             transition: background 0.3s, color 0.3s;
         }
 
-        img { pointer-events: none; }
+        img {
+            pointer-events: none;
+        }
 
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @keyframes gentleFloat {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
         }
 
         .animate-on-scroll {
@@ -173,7 +198,9 @@
             padding: 4px 0;
         }
 
-        .nav-links::-webkit-scrollbar { display: none; }
+        .nav-links::-webkit-scrollbar {
+            display: none;
+        }
 
         .nav-links a {
             text-decoration: none;
@@ -198,11 +225,19 @@
             border-radius: 2px;
         }
 
-        .nav-links a:hover::after { width: 100%; }
-        .nav-links a:hover { color: var(--accent); }
+        .nav-links a:hover::after {
+            width: 100%;
+        }
 
-        .tasks-btn, .constructor-btn, .profile-btn,
-        .profile-link-nav, .admin-link-nav {
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        .tasks-btn,
+        .constructor-btn,
+        .profile-btn,
+        .profile-link-nav,
+        .admin-link-nav {
             background: var(--accent-gradient) !important;
             color: white !important;
             padding: clamp(6px, 1vw, 8px) clamp(14px, 2.5vw, 22px) !important;
@@ -211,14 +246,22 @@
             font-size: clamp(0.75rem, 1.4vw, 0.95rem) !important;
         }
 
-        .tasks-btn:hover, .constructor-btn:hover, .profile-btn:hover,
-        .profile-link-nav:hover, .admin-link-nav:hover {
+        .tasks-btn:hover,
+        .constructor-btn:hover,
+        .profile-btn:hover,
+        .profile-link-nav:hover,
+        .admin-link-nav:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px var(--shadow-hover);
         }
 
-        .tasks-btn::after, .constructor-btn::after, .profile-btn::after,
-        .profile-link-nav::after, .admin-link-nav::after { display: none !important; }
+        .tasks-btn::after,
+        .constructor-btn::after,
+        .profile-btn::after,
+        .profile-link-nav::after,
+        .admin-link-nav::after {
+            display: none !important;
+        }
 
         .login-link {
             background: transparent !important;
@@ -229,7 +272,9 @@
             font-size: clamp(0.75rem, 1.4vw, 0.95rem) !important;
         }
 
-        .login-link::after { display: none !important; }
+        .login-link::after {
+            display: none !important;
+        }
 
         .logout-nav-btn {
             background: var(--logout-bg);
@@ -298,9 +343,11 @@
         .burger-btn.active span:nth-child(1) {
             transform: rotate(45deg) translate(5px, 5px);
         }
+
         .burger-btn.active span:nth-child(2) {
             opacity: 0;
         }
+
         .burger-btn.active span:nth-child(3) {
             transform: rotate(-45deg) translate(5px, -5px);
         }
@@ -317,14 +364,16 @@
             z-index: 999;
         }
 
-        .nav-overlay.active { display: block; }
+        .nav-overlay.active {
+            display: block;
+        }
 
-        /* ============ HERO ============ */
+                /* ============ HERO ============ */
         .hero {
             background: var(--hero-gradient);
             color: var(--text);
-            padding: clamp(40px, 8vh, 80px) 0 clamp(35px, 7vh, 70px);
-            border-radius: 0 0 clamp(30px, 5vw, 50px) clamp(30px, 5vw, 50px);
+            padding: clamp(60px, 10vh, 110px) 0 clamp(50px, 8vh, 90px);
+            border-radius: 0 0 clamp(44px, 6vw, 64px) clamp(44px, 6vw, 64px);
             margin-bottom: clamp(30px, 5vw, 50px);
             position: relative;
             overflow: hidden;
@@ -336,89 +385,163 @@
             position: absolute;
             top: -50%;
             right: -30%;
-            width: 80%;
+            width: 90%;
             height: 200%;
-            background: radial-gradient(circle, rgba(196, 162, 122, 0.08) 0%, transparent 70%);
+            background: radial-gradient(circle at 70% 40%, rgba(196, 162, 122, 0.12) 0%, transparent 60%);
             border-radius: 50%;
             pointer-events: none;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-light), transparent);
+            opacity: 0.25;
         }
 
         .hero-content {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
             flex-wrap: wrap;
             gap: clamp(30px, 5vw, 50px);
             position: relative;
             z-index: 1;
+            text-align: center;
         }
 
         .hero-text {
-            flex: 1 1 300px;
+            flex: 1 1 400px;
             min-width: 0;
+            max-width: 750px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .hero-text h1 {
-            font-size: clamp(1.6rem, 5vw, 3rem);
+            font-size: clamp(2rem, 5.5vw, 3.6rem);
             font-weight: 700;
-            margin-bottom: clamp(12px, 2vw, 20px);
-            line-height: 1.2;
+            margin-bottom: clamp(16px, 2.5vw, 24px);
+            line-height: 1.1;
             color: var(--heading);
+            letter-spacing: -1.5px;
         }
 
         .hero-text .highlight {
-            background: rgba(196, 162, 122, 0.2);
-            backdrop-filter: blur(10px);
-            padding: 5px clamp(10px, 2vw, 16px);
-            border-radius: 40px;
+            background: rgba(196, 162, 122, 0.15);
+            backdrop-filter: blur(12px);
+            padding: 8px clamp(16px, 2vw, 22px);
+            border-radius: 50px;
             display: inline-block;
-            font-size: clamp(0.7rem, 1.3vw, 0.85rem);
-            margin-bottom: clamp(16px, 3vw, 24px);
-            font-weight: 500;
+            font-size: clamp(0.72rem, 1.3vw, 0.85rem);
+            margin-bottom: clamp(20px, 3.5vw, 28px);
+            font-weight: 600;
             color: var(--accent);
+            border: 1px solid rgba(196, 162, 122, 0.2);
+            letter-spacing: 0.3px;
         }
 
         .hero-text p {
-            font-size: clamp(0.9rem, 1.5vw, 1.1rem);
-            opacity: 0.85;
-            margin-bottom: clamp(20px, 3vw, 28px);
-            line-height: 1.6;
+            font-size: clamp(0.95rem, 1.6vw, 1.15rem);
+            opacity: 0.7;
+            margin-bottom: clamp(24px, 3.5vw, 32px);
+            line-height: 1.7;
             color: var(--text-muted);
+            max-width: 600px;
         }
 
         .hero-stats {
             display: flex;
-            gap: clamp(8px, 2vw, 24px);
-            margin-top: clamp(20px, 3vw, 32px);
+            gap: clamp(10px, 2vw, 16px);
+            margin-top: clamp(24px, 3.5vw, 36px);
             flex-wrap: wrap;
+            justify-content: center;
         }
 
         .stat {
             text-align: center;
             background: var(--stat-bg);
-            backdrop-filter: blur(10px);
-            padding: clamp(8px, 1.5vw, 12px) clamp(12px, 2.5vw, 24px);
-            border-radius: 40px;
-            transition: all 0.3s;
-            box-shadow: 0 2px 10px var(--shadow);
+            backdrop-filter: blur(14px);
+            padding: clamp(10px, 1.8vw, 16px) clamp(16px, 3vw, 28px);
+            border-radius: 50px;
+            transition: all 0.35s cubic-bezier(0.2, 0.9, 0.4, 1);
+            box-shadow: 0 4px 15px var(--shadow);
             flex: 0 0 auto;
+            border: 1px solid rgba(196, 162, 122, 0.1);
         }
 
         .stat:hover {
-            transform: translateY(-4px);
+            transform: translateY(-6px);
             background: var(--bg-card);
-            box-shadow: 0 8px 25px var(--shadow-hover);
+            box-shadow: 0 12px 35px var(--shadow-hover);
+            border-color: var(--border-hover);
         }
 
         .stat-number {
-            font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+            font-size: clamp(1.4rem, 2.8vw, 2rem);
             font-weight: 700;
             color: var(--accent);
+            letter-spacing: -0.5px;
         }
 
         .stat-label {
             font-size: clamp(0.65rem, 1.1vw, 0.8rem);
             color: var(--text-muted2);
+            font-weight: 500;
+        }
+
+        /* ============ КНОПКИ ============ */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: clamp(14px, 2vw, 17px) clamp(28px, 4.5vw, 38px);
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.35s cubic-bezier(0.2, 0.9, 0.4, 1);
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+            font-size: clamp(0.88rem, 1.3vw, 1rem);
+            white-space: nowrap;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: white;
+            box-shadow: 0 8px 25px rgba(166, 123, 91, 0.25);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 14px 35px rgba(166, 123, 91, 0.35);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--accent-light);
+            color: var(--accent);
+            backdrop-filter: blur(4px);
+        }
+
+        .btn-outline:hover {
+            background: rgba(196, 162, 122, 0.08);
+            transform: translateY(-4px);
+            border-color: var(--accent);
+        }
+
+        @media (max-width: 768px) {
+            .hero-text { align-items: center; }
+            .hero-text .btn { width: auto; }
+            .hero-text div:last-child { flex-direction: row; justify-content: center; }
         }
 
         /* ============ КНОПКИ ============ */
@@ -474,7 +597,9 @@
             color: var(--heading);
         }
 
-        .section-title span { color: var(--accent); }
+        .section-title span {
+            color: var(--accent);
+        }
 
         /* ============ ГРИДЫ ============ */
         .grid-2 {
@@ -484,7 +609,7 @@
             gap: clamp(20px, 3vw, 30px);
         }
 
-        .grid-2 > * {
+        .grid-2>* {
             flex: 0 1 500px;
             min-width: 320px;
             max-width: 600px;
@@ -497,7 +622,7 @@
             gap: 30px;
         }
 
-        .grid-3 > * {
+        .grid-3>* {
             flex: 0 1 380px;
             min-width: 300px;
             max-width: 420px;
@@ -537,7 +662,9 @@
             border-radius: inherit;
         }
 
-        .card:hover h3 { color: var(--accent); }
+        .card:hover h3 {
+            color: var(--accent);
+        }
 
         .card-icon {
             width: 100%;
@@ -556,7 +683,11 @@
             z-index: 1;
         }
 
-        .card-icon img { width: 100%; height: 100%; object-fit: cover; }
+        .card-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
         .card h3 {
             font-size: 1.3rem;
@@ -567,9 +698,25 @@
             z-index: 1;
         }
 
-        .card p { color: var(--text-muted); line-height: 1.8; position: relative; z-index: 1; }
-        .card ul { list-style: none; text-align: center; position: relative; z-index: 1; }
-        .card li { padding: 8px 0; color: var(--text-muted); font-size: 0.95rem; }
+        .card p {
+            color: var(--text-muted);
+            line-height: 1.8;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card ul {
+            list-style: none;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card li {
+            padding: 8px 0;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
 
         /* ============ ПРЕДМЕТЫ ============ */
         .subject-card {
@@ -588,10 +735,27 @@
             border-color: var(--border-hover);
         }
 
-        .subject-icon { font-size: clamp(2.5rem, 4vw, 3.2rem); margin-bottom: 20px; }
-        .subject-card h3 { font-size: 1.3rem; margin-bottom: 16px; color: var(--heading); }
-        .subject-card ul { list-style: none; text-align: center; }
-        .subject-card li { padding: 8px 0; color: var(--text-muted); font-size: 0.95rem; }
+        .subject-icon {
+            font-size: clamp(2.5rem, 4vw, 3.2rem);
+            margin-bottom: 20px;
+        }
+
+        .subject-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 16px;
+            color: var(--heading);
+        }
+
+        .subject-card ul {
+            list-style: none;
+            text-align: center;
+        }
+
+        .subject-card li {
+            padding: 8px 0;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
 
         /* ============ ЦЕНЫ ============ */
         .price-table {
@@ -612,58 +776,207 @@
             transition: background 0.3s;
         }
 
-        .price-row:hover { background: var(--price-hover); }
-        .price-name { font-weight: 500; color: var(--text-muted); }
-        .price-value { font-weight: 700; color: var(--accent); font-size: 1.3rem; }
-        .price-note { text-align: center; margin-top: 20px; color: var(--text-muted2); font-size: 0.85rem; }
+        .price-row:hover {
+            background: var(--price-hover);
+        }
 
-        /* ============ КОНТАКТЫ ============ */
-        .contact-grid {
+        .price-name {
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .price-value {
+            font-weight: 700;
+            color: var(--accent);
+            font-size: 1.3rem;
+        }
+
+        .price-note {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--text-muted2);
+            font-size: 0.85rem;
+        }
+
+        /* ============ СОЦСЕТИ ============ */
+        .social-grid {
             display: flex;
-            flex-wrap: wrap;
+            gap: 20px;
             justify-content: center;
-            gap: clamp(16px, 2.5vw, 25px);
         }
 
-        .contact-grid > * {
-            flex: 0 1 350px;
-            min-width: 280px;
-            max-width: 400px;
+        .social-grid>* {
+            flex: 1;
+            min-width: 0;
         }
 
-        .contact-card {
+        .social-card {
             display: flex;
             align-items: center;
-            gap: 18px;
-            padding: 22px;
+            gap: 24px;
+            padding: 36px 32px;
             background: var(--bg-card);
-            border-radius: 28px;
+            border-radius: 30px;
             text-decoration: none;
-            transition: all 0.3s;
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1);
             border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
         }
 
-        .contact-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 15px 30px var(--shadow-hover);
-            border-color: var(--border-hover);
+        .social-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 30px;
+            opacity: 0;
+            transition: opacity 0.4s;
+            z-index: 0;
         }
 
-        .contact-icon {
-            width: 55px;
-            height: 55px;
-            background: var(--accent-gradient);
-            border-radius: 50%;
+        .social-card.telegram::after {
+            background: radial-gradient(circle at 80% 20%, rgba(42, 171, 238, 0.08), transparent 60%);
+        }
+
+        .social-card.vk::after {
+            background: radial-gradient(circle at 80% 20%, rgba(0, 119, 255, 0.08), transparent 60%);
+        }
+
+        .social-card:hover::after {
+            opacity: 1;
+        }
+
+        .social-card:hover {
+            transform: translateY(-6px) scale(1.01);
+            box-shadow: 0 25px 45px var(--shadow-hover);
+            border-color: transparent;
+        }
+
+        .social-card.telegram:hover {
+            border-color: rgba(42, 171, 238, 0.3);
+        }
+
+        .social-card.vk:hover {
+            border-color: rgba(0, 119, 255, 0.3);
+        }
+
+        .social-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 22px;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 1.6rem;
             color: white;
-            font-size: 1.4rem;
             flex-shrink: 0;
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s, box-shadow 0.3s;
         }
 
-        .contact-info h4 { font-size: 0.85rem; color: var(--text-muted2); margin-bottom: 5px; }
-        .contact-info p { font-weight: 600; color: var(--text); }
+        .social-card:hover .social-icon {
+            transform: rotate(-8deg) scale(1.08);
+        }
+
+        .social-card.telegram .social-icon {
+            background: linear-gradient(135deg, #2AABEE, #1a8cd4);
+            box-shadow: 0 6px 20px rgba(42, 171, 238, 0.3);
+        }
+
+        .social-card.vk .social-icon {
+            background: linear-gradient(135deg, #0077FF, #005fcc);
+            box-shadow: 0 6px 20px rgba(0, 119, 255, 0.3);
+        }
+
+        .social-card:hover .social-icon {
+            box-shadow: 0 12px 30px rgba(42, 171, 238, 0.4);
+        }
+
+        .social-card.vk:hover .social-icon {
+            box-shadow: 0 12px 30px rgba(0, 119, 255, 0.4);
+        }
+
+        .social-info {
+            flex: 1;
+            position: relative;
+            z-index: 1;
+        }
+
+        .social-info h3 {
+            font-size: 1.2rem;
+            color: var(--heading);
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .social-info p {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .social-arrow {
+            font-size: 1.4rem;
+            color: var(--text-muted2);
+            transition: all 0.3s;
+            position: relative;
+            z-index: 1;
+            opacity: 0.4;
+        }
+
+        .social-card:hover .social-arrow {
+            transform: translateX(6px);
+            opacity: 1;
+        }
+
+        .social-card.telegram:hover .social-arrow {
+            color: #2AABEE;
+        }
+
+        .social-card.vk:hover .social-arrow {
+            color: #0077FF;
+        }
+
+        .social-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            padding: 6px 14px;
+            border-radius: 50px;
+            z-index: 1;
+            opacity: 0;
+            transform: translateY(-6px);
+            transition: all 0.3s;
+            backdrop-filter: blur(6px);
+        }
+
+        .social-card.telegram .social-badge {
+            background: rgba(42, 171, 238, 0.12);
+            color: #2AABEE;
+            border: 1px solid rgba(42, 171, 238, 0.2);
+        }
+
+        .social-card.vk .social-badge {
+            background: rgba(0, 119, 255, 0.12);
+            color: #0077FF;
+            border: 1px solid rgba(0, 119, 255, 0.2);
+        }
+
+        .social-card:hover .social-badge {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .social-grid {
+                flex-direction: column;
+            }
+        }
 
         /* ============ FAQ ============ */
         .faq-item {
@@ -672,10 +985,12 @@
             margin-bottom: 14px;
             overflow: hidden;
             border: 1px solid var(--border);
-            transition: all 0.3s;
+            transition: border-color 0.3s;
         }
 
-        .faq-item:hover { border-color: var(--border-hover); }
+        .faq-item:hover {
+            border-color: var(--border-hover);
+        }
 
         .faq-question {
             display: flex;
@@ -686,24 +1001,36 @@
             font-weight: 600;
             color: var(--heading);
             transition: background 0.3s;
+            user-select: none;
         }
 
-        .faq-question:hover { background: var(--price-hover); }
-        .faq-question i { transition: transform 0.3s; color: var(--accent); }
-        .faq-item.active .faq-question i { transform: rotate(180deg); }
+        .faq-question:hover {
+            background: var(--price-hover);
+        }
 
-        .faq-answer {
+        .faq-question i {
+            transition: transform 0.3s ease;
+            color: var(--accent);
+        }
+
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer-wrapper {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.4s ease;
-            padding: 0 28px;
-            color: var(--text-muted);
-            line-height: 1.6;
+            transition: max-height 0.5s ease;
         }
 
-        .faq-item.active .faq-answer {
-            max-height: 300px;
-            padding: 20px 28px 22px;
+        .faq-item.active .faq-answer-wrapper {
+            max-height: 500px;
+        }
+
+        .faq-answer-inner {
+            padding: 14px 28px 22px 28px;
+            color: var(--text-muted);
+            line-height: 1.6;
         }
 
         /* ============ МАТЕРИАЛЫ ============ */
@@ -736,7 +1063,9 @@
             transition: background 0.3s;
         }
 
-        .footer-content { text-align: center; }
+        .footer-content {
+            text-align: center;
+        }
 
         .footer-links {
             display: flex;
@@ -752,7 +1081,9 @@
             transition: color 0.3s;
         }
 
-        .footer-links a:hover { color: var(--footer-text); }
+        .footer-links a:hover {
+            color: var(--footer-text);
+        }
 
         /* ============ МОДАЛКА ============ */
         .modal {
@@ -769,7 +1100,9 @@
             z-index: 1100;
         }
 
-        .modal.show { display: flex; }
+        .modal.show {
+            display: flex;
+        }
 
         .modal-content {
             background: var(--bg-card);
@@ -782,7 +1115,10 @@
             color: var(--text);
         }
 
-        .modal-icon { font-size: 3.5rem; margin-bottom: 20px; }
+        .modal-icon {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+        }
 
         /* ============ КНОПКА НАВЕРХ ============ */
         .scroll-top-btn {
@@ -821,21 +1157,54 @@
 
         /* ============ МЕДИА-ЗАПРОСЫ ============ */
         @media (max-width: 1024px) {
-            .nav-links { gap: clamp(8px, 1.5vw, 18px); }
-            .grid-2 > * { flex: 0 1 450px; max-width: 550px; }
-            .grid-3 > * { flex: 0 1 340px; max-width: 380px; }
+            .nav-links {
+                gap: clamp(8px, 1.5vw, 18px);
+            }
+
+            .grid-2>* {
+                flex: 0 1 450px;
+                max-width: 550px;
+            }
+
+            .grid-3>* {
+                flex: 0 1 340px;
+                max-width: 380px;
+            }
         }
 
         @media (min-width: 769px) and (max-width: 1024px) {
-            .nav-content { flex-wrap: wrap; justify-content: center; gap: 12px; }
-            .logo { order: 1; }
-            .nav-links { order: 2; width: 100%; justify-content: center; flex-wrap: wrap; }
+            .nav-content {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 12px;
+            }
+
+            .logo {
+                order: 1;
+            }
+
+            .nav-links {
+                order: 2;
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
         }
 
         @media (max-width: 768px) {
-            .nav-content { padding: 10px 0; gap: 12px; }
-            .burger-btn { display: block; order: 2; }
-            .logo { order: 1; }
+            .nav-content {
+                padding: 10px 0;
+                gap: 12px;
+            }
+
+            .burger-btn {
+                display: block;
+                order: 2;
+            }
+
+            .logo {
+                order: 1;
+            }
 
             .nav-links {
                 position: fixed;
@@ -860,7 +1229,10 @@
                 visibility: hidden;
             }
 
-            .nav-links.active { right: 0; visibility: visible; }
+            .nav-links.active {
+                right: 0;
+                visibility: visible;
+            }
 
             .nav-links a {
                 font-size: 1rem;
@@ -870,34 +1242,74 @@
                 display: block;
             }
 
-            .nav-links a:hover { background: rgba(196, 162, 122, 0.1); }
-            .nav-links a::after { display: none; }
+            .nav-links a:hover {
+                background: rgba(196, 162, 122, 0.1);
+            }
 
-            .tasks-btn, .constructor-btn, .profile-btn,
-            .profile-link-nav, .admin-link-nav, .login-link {
+            .nav-links a::after {
+                display: none;
+            }
+
+            .tasks-btn,
+            .constructor-btn,
+            .profile-btn,
+            .profile-link-nav,
+            .admin-link-nav,
+            .login-link {
                 padding: 14px 20px !important;
                 font-size: 1rem !important;
                 text-align: center;
                 margin: 4px 0;
             }
 
-            .logout-nav-btn { padding: 14px 20px; font-size: 1rem; text-align: center; width: 100%; margin: 4px 0; }
+            .logout-nav-btn {
+                padding: 14px 20px;
+                font-size: 1rem;
+                text-align: center;
+                width: 100%;
+                margin: 4px 0;
+            }
 
-            .hero-content { flex-direction: column; text-align: center; }
-            .hero-stats { justify-content: center; }
+            .hero-content {
+                flex-direction: column;
+                text-align: center;
+            }
 
-            .hero-text .btn { width: 100%; justify-content: center; }
-            .hero-text div:last-child { flex-direction: column; }
+            .hero-stats {
+                justify-content: center;
+            }
 
-            .grid-2 > *,
-            .grid-3 > *,
-            .contact-grid > * { flex: 0 1 100%; max-width: 100%; }
+            .hero-text .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .hero-text div:last-child {
+                flex-direction: column;
+            }
+
+            .grid-2>*,
+            .grid-3>*,
+            .contact-grid>* {
+                flex: 0 1 100%;
+                max-width: 100%;
+            }
         }
 
         @media (max-width: 480px) {
-            .nav-links { width: 85%; padding: 70px 20px 25px; }
-            .nav-links a { font-size: 0.95rem; padding: 12px 14px; }
-            .stat { padding: 6px 12px; }
+            .nav-links {
+                width: 85%;
+                padding: 70px 20px 25px;
+            }
+
+            .nav-links a {
+                font-size: 0.95rem;
+                padding: 12px 14px;
+            }
+
+            .stat {
+                padding: 6px 12px;
+            }
         }
     </style>
 
@@ -905,336 +1317,449 @@
     <script src="js/supabase.js"></script>
     <script src="js/auth.js"></script>
 </head>
+
 <body>
 
-<nav class="navbar">
-    <div class="container">
-        <div class="nav-content">
-            <a href="#" class="logo"><span>⚡</span> Rubium</a>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <a href="#" class="logo"><span>⚡</span> Rubium</a>
 
-            <div class="nav-links" id="navLinks">
-                <a href="#about">О нас</a>
-                <a href="#subjects">Предметы</a>
-                <a href="#materials">Материалы</a>
-                <a href="#contacts">Контакты</a>
-                <a href="tasks.html" class="tasks-btn"><i class="fas fa-tasks"></i> Задачи</a>
-                <a href="constructor.html" class="constructor-btn"><i class="fas fa-random"></i> Конструктор</a>
-            </div>
-
-            <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">
-                <i class="fas fa-moon"></i>
-            </button>
-
-            <button class="burger-btn" id="burgerBtn" aria-label="Меню">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-        </div>
-    </div>
-    <div class="nav-overlay" id="navOverlay"></div>
-</nav>
-
-<section class="hero">
-    <div class="container">
-        <div class="hero-content">
-            <div class="hero-text animate-on-scroll">
-                <span class="highlight">🎓 Студенты МГТУ им. Н.Э. Баумана и Пекинского технологического университета</span>
-                <h1>Занятия по <span style="color: var(--accent);">математике, информатике и физике</span></h1>
-                <p>Помогаем школьникам 5-11 классов разобраться в точных науках без скучной зубрежки. Подготовка к ОГЭ и ЕГЭ 80+, повышение успеваемости в уютной атмосфере.</p>
-                <div class="hero-stats">
-                    <div class="stat"><div class="stat-number">20+</div><div class="stat-label">учеников</div></div>
-                    <div class="stat"><div class="stat-number">4.9</div><div class="stat-label">средний рейтинг</div></div>
-                    <div class="stat"><div class="stat-number">92.3</div><div class="stat-label">средний балл ЕГЭ</div></div>
-                    <div class="stat"><div class="stat-number">5</div><div class="stat-label">ОГЭ (отлично)</div></div>
+                <div class="nav-links" id="navLinks">
+                    <a href="#about">О нас</a>
+                    <a href="#subjects">Предметы</a>
+                    <a href="#materials">Материалы</a>
+                    <a href="#contacts">Контакты</a>
+                    <a href="tasks.html" class="tasks-btn"><i class="fas fa-tasks"></i> Задачи</a>
+                    <a href="constructor.html" class="constructor-btn"><i class="fas fa-random"></i> Конструктор</a>
                 </div>
-                <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-top: 32px;">
-                    <button class="btn btn-primary" id="contactBtnNav">📝 Записаться на пробный урок</button>
-                    <a href="tasks.html" class="btn btn-outline"><i class="fas fa-tasks"></i> Решать задачи</a>
+
+                <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">
+                    <i class="fas fa-moon"></i>
+                </button>
+
+                <button class="burger-btn" id="burgerBtn" aria-label="Меню">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+        <div class="nav-overlay" id="navOverlay"></div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text animate-on-scroll">
+                    <span class="highlight">🎓 Студенты МГТУ им. Н.Э. Баумана и Пекинского технологического
+                        университета</span>
+                    <h1>Занятия по <span style="color: var(--accent);">математике, информатике и физике</span></h1>
+                    <p>Помогаем школьникам 5-11 классов разобраться в точных науках без скучной зубрежки. Подготовка к
+                        ОГЭ и ЕГЭ 80+, повышение успеваемости в уютной атмосфере.</p>
+                    <div class="hero-stats">
+                        <div class="stat">
+                            <div class="stat-number">20+</div>
+                            <div class="stat-label">учеников</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">4.9</div>
+                            <div class="stat-label">средний рейтинг</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">92.3</div>
+                            <div class="stat-label">средний балл ЕГЭ</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">5</div>
+                            <div class="stat-label">ОГЭ (отлично)</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-top: 32px;">
+                        <button class="btn btn-primary" id="contactBtnNav">Записаться на пробный урок</button>
+                        <a href="tasks.html" class="btn btn-outline"><i class="fas fa-tasks"></i> Решать задачи</a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
-
-<div class="container">
-    <section id="about">
-        <h2 class="section-title animate-on-scroll"><span>📖</span> О нас</h2>
-        <div class="grid-2 animate-on-scroll">
-            <div class="card" style="cursor: default;"><h3>Наш подход</h3><p>Мы считаем, что главное — научить думать, а не заучивать формулы. На занятиях мы разбираем темы до полного понимания, решаем задачи разного уровня сложности и закрепляем материал на практике в комфортной обстановке.</p></div>
-            <div class="card" style="cursor: default;"><h3>Почему мы?</h3><p>Сами прошли через огромное количество экзаменов. Хорошо понимаем, с какими трудностями сталкиваются школьники, и знаем, как объяснить сложные вещи простым и понятным языком.</p></div>
-        </div>
     </section>
 
-    <section>
-        <h2 class="section-title animate-on-scroll"><span>🎓</span> Преподаватели</h2>
-        <div class="grid-3 animate-on-scroll">
-            <div class="card">
-                <a href="maxim_page.html" class="card-link"></a>
-                <div class="card-icon"><img src="data/maxim.jpg" alt="Максим Ковалёв"></div>
-                <h3>Ковалев Максим</h3>
-                <ul>
-                    <li>МГТУ им. Баумана</li>
-                    <li>Факультет «Энергомашиностроение»</li>
-                    <li>Бюджетная форма обучения</li>
-                    <li>Преподаватель математики и физики</li>
-                </ul>
-            </div>
-            <div class="card">
-                <a href="ilya_page.html" class="card-link"></a>
-                <div class="card-icon"><img src="data/temporary.jpeg" alt="Илья Емельянов"></div>
-                <h3>Емельянов Илья</h3>
-                <ul>
-                    <li>Beijing Institute of Technology</li>
-                    <li>Специальность «Компьютерные науки»</li>
-                    <li>Грант с полным покрытием</li>
-                    <li>Преподаватель информатики</li>
-                </ul>
-            </div>
-            <div class="card">
-                <a href="misha_page.html" class="card-link"></a>
-                <div class="card-icon"><img src="data/Misha.jpg" alt="Михаил Коняхин"></div>
-                <h3>Коняхин Михаил</h3>
-                <ul>
-                    <li>МГТУ им. Баумана</li>
-                    <li>Факультет «Фундаментальные науки»</li>
-                    <li>Бюджетная форма обучения</li>
-                    <li>Преподаватель высшей математики</li>
-                </ul>
-            </div>
-        </div>
-    </section>
-
-    <section id="subjects">
-        <h2 class="section-title animate-on-scroll"><span>📚</span> Какие предметы мы преподаём?</h2>
-        <div class="grid-3 animate-on-scroll">
-            <div class="subject-card"><div class="subject-icon">📐</div><h3>Математика</h3><ul><li>5–11 классы (алгебра, геометрия)</li><li>Подготовка к ОГЭ</li><li>Подготовка к ЕГЭ 80+</li><li>Повышение успеваемости</li></ul></div>
-            <div class="subject-card"><div class="subject-icon">⚡</div><h3>Физика</h3><ul><li>7–11 классы</li><li>Подготовка к ОГЭ</li><li>Подготовка к ЕГЭ 80+</li><li>Разбор сложных тем</li></ul></div>
-            <div class="subject-card"><div class="subject-icon">💻</div><h3>Информатика</h3><ul><li>7–11 классы</li><li>Подготовка к ОГЭ</li><li>Подготовка к ЕГЭ 80+</li><li>Курс программирования на языке Python</li></ul></div>
-        </div>
-    </section>
-
-    <section id="materials">
-        <h2 class="section-title animate-on-scroll"><span>📚</span> Полезные материалы</h2>
-        <div class="animate-on-scroll">
-            <a href="data/algebra.pdf" class="material-link"><span style="font-size: 2.2rem;">📐</span><div><strong>Шпаргалка по алгебре</strong><br><small>Формулы 7–9 класс (PDF)</small></div></a>
-            <a href="data/fizika.pdf" class="material-link"><span style="font-size: 2.2rem;">⚡</span><div><strong>Формулы по физике</strong><br><small>Механика и электричество (PDF)</small></div></a>
-            <a href="data/oge.pdf" class="material-link"><span style="font-size: 2.2rem;">📝</span><div><strong>Демоверсия ОГЭ</strong><br><small>Официальные демоварианты с ответами (PDF)</small></div></a>
-        </div>
-    </section>
-
-    <section id="faq">
-        <h2 class="section-title animate-on-scroll"><span>❓</span> Часто задаваемые вопросы</h2>
-        <div class="animate-on-scroll">
-            <div class="faq-item"><div class="faq-question">Как проходят занятия? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Занятия проходят онлайн через Яндекс Телемост.</div></div>
-            <div class="faq-item"><div class="faq-question">Сколько длится занятие? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Стандартное занятие длится 60 минут. При необходимости можем увеличить до 90 минут.</div></div>
-            <div class="faq-item"><div class="faq-question">Есть ли пробное занятие? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Да, первое занятие — ознакомительное и бесплатное (30 минут).</div></div>
-            <div class="faq-item"><div class="faq-question">Как оплачивать занятия? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Оплата после каждого занятия переводом на карту любого банка.</div></div>
-            <div class="faq-item"><div class="faq-question">Что если нужно отменить занятие? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Предупредите преподавателя минимум за 3 часа — и мы перенесём занятие на другое удобное время.</div></div>
-        </div>
-    </section>
-
-    <section id="contacts">
-        <h2 class="section-title animate-on-scroll"><span>📞</span> Соц сети и контакты</h2>
-        <div class="contact-grid animate-on-scroll">
-            <a href="https://t.me/rubium_education" target="_blank" class="contact-card"><div class="contact-icon"><i class="fab fa-telegram-plane"></i></div><div class="contact-info"><h4>Telegram</h4><p>Rubium Education</p></div></a>
-            <a href="https://vk.com/kovalev_math" target="_blank" class="contact-card"><div class="contact-icon"><i class="fab fa-vk"></i></div><div class="contact-info"><h4>ВКонтакте</h4><p>vk.com/ХЗ чё</p></div></a>
-            <div class="contact-card" style="cursor: pointer;"><div class="contact-icon"><i class="fas fa-phone-alt"></i></div><div class="contact-info"><h4>Телефон</h4><p>не надо</p></div></div>
-        </div>
-    </section>
-</div>
-
-<button class="scroll-top-btn" id="scrollTopBtn" aria-label="Наверх">
-    <i class="fas fa-arrow-up"></i>
-</button>
-
-<footer>
     <div class="container">
-        <div class="footer-content">
-            <div class="footer-links">
-                <a href="#about">О нас</a>
-                <a href="#subjects">Предметы</a>
-                <a href="#materials">Материалы</a>
-                <a href="#contacts">Контакты</a>
-                <a href="tasks.html">Сборник задач</a>
-                <a href="constructor.html">Конструктор вариантов</a>
+        <section id="about">
+            <h2 class="section-title animate-on-scroll"><span>📖</span> О нас</h2>
+            <div class="grid-2 animate-on-scroll">
+                <div class="card" style="cursor: default;">
+                    <h3>Наш подход</h3>
+                    <p>Мы считаем, что главное — научить думать, а не заучивать формулы. На занятиях мы разбираем темы
+                        до полного понимания, решаем задачи разного уровня сложности и закрепляем материал на практике в
+                        комфортной обстановке.</p>
+                </div>
+                <div class="card" style="cursor: default;">
+                    <h3>Почему мы?</h3>
+                    <p>Сами прошли через огромное количество экзаменов. Хорошо понимаем, с какими трудностями
+                        сталкиваются школьники, и знаем, как объяснить сложные вещи простым и понятным языком.</p>
+                </div>
             </div>
-            <p>© 2026 Rubium · образовательный проект</p>
-            <p><a onclick="addToFavorites()" style="color: var(--footer-link); cursor: pointer;">⭐ Добавить сайт в закладки</a></p>
+        </section>
+
+        <section>
+            <h2 class="section-title animate-on-scroll"><span>🎓</span> Преподаватели</h2>
+            <div class="grid-3 animate-on-scroll">
+                <div class="card">
+                    <a href="maxim_page.html" class="card-link"></a>
+                    <div class="card-icon"><img src="data/maxim.jpg" alt="Максим Ковалёв"></div>
+                    <h3>Ковалев Максим</h3>
+                    <ul>
+                        <li>МГТУ им. Баумана</li>
+                        <li>Факультет «Энергомашиностроение»</li>
+                        <li>Бюджетная форма обучения</li>
+                        <li>Преподаватель математики и физики</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <a href="ilya_page.html" class="card-link"></a>
+                    <div class="card-icon"><img src="data/temporary.jpeg" alt="Илья Емельянов"></div>
+                    <h3>Емельянов Илья</h3>
+                    <ul>
+                        <li>Beijing Institute of Technology</li>
+                        <li>Специальность «Компьютерные науки»</li>
+                        <li>Грант с полным покрытием</li>
+                        <li>Преподаватель информатики</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <a href="misha_page.html" class="card-link"></a>
+                    <div class="card-icon"><img src="data/Misha.jpg" alt="Михаил Коняхин"></div>
+                    <h3>Коняхин Михаил</h3>
+                    <ul>
+                        <li>МГТУ им. Баумана</li>
+                        <li>Факультет «Фундаментальные науки»</li>
+                        <li>Бюджетная форма обучения</li>
+                        <li>Преподаватель высшей математики</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="subjects">
+            <h2 class="section-title animate-on-scroll"><span>📚</span> Какие предметы мы преподаём?</h2>
+            <div class="grid-3 animate-on-scroll">
+                <div class="subject-card">
+                    <div class="subject-icon">📐</div>
+                    <h3>Математика</h3>
+                    <ul>
+                        <li>5–11 классы (алгебра, геометрия)</li>
+                        <li>Подготовка к ОГЭ</li>
+                        <li>Подготовка к ЕГЭ 80+</li>
+                        <li>Повышение успеваемости</li>
+                    </ul>
+                </div>
+                <div class="subject-card">
+                    <div class="subject-icon">⚡</div>
+                    <h3>Физика</h3>
+                    <ul>
+                        <li>7–11 классы</li>
+                        <li>Подготовка к ОГЭ</li>
+                        <li>Подготовка к ЕГЭ 80+</li>
+                        <li>Разбор сложных тем</li>
+                    </ul>
+                </div>
+                <div class="subject-card">
+                    <div class="subject-icon">💻</div>
+                    <h3>Информатика</h3>
+                    <ul>
+                        <li>7–11 классы</li>
+                        <li>Подготовка к ОГЭ</li>
+                        <li>Подготовка к ЕГЭ 80+</li>
+                        <li>Курс программирования на языке Python</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="materials">
+            <h2 class="section-title animate-on-scroll"><span>📚</span> Полезные материалы</h2>
+            <div class="animate-on-scroll">
+                <a href="data/algebra.pdf" class="material-link"><span style="font-size: 2.2rem;">📐</span>
+                    <div><strong>Шпаргалка по алгебре</strong><br><small>Формулы 7–9 класс (PDF)</small></div>
+                </a>
+                <a href="data/fizika.pdf" class="material-link"><span style="font-size: 2.2rem;">⚡</span>
+                    <div><strong>Формулы по физике</strong><br><small>Механика и электричество (PDF)</small></div>
+                </a>
+                <a href="data/oge.pdf" class="material-link"><span style="font-size: 2.2rem;">📝</span>
+                    <div><strong>Демоверсия ОГЭ</strong><br><small>Официальные демоварианты с ответами (PDF)</small>
+                    </div>
+                </a>
+            </div>
+        </section>
+        <section id="faq">
+            <h2 class="section-title animate-on-scroll"><span>❓</span> Часто задаваемые вопросы</h2>
+            <div class="animate-on-scroll">
+                <div class="faq-item">
+                    <div class="faq-question">Как проходят занятия? <i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer-wrapper">
+                        <div class="faq-answer-inner">Занятия проходят онлайн через Яндекс Телемост.</div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">Сколько длится занятие? <i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer-wrapper">
+                        <div class="faq-answer-inner">Стандартное занятие длится 60 минут. При необходимости можем
+                            увеличить до 90
+                            минут.</div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">Есть ли пробное занятие? <i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer-wrapper">
+                        <div class="faq-answer-inner">Да, первое занятие — ознакомительное и бесплатное (30 минут).
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">Как оплачивать занятия? <i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer-wrapper">
+                        <div class="faq-answer-inner">Оплата после каждого занятия переводом на карту любого банка.
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">Что если нужно отменить занятие? <i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer-wrapper">
+                        <div class="faq-answer-inner">Предупредите преподавателя минимум за 3 часа — и мы перенесём
+                            занятие на
+                            другое удобное время.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contacts">
+            <h2 class="section-title animate-on-scroll"><span>💬</span> Мы в соцсетях</h2>
+            <div class="social-grid animate-on-scroll">
+                <a href="https://t.me/rubium_education" target="_blank" class="social-card telegram">
+                    <div class="social-icon"><i class="fab fa-telegram-plane"></i></div>
+                    <div class="social-info">
+                        <h3>Telegram</h3>
+                        <p>Мемы, анонсы, домашки — всё тут</p>
+                    </div>
+                    <span class="social-badge">⚡ главный</span>
+                    <span class="social-arrow">→</span>
+                </a>
+                <a href="https://vk.com/kovalev_math" target="_blank" class="social-card vk">
+                    <div class="social-icon"><i class="fab fa-vk"></i></div>
+                    <div class="social-info">
+                        <h3>ВКонтакте</h3>
+                        <p>Клипы, разборы, движ</p>
+                    </div>
+                    <span class="social-badge">🎬 клипы</span>
+                    <span class="social-arrow">→</span>
+                </a>
+            </div>
+        </section>
+    </div>
+
+    <button class="scroll-top-btn" id="scrollTopBtn" aria-label="Наверх">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="#about">О нас</a>
+                    <a href="#subjects">Предметы</a>
+                    <a href="#materials">Материалы</a>
+                    <a href="#contacts">Контакты</a>
+                    <a href="tasks.html">Сборник задач</a>
+                    <a href="constructor.html">Конструктор вариантов</a>
+                </div>
+                <p>© 2026 Rubium · образовательный проект</p>
+                <p><a onclick="addToFavorites()" style="color: var(--footer-link); cursor: pointer;">⭐ Добавить сайт в
+                        закладки</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <span class="modal-close" style="float: right; cursor: pointer; font-size: 28px;">&times;</span>
+            <div class="modal-icon">✅</div>
+            <h3>Сообщение отправлено!</h3>
+            <p>Я свяжусь с вами в ближайшее время.</p>
+            <button class="btn btn-primary modal-close-btn" style="margin-top: 20px;">Закрыть</button>
         </div>
     </div>
-</footer>
 
-<div class="modal" id="successModal">
-    <div class="modal-content">
-        <span class="modal-close" style="float: right; cursor: pointer; font-size: 28px;">&times;</span>
-        <div class="modal-icon">✅</div>
-        <h3>Сообщение отправлено!</h3>
-        <p>Я свяжусь с вами в ближайшее время.</p>
-        <button class="btn btn-primary modal-close-btn" style="margin-top: 20px;">Закрыть</button>
-    </div>
-</div>
+    <script>
+        (function () {
+            // ===== ТЕМА =====
+            const themeToggle = document.getElementById('themeToggle');
+            const html = document.documentElement;
+            const savedTheme = localStorage.getItem('theme') || 'light';
 
-<script>
-    (function() {
-        // ===== ТЕМА =====
-        const themeToggle = document.getElementById('themeToggle');
-        const html = document.documentElement;
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        
-        html.setAttribute('data-theme', savedTheme);
-        updateThemeIcon(savedTheme);
+            html.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
 
-        themeToggle?.addEventListener('click', () => {
-            const current = html.getAttribute('data-theme');
-            const next = current === 'dark' ? 'light' : 'dark';
-            html.setAttribute('data-theme', next);
-            localStorage.setItem('theme', next);
-            updateThemeIcon(next);
-        });
-
-        function updateThemeIcon(theme) {
-            const icon = themeToggle?.querySelector('i');
-            if (icon) {
-                icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-            }
-        }
-
-        // ===== АНИМАЦИИ =====
-        const animatedElements = document.querySelectorAll('.animate-on-scroll');
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => { 
-                if (entry.isIntersecting) entry.target.classList.add('visible'); 
+            themeToggle?.addEventListener('click', () => {
+                const current = html.getAttribute('data-theme');
+                const next = current === 'dark' ? 'light' : 'dark';
+                html.setAttribute('data-theme', next);
+                localStorage.setItem('theme', next);
+                updateThemeIcon(next);
             });
-        }, { threshold: 0.1 });
-        animatedElements.forEach(el => observer.observe(el));
 
-        // ===== БУРГЕР-МЕНЮ =====
-        const burgerBtn = document.getElementById('burgerBtn');
-        const navLinks = document.getElementById('navLinks');
-        const navOverlay = document.getElementById('navOverlay');
-
-        function toggleMenu() {
-            burgerBtn.classList.toggle('active');
-            navLinks.classList.toggle('active');
-            navOverlay.classList.toggle('active');
-            document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
-        }
-
-        function closeMenu() {
-            burgerBtn.classList.remove('active');
-            navLinks.classList.remove('active');
-            navOverlay.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-
-        burgerBtn?.addEventListener('click', toggleMenu);
-        navOverlay?.addEventListener('click', closeMenu);
-
-        navLinks?.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                if (window.innerWidth <= 768) closeMenu();
-            });
-        });
-
-        // ===== FAQ =====
-        document.querySelectorAll('.faq-item').forEach(item => {
-            item.querySelector('.faq-question')?.addEventListener('click', () => { 
-                item.classList.toggle('active'); 
-            });
-        });
-
-        // ===== КНОПКА "ЗАПИСАТЬСЯ" =====
-        document.getElementById('contactBtnNav')?.addEventListener('click', () => {
-            document.getElementById('contacts')?.scrollIntoView({ behavior: 'smooth' });
-        });
-
-        // ===== МОДАЛКА =====
-        const modal = document.getElementById('successModal');
-        document.querySelectorAll('.modal-close, .modal-close-btn').forEach(el => {
-            el.addEventListener('click', () => modal?.classList.remove('show'));
-        });
-        modal?.addEventListener('click', (e) => { 
-            if (e.target === modal) modal.classList.remove('show'); 
-        });
-
-        // ===== В ЗАКЛАДКИ =====
-        window.addToFavorites = function() {
-            try {
-                if (window.external && 'AddFavorite' in window.external) 
-                    window.external.AddFavorite(window.location.href, document.title);
-                else 
-                    alert('Нажмите Ctrl+D (или Cmd+D на Mac), чтобы добавить сайт в закладки.');
-            } catch (e) { 
-                alert('Нажмите Ctrl+D (или Cmd+D на Mac)'); 
-            }
-        };
-
-                // ===== НАВБАР ПОЛЬЗОВАТЕЛЯ (Supabase) =====
-        async function updateNavBar() {
-            const navLinksContainer = document.getElementById('navLinks');
-            navLinksContainer?.querySelectorAll('.profile-link-nav, .logout-nav-btn, .admin-link-nav, .login-link').forEach(el => el.remove());
-
-            const { data: { user } } = await supabase.auth.getUser();
-
-            if (user) {
-                const { data: profile } = await supabase
-                    .from('users')
-                    .select('name, role')
-                    .eq('id', user.id)
-                    .single();
-
-                const displayName = profile?.name || user.email?.split('@')[0] || 'Профиль';
-                const role = profile?.role || 'student';
-
-                const profileLink = document.createElement('a');
-                profileLink.href = 'profile.html';
-                profileLink.className = 'profile-link-nav';
-                profileLink.innerHTML = '<i class="fas fa-user"></i> ' + displayName;
-                navLinksContainer?.appendChild(profileLink);
-
-                if (role === 'admin') {
-                    const adminLink = document.createElement('a');
-                    adminLink.href = 'admin.html';
-                    adminLink.className = 'admin-link-nav';
-                    adminLink.innerHTML = '<i class="fas fa-crown"></i> Админ-панель';
-                    navLinksContainer?.appendChild(adminLink);
+            function updateThemeIcon(theme) {
+                const icon = themeToggle?.querySelector('i');
+                if (icon) {
+                    icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
                 }
-
-                const logoutBtn = document.createElement('button');
-                logoutBtn.className = 'logout-nav-btn';
-                logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Выйти';
-                logoutBtn.onclick = () => AUTH.logout();
-                navLinksContainer?.appendChild(logoutBtn);
-            } else {
-                const loginLink = document.createElement('a');
-                loginLink.href = 'login.html';
-                loginLink.className = 'login-link';
-                loginLink.textContent = 'Войти';
-                navLinksContainer?.appendChild(loginLink);
             }
-        }
 
-        // Ждём загрузки AUTH, потом вызываем
-        if (typeof AUTH !== 'undefined') {
-            updateNavBar();
-        } else {
-            window.addEventListener('load', updateNavBar);
-        }
+            // ===== АНИМАЦИИ =====
+            const animatedElements = document.querySelectorAll('.animate-on-scroll');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('visible');
+                });
+            }, { threshold: 0.1 });
+            animatedElements.forEach(el => observer.observe(el));
 
-        // ===== КНОПКА НАВЕРХ =====
-        const scrollTopBtn = document.getElementById('scrollTopBtn');
+            // ===== БУРГЕР-МЕНЮ =====
+            const burgerBtn = document.getElementById('burgerBtn');
+            const navLinks = document.getElementById('navLinks');
+            const navOverlay = document.getElementById('navOverlay');
 
-        function toggleScrollTopBtn() {
-            scrollTopBtn?.classList.toggle('visible', window.scrollY > 500);
-        }
+            function toggleMenu() {
+                burgerBtn.classList.toggle('active');
+                navLinks.classList.toggle('active');
+                navOverlay.classList.toggle('active');
+                document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
+            }
 
-        window.addEventListener('scroll', toggleScrollTopBtn);
-        scrollTopBtn?.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-        toggleScrollTopBtn();
-    })();
-</script>
+            function closeMenu() {
+                burgerBtn.classList.remove('active');
+                navLinks.classList.remove('active');
+                navOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            burgerBtn?.addEventListener('click', toggleMenu);
+            navOverlay?.addEventListener('click', closeMenu);
+
+            navLinks?.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth <= 768) closeMenu();
+                });
+            });
+
+            // ===== FAQ =====
+            document.querySelectorAll('.faq-item').forEach(item => {
+                const wrapper = item.querySelector('.faq-answer-wrapper');
+
+                item.querySelector('.faq-question')?.addEventListener('click', () => {
+                    const isActive = item.classList.contains('active');
+
+                    if (!isActive) {
+                        item.classList.add('active');
+                        wrapper.style.maxHeight = wrapper.scrollHeight + 'px';
+                    } else {
+                        wrapper.style.maxHeight = wrapper.scrollHeight + 'px';
+                        requestAnimationFrame(() => {
+                            wrapper.style.maxHeight = '0';
+                        });
+                        item.classList.remove('active');
+                    }
+                });
+            });
+
+            // ===== КНОПКА "ЗАПИСАТЬСЯ" =====
+            document.getElementById('contactBtnNav')?.addEventListener('click', () => {
+                document.getElementById('contacts')?.scrollIntoView({ behavior: 'smooth' });
+            });
+
+            // ===== МОДАЛКА =====
+            const modal = document.getElementById('successModal');
+            document.querySelectorAll('.modal-close, .modal-close-btn').forEach(el => {
+                el.addEventListener('click', () => modal?.classList.remove('show'));
+            });
+            modal?.addEventListener('click', (e) => {
+                if (e.target === modal) modal.classList.remove('show');
+            });
+
+            // ===== В ЗАКЛАДКИ =====
+            window.addToFavorites = function () {
+                try {
+                    if (window.external && 'AddFavorite' in window.external)
+                        window.external.AddFavorite(window.location.href, document.title);
+                    else
+                        alert('Нажмите Ctrl+D (или Cmd+D на Mac), чтобы добавить сайт в закладки.');
+                } catch (e) {
+                    alert('Нажмите Ctrl+D (или Cmd+D на Mac)');
+                }
+            };
+
+            // ===== НАВБАР ПОЛЬЗОВАТЕЛЯ (Supabase) =====
+            async function updateNavBar() {
+                const navLinksContainer = document.getElementById('navLinks');
+                navLinksContainer?.querySelectorAll('.profile-link-nav, .logout-nav-btn, .admin-link-nav, .login-link').forEach(el => el.remove());
+
+                const { data: { user } } = await supabase.auth.getUser();
+
+                if (user) {
+                    const { data: profile } = await supabase
+                        .from('users')
+                        .select('name, role')
+                        .eq('id', user.id)
+                        .single();
+
+                    const displayName = profile?.name || user.email?.split('@')[0] || 'Профиль';
+                    const role = profile?.role || 'student';
+
+                    const profileLink = document.createElement('a');
+                    profileLink.href = 'profile.html';
+                    profileLink.className = 'profile-link-nav';
+                    profileLink.innerHTML = '<i class="fas fa-user"></i> ' + displayName;
+                    navLinksContainer?.appendChild(profileLink);
+
+                    if (role === 'admin') {
+                        const adminLink = document.createElement('a');
+                        adminLink.href = 'admin.html';
+                        adminLink.className = 'admin-link-nav';
+                        adminLink.innerHTML = '<i class="fas fa-crown"></i> Админ-панель';
+                        navLinksContainer?.appendChild(adminLink);
+                    }
+
+                } else {
+                    const loginLink = document.createElement('a');
+                    loginLink.href = 'login.html';
+                    loginLink.className = 'login-link';
+                    loginLink.textContent = 'Войти';
+                    navLinksContainer?.appendChild(loginLink);
+                }
+            }
+
+            // Ждём загрузки AUTH, потом вызываем
+            if (typeof AUTH !== 'undefined') {
+                updateNavBar();
+            } else {
+                window.addEventListener('load', updateNavBar);
+            }
+
+            // ===== КНОПКА НАВЕРХ =====
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+
+            function toggleScrollTopBtn() {
+                scrollTopBtn?.classList.toggle('visible', window.scrollY > 500);
+            }
+
+            window.addEventListener('scroll', toggleScrollTopBtn);
+            scrollTopBtn?.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+            toggleScrollTopBtn();
+        })();
+    </script>
 </body>
+
 </html>

@@ -290,7 +290,7 @@
 <body>
 
 <div class="register-box">
-    <div class="logo"><span>⚡</span> Rubium</div>
+    <div class="logo">Rubium</div>
     <p class="subtitle">Создать аккаунт</p>
 
     <div class="error" id="error"></div>
@@ -354,18 +354,7 @@
             return;
         }
 
-        const { error: profileError } = await supabase.from('users').insert({
-            id: data.user.id,
-            email: email,
-            name: name,
-            role: 'student',
-            auth_provider: 'email'
-        });
-
-        if (profileError) {
-            showError('Ошибка при создании профиля: ' + profileError.message);
-            return;
-        }
+        console.log('User ID from auth:', data.user.id);
 
         window.location.href = 'profile.html';
     });
