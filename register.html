@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Регистрация — Rubium</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase.js"></script>
@@ -166,57 +166,6 @@
             box-shadow: 0 12px 30px var(--shadow-hover);
         }
 
-        .divider {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin: 22px 0;
-            color: var(--text-secondary);
-            opacity: 0.4;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .divider::before,
-        .divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border);
-        }
-
-        .oauth-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .btn-oauth {
-            background: var(--bg);
-            border: 2px solid var(--border);
-            color: var(--text);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            font-weight: 500;
-            padding: 13px;
-            border-radius: 50px;
-            font-family: inherit;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            white-space: nowrap;
-        }
-
-        .btn-oauth:hover {
-            border-color: var(--accent-light);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px var(--shadow);
-        }
-
         .checkbox-group {
             display: flex;
             align-items: flex-start;
@@ -327,45 +276,91 @@
 </div>
 
 <script>
-    const errorEl = document.getElementById('error');
+    var errorEl = document.getElementById('error');
 
     function showError(msg) {
         errorEl.textContent = msg;
         errorEl.style.display = 'block';
-        setTimeout(() => errorEl.style.display = 'none', 5000);
+        setTimeout(function() {
+            errorEl.style.display = 'none';
+        }, 5000);
     }
 
-    (async () => {
-        const user = await AUTH.getUser();
-        if (user) window.location.href = 'profile.html';
+    function saveUserToLocalStorage(user, name) {
+        var userName = name || user.user_metadata?.name || user.email?.split('@')[0] || 'Профиль';
+        localStorage.setItem('user_name', userName);
+        localStorage.setItem('logged_in', 'true');
+    }
+
+    // Редирект если уже залогинен
+    (async function() {
+        try {
+            var user = await AUTH.getUser();
+            if (user) {
+                saveUserToLocalStorage(user);
+                window.location.href = 'profile.html';
+            }
+        } catch(e) {
+            console.log('Auth check skipped:', e.message);
+        }
     })();
 
-    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+    // Слушаем OAuth возврат
+    supabase.auth.onAuthStateChange(function(event, session) {
+        if (event === 'SIGNED_IN' && session && session.user) {
+            saveUserToLocalStorage(session.user);
+            window.location.href = 'profile.html';
+        }
+    });
+
+    // Регистрация через email
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
         e.preventDefault();
 
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
+        var name = document.getElementById('name').value.trim();
+        var email = document.getElementById('email').value.trim();
+        var password = document.getElementById('password').value;
 
-        const { data, error } = await supabase.auth.signUp({ email, password });
+        var result = await supabase.auth.signUp({
+            email: email,
+            password: password,
+            options: {
+                data: { name: name }
+            }
+        });
 
-        if (error) {
-            showError(error.message === 'User already registered' ? 'Пользователь с таким email уже существует' : error.message);
+        if (result.error) {
+            var msg = result.error.message === 'User already registered'
+                ? 'Пользователь с таким email уже существует'
+                : result.error.message;
+            showError(msg);
             return;
         }
 
-        console.log('User ID from auth:', data.user.id);
+        var user = result.data.user;
 
-        localStorage.setItem('logged_in', 'true');
-        window.location.href = 'profile.html';
+        if (user) {
+            // Сохраняем в таблицу users
+            await supabase.from('users').upsert({
+                id: user.id,
+                email: user.email,
+                name: name
+            }, {
+                onConflict: 'id',
+                ignoreDuplicates: false
+            }).catch(function(err) {
+                console.log('Users table upsert failed:', err.message);
+            });
+
+            saveUserToLocalStorage(user, name);
+            window.location.href = 'profile.html';
+        } else {
+            // Подтверждение email включено — показываем сообщение
+            showError('Проверьте почту для подтверждения регистрации');
+        }
     });
 
-    async function registerWithOAuth(provider) {
-        const { error } = await supabase.auth.signInWithOAuth({ provider });
-        if (error) showError(error.message);
-    }
-
-    const savedTheme = localStorage.getItem('theme') || 'light';
+    var savedTheme = localStorage.getItem('theme') || 'light';
     document.documentElement.setAttribute('data-theme', savedTheme);
 </script>
 </body>

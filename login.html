@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Вход — Rubium</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase.js"></script>
@@ -40,7 +41,11 @@
             --hero-gradient: linear-gradient(135deg, #16213e 0%, #1a1a2e 100%);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -82,8 +87,15 @@
         }
 
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .logo {
@@ -110,7 +122,10 @@
             font-size: 0.95rem;
         }
 
-        .form-group { margin-bottom: 18px; position: relative; }
+        .form-group {
+            margin-bottom: 18px;
+            position: relative;
+        }
 
         .form-group label {
             display: block;
@@ -232,7 +247,9 @@
             transition: border-color 0.3s;
         }
 
-        .link a:hover { border-color: var(--accent); }
+        .link a:hover {
+            border-color: var(--accent);
+        }
 
         .error {
             background: rgba(220, 60, 60, 0.06);
@@ -258,92 +275,141 @@
             transition: opacity 0.3s;
         }
 
-        .back-link a:hover { opacity: 1; }
+        .back-link a:hover {
+            opacity: 1;
+        }
     </style>
 </head>
+
 <body>
 
-<div class="login-box">
-    <div class="logo">Rubium</div>
-    <p class="subtitle">С возвращением</p>
+    <div class="login-box">
+        <div class="logo">Rubium</div>
+        <p class="subtitle">С возвращением</p>
 
-    <div class="error" id="error"></div>
+        <div class="error" id="error"></div>
 
-    <form id="loginForm">
-        <div class="form-group">
-            <label>Email</label>
-            <input type="email" id="email" required autocomplete="email">
+        <form id="loginForm">
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="email" required autocomplete="email">
+            </div>
+            <div class="form-group">
+                <label>Пароль</label>
+                <input type="password" id="password" required autocomplete="current-password">
+            </div>
+            <button type="submit" class="btn btn-primary">Войти</button>
+        </form>
+
+        <div class="divider">или</div>
+
+        <div class="oauth-grid">
+            <button class="btn-oauth" onclick="loginWithOAuth('vk')">
+                <i class="fab fa-vk"></i> VK
+            </button>
+            <button class="btn-oauth" onclick="loginWithOAuth('google')">
+                <i class="fab fa-google"></i> Google
+            </button>
         </div>
-        <div class="form-group">
-            <label>Пароль</label>
-            <input type="password" id="password" required autocomplete="current-password">
+
+        <div class="link">
+            Нет аккаунта? <a href="register.html">Зарегистрироваться</a>
         </div>
-        <button type="submit" class="btn btn-primary">Войти</button>
-    </form>
 
-    <div class="divider">или</div>
-
-    <div class="oauth-grid">
-        <button class="btn-oauth" onclick="loginWithOAuth('vk')">
-            <i class="fab fa-vk"></i> VK
-        </button>
-        <button class="btn-oauth" onclick="loginWithOAuth('telegram')">
-            <i class="fab fa-telegram-plane"></i> Telegram
-        </button>
+        <div class="back-link">
+            <a href="index.html">← На главную</a>
+        </div>
     </div>
 
-    <div class="link">
-        Нет аккаунта? <a href="register.html">Зарегистрироваться</a>
-    </div>
+    <script>
+        var errorEl = document.getElementById('error');
 
-    <div class="back-link">
-        <a href="index.html">← На главную</a>
-    </div>
-</div>
-
-<script>
-    const errorEl = document.getElementById('error');
-
-    function showError(msg) {
-        errorEl.textContent = msg;
-        errorEl.style.display = 'block';
-        setTimeout(() => errorEl.style.display = 'none', 5000);
-    }
-
-    (async () => {
-        const user = await AUTH.getUser();
-        if (user) window.location.href = 'profile.html';
-    })();
-
-    document.getElementById('loginForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-
-        if (error) {
-            showError(error.message);
-            return;
+        function showError(msg) {
+            errorEl.textContent = msg;
+            errorEl.style.display = 'block';
+            setTimeout(function () {
+                errorEl.style.display = 'none';
+            }, 5000);
         }
 
-        await supabase.from('users').upsert({
-            id: data.user.id,
-            email: data.user.email,
-            name: data.user.user_metadata?.name || email.split('@')[0],
-        }, { onConflict: 'id', ignoreDuplicates: false });
+        function saveUserToLocalStorage(user) {
+            if (!user) return;
+            var name = user.user_metadata?.name || user.email?.split('@')[0] || 'Профиль';
+            localStorage.setItem('user_name', name);
+            localStorage.setItem('logged_in', 'true');
+        }
 
-        localStorage.setItem('logged_in', 'true');
-        window.location.href = 'profile.html';
-    });
+        // При загрузке — редирект если уже залогинен
+        (async function () {
+            try {
+                var user = await AUTH.getUser();
+                if (user) {
+                    saveUserToLocalStorage(user);
+                    window.location.href = 'profile.html';
+                }
+            } catch (e) {
+                console.log('Auth check skipped:', e.message);
+            }
+        })();
 
-    async function loginWithOAuth(provider) {
-        const { error } = await supabase.auth.signInWithOAuth({ provider });
-        if (error) showError(error.message);
-    }
+        // Слушаем изменения авторизации (ловит OAuth возврат)
+        supabase.auth.onAuthStateChange(function (event, session) {
+            if (event === 'SIGNED_IN' && session?.user) {
+                saveUserToLocalStorage(session.user);
+                window.location.href = 'profile.html';
+            }
+        });
 
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-</script>
+        // Логин через email/пароль
+        document.getElementById('loginForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+
+            var result = await supabase.auth.signInWithPassword({
+                email: email,
+                password: password
+            });
+
+            if (result.error) {
+                showError(result.error.message);
+                return;
+            }
+
+            var user = result.data.user;
+            var name = user.user_metadata?.name || email.split('@')[0];
+
+            await supabase.from('users').upsert({
+                id: user.id,
+                email: user.email,
+                name: name
+            }, {
+                onConflict: 'id',
+                ignoreDuplicates: false
+            });
+
+            saveUserToLocalStorage(user);
+            window.location.href = 'profile.html';
+        });
+
+        async function loginWithOAuth(provider) {
+            var result = await supabase.auth.signInWithOAuth({
+                provider: provider,
+                options: {
+                    redirectTo: window.location.origin + '/profile.html'
+                }
+            });
+
+            if (result.error) {
+                showError(result.error.message);
+            }
+        }
+
+        var savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
+
 </body>
+
 </html>

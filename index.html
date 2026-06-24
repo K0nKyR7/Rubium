@@ -4,349 +4,718 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rubium — образовательный проект</title>
-    <meta name="description" content="Подготовка к ОГЭ и ЕГЭ 80+ по математике, информатике и физике. Студенты МГТУ им. Баумана и Пекинского технологического университета.">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <meta name="description" content="Подготовка к ОГЭ и ЕГЭ 80+ по математике, информатике и физике.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        *{margin:0;padding:0;box-sizing:border-box}html,body{overflow-x:hidden;width:100%}
-        :root{--bg:#FDF8F0;--bg-card:#fff;--text:#4A3728;--text-secondary:#6B4C3B;--text-muted:#7B6B55;--text-muted2:#9B8B75;--heading:#3D2B1F;--accent:#A67B5B;--accent-light:#C4A27A;--accent-gradient:linear-gradient(135deg,#C4A27A,#A67B5B);--border:rgba(196,162,122,0.15);--border-hover:#C4A27A;--shadow:rgba(139,69,19,0.05);--shadow-hover:rgba(139,69,19,0.1);--stat-bg:rgba(255,252,245,0.8);--hero-gradient:linear-gradient(135deg,#F5EDE0 0%,#EFE4D5 100%);--footer-bg:#3D2B1F;--footer-text:#E8D5B7;--footer-link:#D4B28A;--overlay:rgba(61,43,31,0.4);--modal-overlay:rgba(61,43,31,0.6);--logout-bg:rgba(139,69,19,0.08);--logout-hover:#E8D5B7;--price-border:#F0E8DD;--price-hover:#FDF8F0}
-        [data-theme="dark"]{--bg:#1a1a2e;--bg-card:#1f2937;--text:#e0d6c8;--text-secondary:#c4b8a8;--text-muted:#a89880;--text-muted2:#8a7a65;--heading:#f0e6d8;--accent:#d4a574;--accent-light:#b8885a;--accent-gradient:linear-gradient(135deg,#b8885a,#d4a574);--border:rgba(180,140,100,0.2);--border-hover:#b8885a;--shadow:rgba(0,0,0,0.2);--shadow-hover:rgba(0,0,0,0.35);--stat-bg:rgba(31,41,55,0.8);--hero-gradient:linear-gradient(135deg,#16213e 0%,#1a1a2e 100%);--footer-bg:#0f0f23;--footer-text:#a89880;--footer-link:#b8885a;--overlay:rgba(0,0,0,0.6);--modal-overlay:rgba(0,0,0,0.7);--logout-bg:rgba(180,140,100,0.15);--logout-hover:#3d2b1f;--price-border:#2a2a3e;--price-hover:#1a1a2e}
-        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh;transition:background .4s,color .4s}
-        img{pointer-events:none}
-        @keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-        .animate-on-scroll{opacity:0;transform:translateY(30px);transition:all .7s cubic-bezier(.2,.9,.4,1.1)}
-        .animate-on-scroll.visible{opacity:1;transform:translateY(0)}
-        .container{max-width:1280px;margin:0 auto;padding:0 clamp(16px,4vw,32px)}
-
-        .navbar{background:var(--bg-card);position:sticky;top:0;z-index:1001;border-bottom:1px solid var(--border);box-shadow:0 4px 20px var(--shadow)}
-        .nav-content{display:flex;justify-content:space-between;align-items:center;padding:clamp(10px,2vh,16px) 0}
-        .logo{font-size:clamp(1.3rem,3vw,2rem);font-weight:700;text-decoration:none;color:var(--heading);letter-spacing:-0.5px;white-space:nowrap;z-index:1}
-        .logo span{background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-        .theme-toggle{background:none;border:2px solid var(--border);color:var(--text-secondary);width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:1.1rem;transition:all .4s;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:auto;margin-right:15px}
-        .theme-toggle:hover{border-color:var(--accent-light);color:var(--accent);transform:rotate(30deg)}
-
-        .burger-btn{display:flex;flex-direction:column;gap:5px;background:none;border:2px solid var(--border);padding:10px;border-radius:14px;cursor:pointer;z-index:1000;flex-shrink:0;transition:border-color .4s,opacity .4s}
-        .burger-btn:hover{border-color:var(--accent-light)}
-        .burger-btn span{display:block;width:22px;height:2px;background:var(--heading);border-radius:2px}
-
-        .nav-overlay{position:fixed;inset:0;background:var(--overlay);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:999;opacity:0;pointer-events:none;transition:opacity .5s ease}
-        .nav-links{position:fixed;top:0;right:0;width:340px;height:100dvh;flex-direction:column;padding:90px 24px 30px;gap:2px;box-shadow:-10px 0 50px var(--shadow);z-index:1000;overflow-y:auto;display:none;border-left:1px solid var(--border);background:var(--bg-card);transform:translateX(100%);opacity:0;will-change:transform,opacity}
-        .nav-links a{font-size:1rem;padding:14px 18px;border-radius:16px;display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text-secondary);font-weight:500;transition:all .35s}
-        .nav-links a:hover{background:rgba(196,162,122,0.08);color:var(--heading);transform:translateX(4px)}
-        .nav-divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:10px 8px}
-        .nav-spacer{flex:1}
-        .tasks-btn,.constructor-btn,.profile-link-nav,.admin-link-nav{padding:14px 20px!important;font-size:1rem!important;text-align:center;justify-content:center;background:var(--accent-gradient)!important;color:#fff!important;border-radius:40px!important;margin:3px 0}
-        .login-link{padding:14px 20px!important;font-size:1rem!important;text-align:center;justify-content:center;background:transparent!important;border:2px solid var(--accent-light)!important;color:var(--accent)!important;border-radius:40px!important;margin:3px 0}
-        .logout-nav-btn{background:var(--logout-bg);border:none;padding:14px 20px;border-radius:40px;cursor:pointer;font-weight:500;transition:all .35s;font-family:inherit;font-size:1rem;color:var(--text-secondary);width:100%;margin:3px 0}
-        .logout-nav-btn:hover{background:var(--logout-hover);color:var(--heading)}
-        .menu-close-btn{position:absolute;top:18px;right:18px;background:var(--bg);border:2px solid var(--border);color:var(--text-secondary);width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all .4s;z-index:10}
-        .menu-close-btn:hover{border-color:var(--accent-light);color:var(--accent);transform:rotate(90deg)}
-
-        .hero{background:var(--hero-gradient);padding:clamp(60px,10vh,110px) 0 clamp(50px,8vh,90px);border-radius:0 0 clamp(44px,6vw,64px) clamp(44px,6vw,64px);margin-bottom:clamp(30px,5vw,50px);position:relative;overflow:hidden;transition:background .4s}
-        .hero::before{content:'';position:absolute;top:-50%;right:-30%;width:90%;height:200%;background:radial-gradient(circle at 70% 40%,rgba(196,162,122,0.12) 0%,transparent 60%);border-radius:50%;pointer-events:none}
-        .hero::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--accent-light),transparent);opacity:.25}
-        .hero-content{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:clamp(30px,5vw,50px);position:relative;z-index:1;text-align:center}
-        .hero-text{flex:1 1 400px;min-width:0;max-width:750px;display:flex;flex-direction:column;align-items:center}
-        .hero-text h1{font-size:clamp(2rem,5.5vw,3.6rem);font-weight:700;margin-bottom:clamp(16px,2.5vw,24px);line-height:1.1;color:var(--heading);letter-spacing:-1.5px}
-        .hero-text .highlight{background:rgba(196,162,122,0.15);backdrop-filter:blur(12px);padding:8px clamp(16px,2vw,22px);border-radius:50px;display:inline-block;font-size:clamp(0.72rem,1.3vw,0.85rem);margin-bottom:clamp(20px,3.5vw,28px);font-weight:600;color:var(--accent);border:1px solid rgba(196,162,122,0.2);letter-spacing:.3px}
-        .hero-text p{font-size:clamp(0.95rem,1.6vw,1.15rem);opacity:.7;margin-bottom:clamp(24px,3.5vw,32px);line-height:1.7;color:var(--text-muted);max-width:600px}
-        .hero-stats{display:flex;gap:clamp(10px,2vw,16px);margin-top:clamp(24px,3.5vw,36px);flex-wrap:wrap;justify-content:center}
-        .stat{text-align:center;background:var(--stat-bg);backdrop-filter:blur(14px);padding:clamp(10px,1.8vw,16px) clamp(16px,3vw,28px);border-radius:50px;transition:all .4s cubic-bezier(.2,.9,.4,1);box-shadow:0 4px 15px var(--shadow);flex:0 0 auto;border:1px solid rgba(196,162,122,0.1)}
-        .stat:hover{transform:translateY(-6px);background:var(--bg-card);box-shadow:0 12px 35px var(--shadow-hover);border-color:var(--border-hover)}
-        .stat-number{font-size:clamp(1.4rem,2.8vw,2rem);font-weight:700;color:var(--accent);letter-spacing:-0.5px}
-        .stat-label{font-size:clamp(0.65rem,1.1vw,0.8rem);color:var(--text-muted2);font-weight:500}
-
-        .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:clamp(14px,2vw,17px) clamp(28px,4.5vw,38px);border-radius:50px;font-weight:600;text-decoration:none;transition:all .4s cubic-bezier(.2,.9,.4,1);cursor:pointer;border:none;font-family:inherit;font-size:clamp(0.88rem,1.3vw,1rem);white-space:nowrap;letter-spacing:.3px}
-        .btn-primary{background:var(--accent-gradient);color:#fff;box-shadow:0 8px 25px rgba(166,123,91,0.25)}
-        .btn-primary:hover{transform:translateY(-4px);box-shadow:0 14px 35px rgba(166,123,91,0.35)}
-        .btn-outline{background:transparent;border:2px solid var(--accent-light);color:var(--accent);backdrop-filter:blur(4px)}
-        .btn-outline:hover{background:rgba(196,162,122,0.08);transform:translateY(-4px);border-color:var(--accent)}
-
-        section{padding:clamp(40px,7vh,70px) 0}
-        .section-title{font-size:clamp(1.4rem,3.5vw,2.2rem);font-weight:700;margin-bottom:clamp(30px,5vw,50px);text-align:center;color:var(--heading)}
-        .section-title span{color:var(--accent)}
-        .grid-2{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(20px,3vw,30px)}
-        .grid-2>*{flex:0 1 500px;min-width:320px;max-width:600px}
-        .grid-3{display:flex;flex-wrap:wrap;justify-content:center;gap:30px}
-        .grid-3>*{flex:0 1 380px;min-width:300px;max-width:420px}
-
-        .card{background:var(--bg-card);border-radius:32px;text-align:center;padding:32px 24px;box-shadow:0 8px 25px var(--shadow);transition:all .5s cubic-bezier(.2,.9,.4,1);border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;position:relative;width:100%}
-        .card:hover{transform:translateY(-8px);box-shadow:0 24px 45px var(--shadow-hover);border-color:var(--border-hover)}
-        .card-link{position:absolute;inset:0;z-index:2;text-decoration:none;border-radius:inherit}
-        .card:hover h3{color:var(--accent)}
-        .card-icon{width:100%;max-width:260px;aspect-ratio:1/1;margin-bottom:20px;border:4px solid rgba(196,162,122,0.4);background:rgba(196,162,122,0.1);box-shadow:20px 15px 35px var(--shadow);overflow:hidden;border-radius:20%;display:flex;align-items:center;justify-content:center;position:relative;z-index:1}
-        .card-icon img{width:100%;height:100%;object-fit:cover}
-        .card h3{font-size:1.3rem;margin-bottom:12px;color:var(--heading);transition:color .4s;position:relative;z-index:1}
-        .card p{color:var(--text-muted);line-height:1.8;position:relative;z-index:1}
-        .card ul{list-style:none;text-align:center;position:relative;z-index:1}
-        .card li{padding:8px 0;color:var(--text-muted);font-size:.95rem}
-
-        .subject-card{text-align:center;background:var(--bg-card);border-radius:32px;padding:36px 24px;transition:all .5s cubic-bezier(.2,.9,.4,1);border:1px solid var(--border);width:100%}
-        .subject-card:hover{transform:translateY(-8px);box-shadow:0 24px 45px var(--shadow-hover);border-color:var(--border-hover)}
-        .subject-icon{font-size:clamp(2.5rem,4vw,3.2rem);margin-bottom:20px}
-        .subject-card h3{font-size:1.3rem;margin-bottom:16px;color:var(--heading)}
-        .subject-card ul{list-style:none;text-align:center}
-        .subject-card li{padding:8px 0;color:var(--text-muted);font-size:.95rem}
-
-        .price-table{background:var(--bg-card);border-radius:32px;overflow:hidden;box-shadow:0 8px 25px var(--shadow)}
-        .price-row{display:flex;justify-content:space-between;align-items:center;padding:20px 28px;border-bottom:1px solid var(--price-border);flex-wrap:wrap;gap:12px;transition:background .4s}
-        .price-row:hover{background:var(--price-hover)}
-        .price-name{font-weight:500;color:var(--text-muted)}
-        .price-value{font-weight:700;color:var(--accent);font-size:1.3rem}
-        .price-note{text-align:center;margin-top:20px;color:var(--text-muted2);font-size:.85rem}
-
-        .social-grid{display:flex;gap:20px;justify-content:center}
-        .social-grid>*{flex:1;min-width:0}
-        .social-card{display:flex;align-items:center;gap:24px;padding:36px 32px;background:var(--bg-card);border-radius:30px;text-decoration:none;transition:all .5s cubic-bezier(.2,.9,.4,1);border:1px solid var(--border);position:relative;overflow:hidden}
-        .social-card::after{content:'';position:absolute;inset:0;border-radius:30px;opacity:0;transition:opacity .5s;z-index:0}
-        .social-card.telegram::after{background:radial-gradient(circle at 80% 20%,rgba(42,171,238,0.08),transparent 60%)}
-        .social-card.vk::after{background:radial-gradient(circle at 80% 20%,rgba(0,119,255,0.08),transparent 60%)}
-        .social-card:hover::after{opacity:1}
-        .social-card:hover{transform:translateY(-8px) scale(1.01);box-shadow:0 30px 50px var(--shadow-hover);border-color:transparent}
-        .social-card.telegram:hover{border-color:rgba(42,171,238,0.3)}
-        .social-card.vk:hover{border-color:rgba(0,119,255,0.3)}
-        .social-icon{width:60px;height:60px;border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:#fff;flex-shrink:0;position:relative;z-index:1;transition:transform .4s,box-shadow .4s}
-        .social-card:hover .social-icon{transform:rotate(-8deg) scale(1.08)}
-        .social-card.telegram .social-icon{background:linear-gradient(135deg,#2AABEE,#1a8cd4);box-shadow:0 6px 20px rgba(42,171,238,0.3)}
-        .social-card.vk .social-icon{background:linear-gradient(135deg,#0077FF,#005fcc);box-shadow:0 6px 20px rgba(0,119,255,0.3)}
-        .social-info{flex:1;position:relative;z-index:1}
-        .social-info h3{font-size:1.2rem;color:var(--heading);margin-bottom:6px;font-weight:700}
-        .social-info p{font-size:.88rem;color:var(--text-muted);line-height:1.4}
-        .social-arrow{font-size:1.4rem;color:var(--text-muted2);transition:all .4s;position:relative;z-index:1;opacity:.4}
-        .social-card:hover .social-arrow{transform:translateX(8px);opacity:1}
-        .social-card.telegram:hover .social-arrow{color:#2AABEE}
-        .social-card.vk:hover .social-arrow{color:#0077FF}
-        .social-badge{position:absolute;top:16px;right:16px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;padding:6px 14px;border-radius:50px;z-index:1;opacity:0;transform:translateY(-8px);transition:all .4s;backdrop-filter:blur(6px)}
-        .social-card.telegram .social-badge{background:rgba(42,171,238,0.12);color:#2AABEE;border:1px solid rgba(42,171,238,0.2)}
-        .social-card.vk .social-badge{background:rgba(0,119,255,0.12);color:#0077FF;border:1px solid rgba(0,119,255,0.2)}
-        .social-card:hover .social-badge{opacity:1;transform:translateY(0)}
-
-        .faq-item{background:var(--bg-card);border-radius:28px;margin-bottom:14px;overflow:hidden;border:1px solid var(--border);transition:border-color .4s}
-        .faq-item:hover{border-color:var(--border-hover)}
-        .faq-question{display:flex;justify-content:space-between;align-items:center;padding:22px 28px;cursor:pointer;font-weight:600;color:var(--heading);transition:background .4s;user-select:none}
-        .faq-question:hover{background:var(--price-hover)}
-        .faq-question i{transition:transform .4s ease;color:var(--accent)}
-        .faq-item.active .faq-question i{transform:rotate(180deg)}
-        .faq-answer-wrapper{max-height:0;overflow:hidden;transition:max-height .6s cubic-bezier(.4,0,.2,1)}
-        .faq-item.active .faq-answer-wrapper{max-height:500px}
-        .faq-answer-inner{padding:14px 28px 22px;color:var(--text-muted);line-height:1.6}
-
-        .material-link{display:flex;align-items:center;gap:18px;padding:20px 28px;background:var(--bg-card);border-radius:28px;color:var(--text-muted);text-decoration:none;margin-bottom:12px;border:1px solid var(--border);transition:all .4s}
-        .material-link:hover{transform:translateY(-3px);box-shadow:0 12px 30px var(--shadow-hover);border-color:var(--border-hover)}
-
-        footer{background:var(--footer-bg);color:var(--footer-text);padding:60px 0 30px;margin-top:60px;transition:background .4s}
-        .footer-content{text-align:center}
-        .footer-links{display:flex;justify-content:center;gap:32px;margin-bottom:28px;flex-wrap:wrap}
-        .footer-links a{color:var(--footer-link);text-decoration:none;transition:color .4s}
-        .footer-links a:hover{color:var(--footer-text)}
-
-        .modal{display:none;position:fixed;inset:0;background:var(--modal-overlay);backdrop-filter:blur(5px);align-items:center;justify-content:center;z-index:1100}
-        .modal.show{display:flex}
-        .modal-content{background:var(--bg-card);padding:45px;border-radius:40px;text-align:center;max-width:420px;width:90%;animation:fadeInUp .5s ease;color:var(--text)}
-        .modal-icon{font-size:3.5rem;margin-bottom:20px}
-
-        .scroll-top-btn{position:fixed;bottom:30px;right:30px;width:50px;height:50px;background:var(--accent-gradient);color:#fff;border:none;border-radius:50%;font-size:1.3rem;cursor:pointer;box-shadow:0 4px 15px var(--shadow-hover);transition:all .4s;z-index:100;opacity:0;visibility:hidden;transform:translateY(20px);display:flex;align-items:center;justify-content:center}
-        .scroll-top-btn.visible{opacity:1;visibility:visible;transform:translateY(0)}
-        .scroll-top-btn:hover{transform:translateY(-6px);box-shadow:0 10px 30px var(--shadow-hover)}
-
-        @media(max-width:768px){
-            .hero-content{flex-direction:column;text-align:center}
-            .hero-stats{justify-content:center}
-            .hero-text .btn{width:100%;justify-content:center}
-            .hero-text div:last-child{flex-direction:column}
-            .grid-2>*,.grid-3>*{flex:0 1 100%;max-width:100%}
-            .social-grid{flex-direction:column}
-        }
-    </style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth;overflow-x:hidden;width:100%}body{overflow-x:hidden;width:100%}
+:root{--bg:#FFFBFA;--bg-card:rgba(255,255,255,0.7);--text:#3D2C2A;--text-secondary:#7A5C58;--text-muted:#A08884;--heading:#2C1D1A;--accent:#E8786A;--accent-light:#F0A89E;--accent-warm:#FFB347;--accent-mint:#5EC4B0;--accent-gradient:linear-gradient(135deg,#E8786A,#F0978C);--border:rgba(232,120,106,0.1);--border-hover:rgba(232,120,106,0.2);--shadow:rgba(232,120,106,0.06);--shadow-hover:rgba(232,120,106,0.14);--stat-bg:rgba(255,255,255,0.75);--hero-gradient:linear-gradient(135deg,#FFFBFA 0%,#FFF0ED 50%,#FFFBFA 100%);--footer-bg:#FFF0ED;--footer-text:#A08884;--footer-link:#E8786A;--overlay:rgba(255,251,250,0.9);--modal-overlay:rgba(255,251,250,0.9);--logout-bg:rgba(232,120,106,0.06);--logout-hover:rgba(232,120,106,0.12)}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;position:relative}
+body::before,body::after{content:'';position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(180px);opacity:.07;will-change:transform}
+body::before{width:700px;height:700px;background:var(--accent);top:-250px;right:-200px;animation:driftA 30s ease-in-out infinite}
+body::after{width:500px;height:500px;background:var(--accent-mint);bottom:-200px;left:-150px;animation:driftB 35s ease-in-out infinite}
+@keyframes driftA{0%,100%{transform:translate(0,0)}33%{transform:translate(-80px,60px)}66%{transform:translate(40px,-30px)}}
+@keyframes driftB{0%,100%{transform:translate(0,0)}33%{transform:translate(60px,-40px)}66%{transform:translate(-30px,50px)}}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes logoutShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}50%{transform:translateX(3px)}75%{transform:translateX(-2px)}}
+img{pointer-events:none}.animate-on-scroll{opacity:0;transform:translateY(30px);transition:opacity .7s cubic-bezier(.2,.9,.4,1.1),transform .7s cubic-bezier(.2,.9,.4,1.1);will-change:opacity,transform}
+.animate-on-scroll.visible{opacity:1;transform:translateY(0)}.container{max-width:1280px;margin:0 auto;padding:0 clamp(16px,4vw,32px);position:relative;z-index:1}
+.navbar{position:fixed;top:0;left:0;right:0;z-index:1001;padding:0}
+.navbar-inner{background:rgba(255,255,255,0.6);backdrop-filter:blur(25px) saturate(160%);-webkit-backdrop-filter:blur(25px) saturate(160%);border-bottom:1px solid rgba(232,120,106,0.08);border-radius:0 0 24px 24px;padding:14px clamp(16px,4vw,32px);display:flex;justify-content:space-between;align-items:center;box-shadow:0 4px 24px rgba(232,120,106,0.05);width:100%}
+.logo{font-size:clamp(1.3rem,3vw,1.8rem);font-weight:700;text-decoration:none;color:var(--heading);letter-spacing:-0.5px;white-space:nowrap}
+.logo span{background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.header-right{display:flex;align-items:center;gap:12px}
+.header-actions{display:flex;align-items:center;gap:12px}
+.header-user-block{display:flex;align-items:center;gap:8px;padding:8px 16px;background:rgba(232,120,106,0.05);border:1px solid rgba(232,120,106,0.12);border-radius:14px;color:var(--text-secondary);text-decoration:none;transition:all .3s;flex-shrink:0;font-size:0.9rem;font-weight:500}
+.header-user-block:hover{border-color:var(--accent);color:var(--accent);background:rgba(232,120,106,0.1)}
+.header-login-btn{display:flex;align-items:center;gap:8px;padding:8px 16px;background:var(--accent-gradient);color:#fff;border-radius:14px;text-decoration:none;font-size:0.9rem;font-weight:600;transition:all .3s;flex-shrink:0}
+.header-login-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(232,120,106,0.35)}
+.burger-btn{display:flex;flex-direction:column;gap:5px;background:rgba(232,120,106,0.05);border:1px solid rgba(232,120,106,0.12);padding:10px;border-radius:14px;cursor:pointer;z-index:1000;flex-shrink:0;transition:all .3s}
+.burger-btn:hover{border-color:var(--accent);background:rgba(232,120,106,0.1)}.burger-btn span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px}
+.nav-overlay{position:fixed;inset:0;background:rgba(44,29,26,0.25);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);z-index:999;opacity:0;pointer-events:none;transition:opacity .05s ease}
+.nav-links{position:fixed;top:0;right:0;width:340px;height:100dvh;flex-direction:column;padding:90px 24px 30px;gap:2px;box-shadow:-10px 0 50px rgba(232,120,106,0.1);z-index:1000;overflow-y:auto;display:none;border-left:1px solid rgba(232,120,106,0.08);background:rgba(255,255,255,0.8);backdrop-filter:blur(40px) saturate(160%);-webkit-backdrop-filter:blur(40px) saturate(160%);transform:translateX(100%);opacity:0;will-change:transform,opacity}
+.nav-links a{font-size:1rem;padding:14px 18px;border-radius:16px;display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text-secondary);font-weight:500;transition:all .3s}
+.nav-links a:hover{background:rgba(232,120,106,0.06);color:var(--accent);transform:translateX(4px)}.nav-divider{height:1px;background:rgba(232,120,106,0.08);margin:10px 8px}.nav-spacer{flex:1}
+.tasks-btn,.constructor-btn,.profile-link-nav,.admin-link-nav{padding:14px 20px!important;font-size:1rem!important;text-align:center;justify-content:center;background:var(--accent-gradient)!important;color:#fff!important;border-radius:40px!important;margin:3px 0;box-shadow:0 4px 15px rgba(232,120,106,0.25)}
+.login-link{padding:14px 20px!important;font-size:1rem!important;text-align:center;justify-content:center;background:transparent!important;border:1px solid rgba(232,120,106,0.15)!important;color:var(--accent)!important;border-radius:40px!important;margin:3px 0}
+.logout-nav-btn{background:rgba(232,120,106,0.06);border:none;padding:14px 20px;border-radius:40px;cursor:pointer;font-weight:500;transition:all .3s;font-family:inherit;font-size:1rem;color:var(--text-secondary);width:100%;margin:3px 0}
+.logout-nav-btn:hover{background:rgba(220,80,80,0.08);color:#d44;animation:logoutShake .4s ease}
+.menu-close-btn{position:absolute;top:18px;right:18px;background:rgba(232,120,106,0.05);border:1px solid rgba(232,120,106,0.12);color:var(--text-secondary);width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all .3s;z-index:10}
+.menu-close-btn:hover{border-color:var(--accent);color:var(--accent)}
+.hero{background:var(--hero-gradient);padding:clamp(140px,14vh,200px) 0 clamp(50px,8vh,90px);border-radius:0 0 clamp(44px,6vw,64px) clamp(44px,6vw,64px);margin-bottom:clamp(30px,5vw,50px);position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(232,120,106,0.2),transparent);opacity:1;z-index:0}
+.hero-content{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:clamp(30px,5vw,50px);position:relative;z-index:1;text-align:center}
+.hero-text{flex:1 1 400px;min-width:0;max-width:750px;display:flex;flex-direction:column;align-items:center}
+.hero-text h1{font-size:clamp(2rem,5.5vw,3.6rem);font-weight:700;margin-bottom:clamp(16px,2.5vw,24px);line-height:1.15;color:var(--heading);letter-spacing:-1.5px}
+.hero-text .highlight{background:rgba(232,120,106,0.06);padding:8px clamp(16px,2vw,22px);border-radius:50px;display:inline-block;font-size:clamp(0.72rem,1.3vw,0.85rem);margin-bottom:clamp(20px,3.5vw,28px);font-weight:600;color:var(--accent);border:1px solid rgba(232,120,106,0.15);letter-spacing:.3px}
+.hero-text p{font-size:clamp(0.95rem,1.6vw,1.15rem);opacity:.75;margin-bottom:clamp(24px,3.5vw,32px);line-height:1.7;color:var(--text-secondary);max-width:600px}
+.hero-stats{display:flex;gap:clamp(10px,2vw,16px);margin-top:clamp(24px,3.5vw,36px);flex-wrap:wrap;justify-content:center}
+.stat{text-align:center;background:var(--stat-bg);padding:clamp(10px,1.8vw,16px) clamp(16px,3vw,28px);border-radius:50px;transition:all .4s cubic-bezier(.2,.9,.4,1);box-shadow:0 4px 15px var(--shadow);flex:0 0 auto;border:1px solid var(--border);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.stat:hover{transform:translateY(-6px);background:rgba(255,255,255,0.9);box-shadow:0 12px 35px var(--shadow-hover);border-color:var(--accent-light)}
+.stat-number{font-size:clamp(1.4rem,2.8vw,2rem);font-weight:700;background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-0.5px}
+.stat-label{font-size:clamp(0.65rem,1.1vw,0.8rem);color:var(--text-muted);font-weight:500}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:clamp(14px,2vw,17px) clamp(28px,4.5vw,38px);border-radius:50px;font-weight:600;text-decoration:none;transition:all .4s cubic-bezier(.2,.9,.4,1);cursor:pointer;border:none;font-family:inherit;font-size:clamp(0.88rem,1.3vw,1rem);white-space:nowrap;letter-spacing:.3px}
+.btn-primary{background:var(--accent-gradient);color:#fff;box-shadow:0 8px 30px rgba(232,120,106,0.3)}.btn-primary:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(232,120,106,0.45)}
+.btn-outline{background:transparent;border:1px solid rgba(232,120,106,0.2);color:var(--accent)}.btn-outline:hover{background:rgba(232,120,106,0.06);transform:translateY(-4px);border-color:var(--accent)}
+section{padding:clamp(40px,7vh,70px) 0;position:relative;z-index:1}.section-title{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;margin-bottom:clamp(30px,5vw,50px);text-align:center;color:var(--heading);letter-spacing:-0.5px}
+.section-title span{background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.grid-2{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(20px,3vw,30px)}.grid-2>*{flex:1 1 400px;min-width:320px;max-width:600px}
+.grid-3{display:flex;flex-wrap:wrap;justify-content:center;gap:30px}.grid-3>*{flex:1 1 300px;min-width:280px;max-width:420px}
+.card{background:var(--bg-card);border-radius:32px;text-align:center;padding:36px 28px;box-shadow:0 8px 25px var(--shadow);transition:all .5s cubic-bezier(.2,.9,.4,1);border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;position:relative;width:100%;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.card:hover{transform:translateY(-8px);box-shadow:0 24px 45px var(--shadow-hover);border-color:var(--border-hover)}.card-link{position:absolute;inset:0;z-index:2;text-decoration:none;border-radius:inherit}
+.card:hover h3{color:var(--accent)}.card-icon{width:100%;max-width:260px;aspect-ratio:1/1;margin-bottom:20px;border-radius:24px;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;overflow:hidden}
+.card-icon img{width:100%;height:100%;object-fit:cover;border-radius:24px}.card h3{font-size:1.25rem;margin-bottom:8px;color:var(--heading);transition:color .4s;position:relative;z-index:1;font-weight:700}
+.card p{color:var(--text-muted);line-height:1.8;position:relative;z-index:1;font-size:.95rem}.card ul{list-style:none;text-align:center;position:relative;z-index:1}.card li{padding:6px 0;color:var(--text-muted);font-size:.9rem;opacity:.8}
+.subject-card{text-align:center;background:var(--bg-card);border-radius:32px;padding:40px 28px;transition:all .5s cubic-bezier(.2,.9,.4,1);border:1px solid var(--border);width:100%;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.subject-card:hover{transform:translateY(-8px);box-shadow:0 24px 45px var(--shadow-hover);border-color:var(--border-hover)}.subject-icon{font-size:clamp(2.5rem,4vw,3.2rem);margin-bottom:20px;color:var(--accent)}
+.subject-card h3{font-size:1.3rem;margin-bottom:16px;color:var(--heading);font-weight:700}.subject-card ul{list-style:none;text-align:center}.subject-card li{padding:6px 0;color:var(--text-muted);font-size:.9rem;opacity:.8}
+.social-grid{display:flex;gap:20px;justify-content:center}.social-grid>*{flex:1;min-width:0}
+.social-card{display:flex;align-items:center;gap:24px;padding:36px 32px;background:var(--bg-card);border-radius:30px;text-decoration:none;transition:all .5s cubic-bezier(.2,.9,.4,1);border:1px solid var(--border);position:relative;overflow:hidden;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.social-card::after{content:'';position:absolute;inset:0;border-radius:30px;opacity:0;transition:opacity .5s;z-index:0}
+.social-card.telegram::after{background:radial-gradient(circle at 80% 20%,rgba(42,171,238,0.08),transparent 60%)}
+.social-card.vk::after{background:radial-gradient(circle at 80% 20%,rgba(0,119,255,0.08),transparent 60%)}
+.social-card:hover::after{opacity:1}.social-card:hover{transform:translateY(-8px) scale(1.01);box-shadow:0 30px 60px var(--shadow-hover);border-color:var(--accent-light)}
+.social-icon{width:60px;height:60px;border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:#fff;flex-shrink:0;position:relative;z-index:1;transition:transform .4s,box-shadow .4s}
+.social-card:hover .social-icon{transform:rotate(-8deg) scale(1.08)}
+.social-card.telegram .social-icon{background:linear-gradient(135deg,#2AABEE,#1a8cd4);box-shadow:0 6px 20px rgba(42,171,238,0.25)}
+.social-card.vk .social-icon{background:linear-gradient(135deg,#0077FF,#005fcc);box-shadow:0 6px 20px rgba(0,119,255,0.25)}
+.social-info{flex:1;position:relative;z-index:1}.social-info h3{font-size:1.2rem;color:var(--heading);margin-bottom:6px;font-weight:700}
+.social-info p{font-size:.88rem;color:var(--text-muted);line-height:1.4}.social-arrow{font-size:1.4rem;color:var(--text-muted);transition:all .4s;position:relative;z-index:1;opacity:.4}
+.social-card:hover .social-arrow{transform:translateX(8px);opacity:1;color:var(--accent)}
+.social-badge{position:absolute;top:16px;right:16px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;padding:6px 14px;border-radius:50px;z-index:1;opacity:0;transform:translateY(-8px);transition:all .4s;background:rgba(255,255,255,0.75);border:1px solid rgba(232,120,106,0.12);color:var(--accent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.social-card:hover .social-badge{opacity:1;transform:translateY(0)}
+.faq-item{background:var(--bg-card);border-radius:28px;margin-bottom:14px;overflow:hidden;border:1px solid var(--border);transition:all .4s;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.faq-item:hover{border-color:var(--border-hover);box-shadow:0 4px 15px var(--shadow)}
+.faq-question{display:flex;justify-content:space-between;align-items:center;padding:22px 28px;cursor:pointer;font-weight:600;color:var(--heading);transition:background .4s;user-select:none;font-size:1.05rem}
+.faq-question:hover{background:rgba(232,120,106,0.04)}.faq-question i{transition:transform .4s ease;color:var(--accent);font-size:.9rem}
+.faq-item.active .faq-question i{transform:rotate(180deg)}.faq-answer-wrapper{max-height:0;overflow:hidden;transition:max-height .6s cubic-bezier(.4,0,.2,1)}
+.faq-item.active .faq-answer-wrapper{max-height:500px}.faq-answer-inner{padding:14px 28px 22px;color:var(--text-muted);line-height:1.7;font-size:.95rem}
+.material-link{display:flex;align-items:center;gap:18px;padding:20px 28px;background:var(--bg-card);border-radius:28px;color:var(--text-muted);text-decoration:none;margin-bottom:12px;border:1px solid var(--border);transition:all .4s;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.material-link:hover{transform:translateY(-3px);box-shadow:0 12px 30px var(--shadow-hover);border-color:var(--border-hover)}
+.material-link strong{color:var(--heading);font-size:1.05rem}.material-link small{font-size:.82rem;opacity:.7}
+footer{background:var(--footer-bg);color:var(--footer-text);padding:60px 0 30px;margin-top:60px;position:relative;z-index:1}
+.footer-content{text-align:center}.footer-links{display:flex;justify-content:center;gap:32px;margin-bottom:28px;flex-wrap:wrap}
+.footer-links a{color:var(--footer-link);text-decoration:none;transition:color .3s;font-weight:500}.footer-links a:hover{color:var(--accent)}
+.modal{display:none;position:fixed;inset:0;background:var(--modal-overlay);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);align-items:center;justify-content:center;z-index:1100}
+.modal.show{display:flex}.modal-content{background:rgba(255,255,255,0.85);padding:45px;border-radius:40px;text-align:center;max-width:420px;width:90%;animation:fadeInUp .5s ease;color:var(--text);border:1px solid rgba(232,120,106,0.12);box-shadow:0 20px 60px rgba(232,120,106,0.12);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px)}
+.modal-icon{font-size:3.5rem;margin-bottom:20px;color:var(--accent)}
+.scroll-top-btn{position:fixed;bottom:30px;right:30px;width:50px;height:50px;background:var(--accent-gradient);color:#fff;border:none;border-radius:50%;font-size:1.3rem;cursor:pointer;box-shadow:0 4px 20px rgba(232,120,106,0.3);transition:all .4s;z-index:100;opacity:0;visibility:hidden;transform:translateY(20px);display:flex;align-items:center;justify-content:center}
+.scroll-top-btn.visible{opacity:1;visibility:visible;transform:translateY(0)}.scroll-top-btn:hover{transform:translateY(-6px);box-shadow:0 10px 35px rgba(232,120,106,0.45)}
+@media(max-width:768px){.hero-content{flex-direction:column;text-align:center}.hero-stats{justify-content:center}.hero-text .btn{width:100%;justify-content:center}.hero-text div:last-child{flex-direction:column}.grid-2>*,.grid-3>*{flex:1 1 100%;max-width:100%}.social-grid{flex-direction:column}.card{padding:28px 20px}.card-icon{max-width:200px}.navbar-inner{border-radius:0 0 18px 18px;padding:12px 18px}}
+@media(max-width:480px){.hero{padding:clamp(40px,8vh,70px) 0 clamp(30px,6vh,50px);border-radius:0 0 clamp(30px,5vw,40px) clamp(30px,5vw,40px)}.hero-text h1{font-size:clamp(1.6rem,6vw,2.4rem)}.section-title{font-size:clamp(1.3rem,4vw,1.8rem)}.stat{padding:clamp(6px,1.5vw,10px) clamp(10px,2.5vw,18px)}.btn{padding:clamp(12px,1.8vw,14px) clamp(20px,3.5vw,28px)}.nav-links{width:100%}}
+</style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase.js"></script>
     <script src="js/auth.js"></script>
 </head>
 <body>
+
+<!-- ========== NAVBAR ========== -->
 <nav class="navbar">
-    <div class="container">
-        <div class="nav-content">
-            <a href="#" class="logo"><span>⚡</span> Rubium</a>
-            <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему"><i class="fas fa-moon"></i></button>
-            <button class="burger-btn" id="burgerBtn" aria-label="Меню"><span></span><span></span><span></span></button>
+    <div class="navbar-inner">
+        <a href="#" class="logo"><span>⚡</span> Rubium</a>
+        <div class="header-right">
+            <div class="header-actions" id="headerActions"></div>
+            <button class="burger-btn" id="burgerBtn" aria-label="Меню">
+                <span></span><span></span><span></span>
+            </button>
         </div>
     </div>
+
     <div class="nav-overlay" id="navOverlay"></div>
+
     <div class="nav-links" id="navLinks">
-        <button class="menu-close-btn" id="menuCloseBtn" aria-label="Закрыть меню"><i class="fas fa-times"></i></button>
+        <button class="menu-close-btn" id="menuCloseBtn" aria-label="Закрыть меню">
+            <i class="fas fa-times"></i>
+        </button>
+
         <a href="#about"><i class="fas fa-info-circle"></i> О нас</a>
         <a href="#subjects"><i class="fas fa-book"></i> Предметы</a>
         <a href="#materials"><i class="fas fa-file-pdf"></i> Материалы</a>
         <a href="#contacts"><i class="fas fa-comment"></i> Контакты</a>
+
         <div class="nav-divider"></div>
+
         <a href="tasks.html" class="tasks-btn"><i class="fas fa-tasks"></i> Каталог задач</a>
         <a href="constructor.html" class="constructor-btn"><i class="fas fa-random"></i> Конструктор</a>
+
         <div class="nav-divider"></div>
         <div class="nav-spacer"></div>
     </div>
 </nav>
 
+<!-- ========== HERO ========== -->
 <section class="hero">
     <div class="container">
         <div class="hero-content">
             <div class="hero-text animate-on-scroll">
-                <span class="highlight">🎓 Студенты МГТУ им. Н.Э. Баумана и Пекинского технологического университета</span>
-                <h1>Занятия по <span style="color:var(--accent)">математике, информатике и физике</span></h1>
-                <p>Помогаем школьникам 5-11 классов разобраться в точных науках без скучной зубрежки. Подготовка к ОГЭ и ЕГЭ 80+, повышение успеваемости в уютной атмосфере.</p>
+                <span class="highlight">
+                    <i class="fas fa-graduation-cap"></i>
+                    Студенты МГТУ им. Н.Э. Баумана и Пекинского технологического университета
+                </span>
+
+                <h1>
+                    Занятия по
+                    <span style="background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">
+                        математике, информатике и физике
+                    </span>
+                </h1>
+
+                <p>
+                    Помогаем школьникам 5-11 классов разобраться в точных науках без скучной зубрежки.
+                    Подготовка к ОГЭ и ЕГЭ 80+, повышение успеваемости в уютной атмосфере.
+                </p>
+
                 <div class="hero-stats">
-                    <div class="stat"><div class="stat-number">20+</div><div class="stat-label">учеников</div></div>
-                    <div class="stat"><div class="stat-number">4.9</div><div class="stat-label">средний рейтинг</div></div>
-                    <div class="stat"><div class="stat-number">92.3</div><div class="stat-label">средний балл ЕГЭ</div></div>
-                    <div class="stat"><div class="stat-number">5</div><div class="stat-label">ОГЭ (отлично)</div></div>
+                    <div class="stat">
+                        <div class="stat-number">20+</div>
+                        <div class="stat-label">учеников</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">4.9</div>
+                        <div class="stat-label">средний рейтинг</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">92.3</div>
+                        <div class="stat-label">средний балл ЕГЭ</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">5</div>
+                        <div class="stat-label">ОГЭ (отлично)</div>
+                    </div>
                 </div>
+
                 <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:32px">
-                    <button class="btn btn-primary" id="contactBtnNav">Записаться на пробный урок</button>
-                    <a href="tasks.html" class="btn btn-outline"><i class="fas fa-tasks"></i> Решать задачи</a>
+                    <button class="btn btn-primary" id="contactBtnNav">
+                        <i class="fas fa-pen-to-square"></i> Записаться на пробный урок
+                    </button>
+                    <a href="tasks.html" class="btn btn-outline">
+                        <i class="fas fa-tasks"></i> Решать задачи
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
+<!-- ========== MAIN CONTENT ========== -->
 <div class="container">
+
+    <!-- About -->
     <section id="about">
-        <h2 class="section-title animate-on-scroll"><span>📖</span> О нас</h2>
+        <h2 class="section-title animate-on-scroll">
+            <span><i class="fas fa-book-open"></i> О нас</span>
+        </h2>
         <div class="grid-2 animate-on-scroll">
-            <div class="card"><h3>Наш подход</h3><p>Мы считаем, что главное — научить думать, а не заучивать формулы. На занятиях мы разбираем темы до полного понимания, решаем задачи разного уровня сложности и закрепляем материал на практике в комфортной обстановке.</p></div>
-            <div class="card"><h3>Почему мы?</h3><p>Сами прошли через огромное количество экзаменов. Хорошо понимаем, с какими трудностями сталкиваются школьники, и знаем, как объяснить сложные вещи простым и понятным языком.</p></div>
+            <div class="card">
+                <h3>Наш подход</h3>
+                <p>
+                    Мы считаем, что главное — научить думать, а не заучивать формулы.
+                    На занятиях мы разбираем темы до полного понимания, решаем задачи разного уровня
+                    сложности и закрепляем материал на практике в комфортной обстановке.
+                </p>
+            </div>
+            <div class="card">
+                <h3>Почему мы?</h3>
+                <p>
+                    Сами прошли через огромное количество экзаменов. Хорошо понимаем, с какими
+                    трудностями сталкиваются школьники, и знаем, как объяснить сложные вещи простым
+                    и понятным языком.
+                </p>
+            </div>
         </div>
     </section>
+
+    <!-- Teachers -->
     <section>
-        <h2 class="section-title animate-on-scroll"><span>🎓</span> Преподаватели</h2>
+        <h2 class="section-title animate-on-scroll">
+            <span><i class="fas fa-graduation-cap"></i> Преподаватели</span>
+        </h2>
         <div class="grid-3 animate-on-scroll">
-            <div class="card"><a href="maxim_page.html" class="card-link"></a><div class="card-icon"><img src="data/maxim.jpg" alt="Максим Ковалёв"></div><h3>Ковалев Максим</h3><ul><li>МГТУ им. Баумана</li><li>Факультет «Энергомашиностроение»</li><li>Бюджетная форма обучения</li><li>Преподаватель математики и физики</li></ul></div>
-            <div class="card"><a href="ilya_page.html" class="card-link"></a><div class="card-icon"><img src="data/temporary.jpeg" alt="Илья Емельянов"></div><h3>Емельянов Илья</h3><ul><li>Beijing Institute of Technology</li><li>Специальность «Компьютерные науки»</li><li>Грант с полным покрытием</li><li>Преподаватель информатики</li></ul></div>
-            <div class="card"><a href="misha_page.html" class="card-link"></a><div class="card-icon"><img src="data/Misha.jpg" alt="Михаил Коняхин"></div><h3>Коняхин Михаил</h3><ul><li>МГТУ им. Баумана</li><li>Факультет «Фундаментальные науки»</li><li>Бюджетная форма обучения</li><li>Преподаватель высшей математики</li></ul></div>
+            <div class="card" style="transition-delay:0ms">
+                <a href="maxim_page.html" class="card-link"></a>
+                <div class="card-icon">
+                    <img src="data/maxim.jpg" alt="Максим Ковалёв">
+                </div>
+                <h3>Ковалев Максим</h3>
+                <ul>
+                    <li>МГТУ им. Баумана</li>
+                    <li>Факультет «Энергомашиностроение»</li>
+                    <li>Бюджетная форма обучения</li>
+                    <li>Преподаватель математики и физики</li>
+                </ul>
+            </div>
+
+            <div class="card" style="transition-delay:100ms">
+                <a href="ilya_page.html" class="card-link"></a>
+                <div class="card-icon">
+                    <img src="data/temporary.jpeg" alt="Илья Емельянов">
+                </div>
+                <h3>Емельянов Илья</h3>
+                <ul>
+                    <li>Beijing Institute of Technology</li>
+                    <li>Специальность «Компьютерные науки»</li>
+                    <li>Грант с полным покрытием</li>
+                    <li>Преподаватель информатики</li>
+                </ul>
+            </div>
+
+            <div class="card" style="transition-delay:200ms">
+                <a href="misha_page.html" class="card-link"></a>
+                <div class="card-icon">
+                    <img src="data/Misha.jpg" alt="Михаил Коняхин">
+                </div>
+                <h3>Коняхин Михаил</h3>
+                <ul>
+                    <li>МГТУ им. Баумана</li>
+                    <li>Факультет «Фундаментальные науки»</li>
+                    <li>Бюджетная форма обучения</li>
+                    <li>Преподаватель высшей математики</li>
+                </ul>
+            </div>
         </div>
     </section>
+
+    <!-- Subjects -->
     <section id="subjects">
-        <h2 class="section-title animate-on-scroll"><span>📚</span> Какие предметы мы преподаём?</h2>
+        <h2 class="section-title animate-on-scroll">
+            <span><i class="fas fa-layer-group"></i> Какие предметы мы преподаём?</span>
+        </h2>
         <div class="grid-3 animate-on-scroll">
-            <div class="subject-card"><div class="subject-icon">📐</div><h3>Математика</h3><ul><li>5–11 классы (алгебра, геометрия)</li><li>Подготовка к ОГЭ</li><li>Подготовка к ЕГЭ 80+</li><li>Повышение успеваемости</li></ul></div>
-            <div class="subject-card"><div class="subject-icon">⚡</div><h3>Физика</h3><ul><li>7–11 классы</li><li>Подготовка к ОГЭ</li><li>Подготовка к ЕГЭ 80+</li><li>Разбор сложных тем</li></ul></div>
-            <div class="subject-card"><div class="subject-icon">💻</div><h3>Информатика</h3><ul><li>7–11 классы</li><li>Подготовка к ОГЭ</li><li>Подготовка к ЕГЭ 80+</li><li>Курс программирования на языке Python</li></ul></div>
+            <div class="subject-card">
+                <div class="subject-icon"><i class="fas fa-calculator"></i></div>
+                <h3>Математика</h3>
+                <ul>
+                    <li>5–11 классы (алгебра, геометрия)</li>
+                    <li>Подготовка к ОГЭ</li>
+                    <li>Подготовка к ЕГЭ 80+</li>
+                    <li>Повышение успеваемости</li>
+                </ul>
+            </div>
+
+            <div class="subject-card">
+                <div class="subject-icon"><i class="fas fa-bolt"></i></div>
+                <h3>Физика</h3>
+                <ul>
+                    <li>7–11 классы</li>
+                    <li>Подготовка к ОГЭ</li>
+                    <li>Подготовка к ЕГЭ 80+</li>
+                    <li>Разбор сложных тем</li>
+                </ul>
+            </div>
+
+            <div class="subject-card">
+                <div class="subject-icon"><i class="fas fa-laptop-code"></i></div>
+                <h3>Информатика</h3>
+                <ul>
+                    <li>7–11 классы</li>
+                    <li>Подготовка к ОГЭ</li>
+                    <li>Подготовка к ЕГЭ 80+</li>
+                    <li>Курс программирования на языке Python</li>
+                </ul>
+            </div>
         </div>
     </section>
+
+    <!-- Materials -->
     <section id="materials">
-        <h2 class="section-title animate-on-scroll"><span>📚</span> Полезные материалы</h2>
+        <h2 class="section-title animate-on-scroll">
+            <span><i class="fas fa-layer-group"></i> Полезные материалы</span>
+        </h2>
         <div class="animate-on-scroll">
-            <a href="data/algebra.pdf" class="material-link"><span style="font-size:2.2rem">📐</span><div><strong>Шпаргалка по алгебре</strong><br><small>Формулы 7–9 класс (PDF)</small></div></a>
-            <a href="data/fizika.pdf" class="material-link"><span style="font-size:2.2rem">⚡</span><div><strong>Формулы по физике</strong><br><small>Механика и электричество (PDF)</small></div></a>
-            <a href="data/oge.pdf" class="material-link"><span style="font-size:2.2rem">📝</span><div><strong>Демоверсия ОГЭ</strong><br><small>Официальные демоварианты с ответами (PDF)</small></div></a>
+            <a href="data/algebra.pdf" class="material-link">
+                <span style="font-size:2.2rem"><i class="fas fa-calculator"></i></span>
+                <div>
+                    <strong>Шпаргалка по алгебре</strong><br>
+                    <small>Формулы 7–9 класс (PDF)</small>
+                </div>
+            </a>
+
+            <a href="data/fizika.pdf" class="material-link">
+                <span style="font-size:2.2rem"><i class="fas fa-bolt"></i></span>
+                <div>
+                    <strong>Формулы по физике</strong><br>
+                    <small>Механика и электричество (PDF)</small>
+                </div>
+            </a>
+
+            <a href="data/oge.pdf" class="material-link">
+                <span style="font-size:2.2rem"><i class="fas fa-file-alt"></i></span>
+                <div>
+                    <strong>Демоверсия ОГЭ</strong><br>
+                    <small>Официальные демоварианты с ответами (PDF)</small>
+                </div>
+            </a>
         </div>
     </section>
+
+    <!-- FAQ -->
     <section id="faq">
-        <h2 class="section-title animate-on-scroll"><span>❓</span> Часто задаваемые вопросы</h2>
+        <h2 class="section-title animate-on-scroll">
+            <span><i class="fas fa-circle-question"></i> Часто задаваемые вопросы</span>
+        </h2>
         <div class="animate-on-scroll">
-            <div class="faq-item"><div class="faq-question">Как проходят занятия? <i class="fas fa-chevron-down"></i></div><div class="faq-answer-wrapper"><div class="faq-answer-inner">Занятия проходят онлайн через Яндекс Телемост.</div></div></div>
-            <div class="faq-item"><div class="faq-question">Сколько длится занятие? <i class="fas fa-chevron-down"></i></div><div class="faq-answer-wrapper"><div class="faq-answer-inner">Стандартное занятие длится 60 минут. При необходимости можем увеличить до 90 минут.</div></div></div>
-            <div class="faq-item"><div class="faq-question">Есть ли пробное занятие? <i class="fas fa-chevron-down"></i></div><div class="faq-answer-wrapper"><div class="faq-answer-inner">Да, первое занятие — ознакомительное и бесплатное (30 минут).</div></div></div>
-            <div class="faq-item"><div class="faq-question">Как оплачивать занятия? <i class="fas fa-chevron-down"></i></div><div class="faq-answer-wrapper"><div class="faq-answer-inner">Оплата после каждого занятия переводом на карту любого банка.</div></div></div>
-            <div class="faq-item"><div class="faq-question">Что если нужно отменить занятие? <i class="fas fa-chevron-down"></i></div><div class="faq-answer-wrapper"><div class="faq-answer-inner">Предупредите преподавателя минимум за 3 часа — и мы перенесём занятие на другое удобное время.</div></div></div>
+            <div class="faq-item">
+                <div class="faq-question">Как проходят занятия? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer-wrapper">
+                    <div class="faq-answer-inner">Занятия проходят онлайн через Яндекс Телемост.</div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Сколько длится занятие? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer-wrapper">
+                    <div class="faq-answer-inner">Стандартное занятие длится 60 минут. При необходимости можем увеличить до 90 минут.</div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Есть ли пробное занятие? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer-wrapper">
+                    <div class="faq-answer-inner">Да, первое занятие — ознакомительное и бесплатное (30 минут).</div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Как оплачивать занятия? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer-wrapper">
+                    <div class="faq-answer-inner">Оплата после каждого занятия переводом на карту любого банка.</div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Что если нужно отменить занятие? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer-wrapper">
+                    <div class="faq-answer-inner">Предупредите преподавателя минимум за 3 часа — и мы перенесём занятие на другое удобное время.</div>
+                </div>
+            </div>
         </div>
     </section>
+
+    <!-- Contacts -->
     <section id="contacts">
-        <h2 class="section-title animate-on-scroll"><span>💬</span> Мы в соцсетях</h2>
+        <h2 class="section-title animate-on-scroll">
+            <span><i class="fas fa-comment"></i> Мы в соцсетях</span>
+        </h2>
         <div class="social-grid animate-on-scroll">
-            <a href="https://t.me/rubium_education" target="_blank" class="social-card telegram"><div class="social-icon"><i class="fab fa-telegram-plane"></i></div><div class="social-info"><h3>Telegram</h3><p>Мемы, анонсы, домашки — всё тут</p></div><span class="social-badge">⚡ главный</span><span class="social-arrow">→</span></a>
-            <a href="https://vk.com/kovalev_math" target="_blank" class="social-card vk"><div class="social-icon"><i class="fab fa-vk"></i></div><div class="social-info"><h3>ВКонтакте</h3><p>Клипы, разборы, движ</p></div><span class="social-badge">🎬 клипы</span><span class="social-arrow">→</span></a>
+            <a href="https://t.me/rubium_education" target="_blank" class="social-card telegram">
+                <div class="social-icon"><i class="fab fa-telegram-plane"></i></div>
+                <div class="social-info">
+                    <h3>Telegram</h3>
+                    <p>Мемы, анонсы, домашки — всё тут</p>
+                </div>
+                <span class="social-badge"><i class="fas fa-star"></i> главный</span>
+                <span class="social-arrow">→</span>
+            </a>
+
+            <a href="https://vk.com/kovalev_math" target="_blank" class="social-card vk">
+                <div class="social-icon"><i class="fab fa-vk"></i></div>
+                <div class="social-info">
+                    <h3>ВКонтакте</h3>
+                    <p>Клипы, разборы, движ</p>
+                </div>
+                <span class="social-badge"><i class="fas fa-play"></i> клипы</span>
+                <span class="social-arrow">→</span>
+            </a>
         </div>
     </section>
+
 </div>
 
-<button class="scroll-top-btn" id="scrollTopBtn" aria-label="Наверх"><i class="fas fa-arrow-up"></i></button>
+<!-- ========== SCROLL TO TOP ========== -->
+<button class="scroll-top-btn" id="scrollTopBtn" aria-label="Наверх">
+    <i class="fas fa-arrow-up"></i>
+</button>
 
+<!-- ========== FOOTER ========== -->
 <footer>
-    <div class="container"><div class="footer-content"><div class="footer-links"><a href="#about">О нас</a><a href="#subjects">Предметы</a><a href="#materials">Материалы</a><a href="#contacts">Контакты</a><a href="tasks.html">Сборник задач</a><a href="constructor.html">Конструктор вариантов</a></div><p>© 2026 Rubium · образовательный проект</p><p><a onclick="addToFavorites()" style="color:var(--footer-link);cursor:pointer">⭐ Добавить сайт в закладки</a></p></div></div>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#about">О нас</a>
+                <a href="#subjects">Предметы</a>
+                <a href="#materials">Материалы</a>
+                <a href="#contacts">Контакты</a>
+                <a href="tasks.html">Сборник задач</a>
+                <a href="constructor.html">Конструктор вариантов</a>
+            </div>
+            <p>© 2026 Rubium · образовательный проект</p>
+            <p>
+                <a onclick="addToFavorites()" style="color:var(--footer-link);cursor:pointer">
+                    <i class="fas fa-star"></i> Добавить сайт в закладки
+                </a>
+            </p>
+        </div>
+    </div>
 </footer>
 
-<div class="modal" id="successModal"><div class="modal-content"><span class="modal-close" style="float:right;cursor:pointer;font-size:28px">&times;</span><div class="modal-icon">✅</div><h3>Сообщение отправлено!</h3><p>Я свяжусь с вами в ближайшее время.</p><button class="btn btn-primary modal-close-btn" style="margin-top:20px">Закрыть</button></div></div>
+<!-- ========== MODAL ========== -->
+<div class="modal" id="successModal">
+    <div class="modal-content">
+        <span class="modal-close" style="float:right;cursor:pointer;font-size:28px">&times;</span>
+        <div class="modal-icon"><i class="fas fa-circle-check"></i></div>
+        <h3>Сообщение отправлено!</h3>
+        <p>Я свяжусь с вами в ближайшее время.</p>
+        <button class="btn btn-primary modal-close-btn" style="margin-top:20px">Закрыть</button>
+    </div>
+</div>
 
+<!-- ========== SCRIPTS ========== -->
 <script>
 (function(){
-    const html=document.documentElement;
-    const themeToggle=document.getElementById('themeToggle');
-    const savedTheme=localStorage.getItem('theme')||'light';
-    html.setAttribute('data-theme',savedTheme);
-    function updateThemeIcon(t){const i=themeToggle?.querySelector('i');if(i)i.className=t==='dark'?'fas fa-sun':'fas fa-moon'}
-    updateThemeIcon(savedTheme);
-    themeToggle?.addEventListener('click',()=>{const n=html.getAttribute('data-theme')==='dark'?'light':'dark';html.setAttribute('data-theme',n);localStorage.setItem('theme',n);updateThemeIcon(n)});
+    // Intersection Observer — анимации при скролле
+    var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1 });
 
-    const observer=new IntersectionObserver(e=>e.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:.1});
-    document.querySelectorAll('.animate-on-scroll').forEach(el=>observer.observe(el));
+    document.querySelectorAll('.animate-on-scroll').forEach(function(el) {
+        observer.observe(el);
+    });
 
-    document.querySelectorAll('.faq-item').forEach(item=>{const w=item.querySelector('.faq-answer-wrapper');item.querySelector('.faq-question')?.addEventListener('click',()=>{const a=item.classList.contains('active');if(!a){item.classList.add('active');w.style.maxHeight=w.scrollHeight+'px'}else{w.style.maxHeight=w.scrollHeight+'px';requestAnimationFrame(()=>{w.style.maxHeight='0'});item.classList.remove('active')}})});
+    // FAQ аккордеон
+    document.querySelectorAll('.faq-item').forEach(function(item) {
+        var wrapper = item.querySelector('.faq-answer-wrapper');
+        var question = item.querySelector('.faq-question');
 
-    const burger=document.getElementById('burgerBtn'),menu=document.getElementById('navLinks'),overlay=document.getElementById('navOverlay');
-    let raf,isOpen=false,scrollY=0;
+        if (!question) return;
 
-    function animateMenu(open){
-        cancelAnimationFrame(raf);
-        const start=performance.now(),dur=500;
-        if(open){
-            scrollY=window.scrollY;
-            menu.style.display='flex';
-            menu.style.pointerEvents='auto';
-            overlay.style.display='block';
-            overlay.style.pointerEvents='auto';
-            document.body.style.position='fixed';
-            document.body.style.width='100%';
-            document.body.style.top=`-${scrollY}px`;
-        }else{
-            menu.style.pointerEvents='none';
-            overlay.style.pointerEvents='none';
+        question.addEventListener('click', function() {
+            var isActive = item.classList.contains('active');
+
+            if (!isActive) {
+                item.classList.add('active');
+                wrapper.style.maxHeight = wrapper.scrollHeight + 'px';
+            } else {
+                wrapper.style.maxHeight = '0';
+                item.classList.remove('active');
+            }
+        });
+    });
+
+    // Бургер-меню
+    var burger = document.getElementById('burgerBtn');
+    var menu = document.getElementById('navLinks');
+    var overlay = document.getElementById('navOverlay');
+    var menuCloseBtn = document.getElementById('menuCloseBtn');
+    var animationFrame, isOpen = false, scrollY = 0;
+
+    function animateMenu(open) {
+        cancelAnimationFrame(animationFrame);
+        var start = performance.now();
+        var duration = 450;
+
+        if (open) {
+            scrollY = window.scrollY;
+            menu.style.display = 'flex';
+            menu.style.pointerEvents = 'auto';
+            overlay.style.display = 'block';
+            overlay.style.pointerEvents = 'auto';
+            document.body.style.position = 'fixed';
+            document.body.style.width = '100%';
+            document.body.style.top = '-' + scrollY + 'px';
+        } else {
+            menu.style.pointerEvents = 'none';
+            overlay.style.pointerEvents = 'none';
         }
-        function step(now){
-            const p=Math.min((now-start)/dur,1);
-            const ease=p<.5?4*p*p*p:(p-1)*(2*p-2)*(2*p-2)+1;
-            const x=open?100*(1-ease):100*ease,o=open?ease:1-ease;
-            menu.style.transform=`translateX(${x}%)`;menu.style.opacity=o;overlay.style.opacity=o;
-            if(p<1)raf=requestAnimationFrame(step);
-            else{
-                if(!open){menu.style.display='none';overlay.style.display='none';document.body.style.position='';document.body.style.width='';document.body.style.top='';window.scrollTo(0,scrollY)}
-                isOpen=open;
+
+        function step(now) {
+            var progress = Math.min((now - start) / duration, 1);
+            var ease = progress < 0.5
+                ? 4 * progress * progress * progress
+                : (progress - 1) * (2 * progress - 2) * (2 * progress - 2) + 1;
+
+            var x = open ? 100 * (1 - ease) : 100 * ease;
+            var opacity = open ? ease : 1 - ease;
+
+            menu.style.transform = 'translateX(' + x + '%)';
+            menu.style.opacity = opacity;
+            overlay.style.opacity = opacity;
+
+            if (progress < 1) {
+                animationFrame = requestAnimationFrame(step);
+            } else {
+                if (!open) {
+                    menu.style.display = 'none';
+                    overlay.style.display = 'none';
+                    document.body.style.position = '';
+                    document.body.style.width = '';
+                    document.body.style.top = '';
+                    window.scrollTo(0, scrollY);
+                }
+                isOpen = open;
             }
         }
-        raf=requestAnimationFrame(step);
+
+        animationFrame = requestAnimationFrame(step);
     }
 
-    burger?.addEventListener('click',()=>animateMenu(!isOpen));
-    function closeMenu(){if(isOpen)animateMenu(false)}
-    overlay?.addEventListener('click',closeMenu);
-    menu?.querySelectorAll('a').forEach(l=>l.addEventListener('click',closeMenu));
-    document.getElementById('menuCloseBtn')?.addEventListener('click',closeMenu);
+    function closeMenu() {
+        if (isOpen) animateMenu(false);
+    }
 
-    document.getElementById('contactBtnNav')?.addEventListener('click',()=>document.getElementById('contacts')?.scrollIntoView({behavior:'smooth'}));
+    if (burger) burger.addEventListener('click', function() { animateMenu(!isOpen); });
+    if (overlay) overlay.addEventListener('click', closeMenu);
+    if (menuCloseBtn) menuCloseBtn.addEventListener('click', closeMenu);
+    if (menu) {
+        menu.querySelectorAll('a').forEach(function(link) {
+            link.addEventListener('click', closeMenu);
+        });
+    }
 
-    const modal=document.getElementById('successModal');
-    document.querySelectorAll('.modal-close,.modal-close-btn').forEach(e=>e.addEventListener('click',()=>modal?.classList.remove('show')));
-    modal?.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('show')});
+    // Кнопка "Записаться" — скролл к контактам
+    var contactBtn = document.getElementById('contactBtnNav');
+    if (contactBtn) {
+        contactBtn.addEventListener('click', function() {
+            var contacts = document.getElementById('contacts');
+            if (contacts) contacts.scrollIntoView({ behavior: 'smooth' });
+        });
+    }
 
-    window.addToFavorites=function(){alert('Нажмите Ctrl+D (или Cmd+D на Mac)')};
+    // Модальное окно
+    var modal = document.getElementById('successModal');
+    document.querySelectorAll('.modal-close, .modal-close-btn').forEach(function(el) {
+        el.addEventListener('click', function() {
+            if (modal) modal.classList.remove('show');
+        });
+    });
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) modal.classList.remove('show');
+        });
+    }
 
-    function updateNavBar(){
-        const c=document.getElementById('navLinks');
-        c?.querySelectorAll('.profile-link-nav,.admin-link-nav,.login-link,.logout-nav-btn').forEach(e=>e.remove());
-        if(localStorage.getItem('logged_in')==='true'){
-            const pl=document.createElement('a');pl.href='profile.html';pl.className='profile-link-nav';pl.innerHTML='<i class="fas fa-user"></i> Профиль';c?.appendChild(pl);
-            const lb=document.createElement('button');lb.className='logout-nav-btn';lb.innerHTML='<i class="fas fa-sign-out-alt"></i> Выйти';lb.onclick=()=>{localStorage.removeItem('logged_in');window.location.href='index.html'};c?.appendChild(lb)
-        }else{
-            const ll=document.createElement('a');ll.href='login.html';ll.className='login-link';ll.innerHTML='<i class="fas fa-sign-in-alt"></i> Войти';c?.appendChild(ll)
+    // Добавление в закладки
+    window.addToFavorites = function() {
+        alert('Нажмите Ctrl+D (или Cmd+D на Mac)');
+    };
+
+    // ========== АВТОРИЗАЦИЯ ==========
+
+    async function updateNavBar() {
+        var headerActions = document.getElementById('headerActions');
+        var navLinks = document.getElementById('navLinks');
+
+        // Проверяем localStorage
+        var loggedIn = localStorage.getItem('logged_in') === 'true';
+
+        // Если в localStorage нет — пробуем проверить Supabase напрямую
+        if (!loggedIn && typeof AUTH !== 'undefined') {
+            try {
+                var user = await AUTH.getUser();
+                if (user) {
+                    var name = user.user_metadata?.name || user.email?.split('@')[0] || 'Профиль';
+                    localStorage.setItem('user_name', name);
+                    localStorage.setItem('logged_in', 'true');
+                    loggedIn = true;
+                }
+            } catch(e) {
+                console.log('Supabase check failed:', e.message);
+            }
+        }
+
+        // Хедер
+        if (headerActions) {
+            headerActions.innerHTML = '';
+
+            if (loggedIn) {
+                var name = localStorage.getItem('user_name') || 'Профиль';
+                var userBlock = document.createElement('a');
+                userBlock.href = 'profile.html';
+                userBlock.className = 'header-user-block';
+                userBlock.innerHTML = '<i class="fas fa-user"></i> <span>' + name + '</span>';
+                headerActions.appendChild(userBlock);
+            } else {
+                var loginBtn = document.createElement('a');
+                loginBtn.href = 'login.html';
+                loginBtn.className = 'header-login-btn';
+                loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Войти';
+                headerActions.appendChild(loginBtn);
+            }
+        }
+
+        // Выезжающее меню
+        if (navLinks) {
+            navLinks.querySelectorAll('.profile-link-nav, .admin-link-nav, .login-link, .logout-nav-btn')
+                .forEach(function(el) { el.remove(); });
+
+            if (loggedIn) {
+                var profileLink = document.createElement('a');
+                profileLink.href = 'profile.html';
+                profileLink.className = 'profile-link-nav';
+                profileLink.innerHTML = '<i class="fas fa-user"></i> Профиль';
+                navLinks.appendChild(profileLink);
+
+                var logoutBtn = document.createElement('button');
+                logoutBtn.className = 'logout-nav-btn';
+                logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Выйти';
+                logoutBtn.onclick = function() {
+                    localStorage.removeItem('logged_in');
+                    localStorage.removeItem('user_name');
+                    window.location.href = 'index.html';
+                };
+                navLinks.appendChild(logoutBtn);
+            }
         }
     }
+
+    // Первый запуск
     updateNavBar();
 
-    const stb=document.getElementById('scrollTopBtn');
-    function toggleSTB(){stb?.classList.toggle('visible',scrollY>500)}
-    window.addEventListener('scroll',toggleSTB);
-    stb?.addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));
-    toggleSTB()
+    // Слушаем изменения localStorage из других вкладок
+    window.addEventListener('storage', function(e) {
+        if (e.key === 'logged_in' || e.key === 'user_name') {
+            updateNavBar();
+        }
+    });
+
+    // При возвращении на вкладку — перепроверяем (ловим OAuth редирект)
+    window.addEventListener('focus', function() {
+        updateNavBar();
+    });
+
+    // Слушаем изменения авторизации Supabase в реальном времени
+    if (typeof supabase !== 'undefined') {
+        supabase.auth.onAuthStateChange(function(event, session) {
+            if (event === 'SIGNED_IN' && session && session.user) {
+                var name = session.user.user_metadata?.name || session.user.email?.split('@')[0] || 'Профиль';
+                localStorage.setItem('user_name', name);
+                localStorage.setItem('logged_in', 'true');
+                updateNavBar();
+            }
+            if (event === 'SIGNED_OUT') {
+                localStorage.removeItem('logged_in');
+                localStorage.removeItem('user_name');
+                updateNavBar();
+            }
+        });
+    }
+
+    // ========== КНОПКА НАВЕРХ ==========
+
+    var scrollTopBtn = document.getElementById('scrollTopBtn');
+
+    function toggleScrollBtn() {
+        if (scrollTopBtn) {
+            scrollTopBtn.classList.toggle('visible', window.scrollY > 500);
+        }
+    }
+
+    window.addEventListener('scroll', toggleScrollBtn, { passive: true });
+
+    if (scrollTopBtn) {
+        scrollTopBtn.addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+
+    toggleScrollBtn();
 })();
 </script>
+
 </body>
 </html>
