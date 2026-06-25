@@ -90,7 +90,7 @@ img{pointer-events:none}
 .menu-close-btn:hover{border-color:var(--accent);color:var(--accent)}
 
 /* ========== HERO ========== */
-.hero{background:var(--hero-gradient);padding:clamp(120px,14vh,180px) 0 clamp(50px,8vh,90px);border-radius:0 0 clamp(44px,6vw,64px) clamp(44px,6vw,64px);margin-bottom:clamp(30px,5vw,50px);position:relative;overflow:hidden}
+.hero{background:var(--hero-gradient);padding: clamp(120px,14vh,180px) 0 clamp(70px,10vh,110px);border-radius:0 0 clamp(44px,6vw,64px) clamp(44px,6vw,64px);margin-bottom:clamp(30px,5vw,50px);position:relative;overflow:hidden}
 .hero::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(221,255,86,0.25),transparent);opacity:1;z-index:0}
 .hero-content{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:clamp(20px,3vw,40px);position:relative;z-index:1;text-align:left}
 .hero-text{flex:1 1 250px;min-width:0;max-width:700px;display:flex;flex-direction:column;align-items:flex-start}
@@ -99,14 +99,25 @@ img{pointer-events:none}
 
 /* Статы — плавающие карточки справа */
 .hero-stats{display:flex;flex-direction:column;gap:clamp(7px,1vw,14px);flex-shrink:0;position:relative;z-index:1;padding-top:clamp(10px,1vw,30px)}
-.stat{text-align:center;background:var(--stat-bg);padding:clamp(16px,2vw,24px) clamp(22px,3.5vw,38px);border-radius:24px;transition:all .4s cubic-bezier(.2,.9,.4,1);box-shadow:0 8px 25px rgba(0,0,0,0.4);border:1px solid rgba(221,255,86,0.08);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);position:relative}
-.stat:nth-child(1){transform:translateX(-15px) rotate(-1.5deg)}
-.stat:nth-child(2){transform:translateX(22px) rotate(1deg)}
-.stat:nth-child(3){transform:translateX(-14px) rotate(-0.8deg)}
+.stat{text-align:center;background:var(--stat-bg);padding:clamp(16px,2vw,24px) clamp(22px,3.5vw,38px);border-radius:24px;transition:all .4s cubic-bezier(.2,.9,.4,1);box-shadow:0 8px 25px rgba(0,0,0,0.4);border:1px solid rgba(221,255,86,0.08);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);position:relative;}
+.stat:nth-child(1){animation: floatA 5s ease-in-out infinite;}
+.stat:nth-child(2){animation: floatB 4.5s ease-in-out infinite;}
+.stat:nth-child(3){animation: floatC 5.5s ease-in-out infinite;}
 .stat:hover{transform:translateY(-8px) rotate(0deg)!important;background:rgba(26,22,48,0.95);box-shadow:0 16px 40px rgba(221,255,86,0.12);border-color:rgba(221,255,86,0.25);z-index:2}
 .stat-number{font-size:clamp(1.1rem,2.2vw,1.5rem);font-weight:700;background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-0.3px;white-space:nowrap}
 .stat-label{font-size:clamp(0.65rem,1vw,0.8rem);color:var(--text-muted);font-weight:500;white-space:nowrap}
-
+@keyframes floatA {
+  0%, 100% { transform: translateX(-15px) rotate(-1.5deg) translateY(0); }
+  50%      { transform: translateX(-15px) rotate(-1.5deg) translateY(-10px); }
+}
+@keyframes floatB {
+  0%, 100% { transform: translateX(22px) rotate(1deg) translateY(0); }
+  50%      { transform: translateX(22px) rotate(1deg) translateY(-8px); }
+}
+@keyframes floatC {
+  0%, 100% { transform: translateX(-14px) rotate(-0.8deg) translateY(0); }
+  50%      { transform: translateX(-14px) rotate(-0.8deg) translateY(6px); }
+}
 /* ========== КНОПКИ ========== */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:clamp(14px,2vw,17px) clamp(28px,4.5vw,38px);border-radius:50px;font-weight:600;text-decoration:none;transition:all .4s cubic-bezier(.2,.9,.4,1);cursor:pointer;border:none;font-family:inherit;font-size:clamp(0.88rem,1.3vw,1rem);white-space:nowrap;letter-spacing:.3px}
 .btn-primary{background:var(--accent-gradient);color:#0F0B1A;box-shadow:0 8px 30px rgba(221,255,86,0.25);font-weight:700}
@@ -291,12 +302,12 @@ footer{background:var(--footer-bg);color:var(--footer-text);padding:60px 0 30px;
                 <h1>
                     Что такое Rubium?<br>
                     <span style="background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">
-                        Это образовательная платформа для школьников
+                        Это образовательная платформа для школьников и студентов
                     </span>
                 </h1>
 
                 <p>
-                    Онлайн-обучение для 5-11 классов. 
+                    Онлайн-обучение для 5-11 классов и студентов начальных курсов. 
                     Занятия с преподавателями, AI tutoring, отслеживание прогресса — всё на одной платформе.
                     От студентов МГТУ им. Баумана и Beijing Institute of Technology.
                 </p>
