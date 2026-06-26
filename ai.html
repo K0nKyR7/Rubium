@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rubi AI — Rubium</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Inter',sans-serif;background:#0F0B1A;color:#E8E4F0;min-height:100vh;display:flex;flex-direction:column}
+        .toolbar{display:flex;align-items:center;gap:16px;padding:14px 24px;background:rgba(15,11,26,0.95);border-bottom:1px solid rgba(221,255,86,0.08);flex-shrink:0}
+        .back-link{color:#B3B3CC;text-decoration:none;font-size:0.9rem;font-weight:500;transition:color .3s;display:flex;align-items:center;gap:6px}
+        .back-link:hover{color:#DDFF56}
+        .toolbar-title{color:#DDFF56;font-weight:700;font-size:1.1rem}
+        .chat-container{flex:1;display:flex;flex-direction:column;max-width:800px;margin:0 auto;width:100%;padding:20px}
+        .messages{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:16px;padding-bottom:16px}
+        .message{max-width:80%;padding:12px 18px;border-radius:20px;line-height:1.5;font-size:0.95rem}
+        .message.user{align-self:flex-end;background:linear-gradient(135deg,#DDFF56,#C5E84A);color:#0F0B1A;border-bottom-right-radius:6px}
+        .message.assistant{align-self:flex-start;background:rgba(26,22,48,0.8);border:1px solid rgba(221,255,86,0.1);border-bottom-left-radius:6px}
+        .input-area{display:flex;gap:10px;padding-top:16px;border-top:1px solid rgba(221,255,86,0.08)}
+        .input-area input{flex:1;padding:14px 18px;border-radius:50px;border:1px solid rgba(221,255,86,0.15);background:rgba(26,22,48,0.6);color:#fff;font-family:inherit;font-size:0.95rem;outline:none;transition:border-color .3s}
+        .input-area input:focus{border-color:#DDFF56}
+        .input-area button{width:48px;height:48px;border-radius:50%;border:none;background:linear-gradient(135deg,#DDFF56,#C5E84A);color:#0F0B1A;cursor:pointer;font-size:1.2rem;flex-shrink:0;transition:transform .2s}
+        .input-area button:hover{transform:scale(1.05)}
+    </style>
+</head>
+<body>
+    <div class="toolbar">
+        <a href="index.html" class="back-link">← На главную</a>
+        <span class="toolbar-title">⚡ Rubi AI</span>
+    </div>
+
+    <div class="chat-container">
+        <div class="messages" id="messages">
+            <div class="message assistant">Привет! Я Rubi AI. Спрашивай по математике, физике или информатике.</div>
+        </div>
+        <div class="input-area">
+            <input type="text" id="userInput" placeholder="Задай вопрос..." onkeypress="if(event.key==='Enter')sendMessage()">
+            <button onclick="sendMessage()"><i class="fas fa-arrow-up"></i></button>
+        </div>
+    </div>
+
+    <script>
+        async function sendMessage() {
+            var input = document.getElementById('userInput');
+            var msg = input.value.trim();
+            if (!msg) return;
+
+            var messages = document.getElementById('messages');
+            messages.innerHTML += '<div class="message user">' + msg + '</div>';
+            input.value = '';
+            messages.scrollTop = messages.scrollHeight;
+
+            messages.innerHTML += '<div class="message assistant" id="loading">Думаю...</div>';
+
+            try {
+                var response = await fetch('http://localhost:8501/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content: msg })
+                });
+                var data = await response.json();
+                document.getElementById('loading').textContent = data.reply;
+            } catch (e) {
+                document.getElementById('loading').textContent = 'Ошибка: сервер не отвечает.';
+            }
+
+            messages.scrollTop = messages.scrollHeight;
+        }
+    </script>
+</body>
+</html>
