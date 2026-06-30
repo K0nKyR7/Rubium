@@ -3,6 +3,7 @@ from flask_cors import CORS
 import requests
 import os
 import re
+import json
 
 app = Flask(__name__)
 CORS(app)
@@ -13,96 +14,124 @@ with open("model/AI_API_KEY.txt") as file:
 DEEPSEEK_API_KEY = os.environ.get("DEEPSEEK_API_KEY", KEY)
 DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions"
 
-def load_courses_data():
-    """Вытаскиваем информацию о курсах из courses.html"""
+SUPABASE_URL = "https://nrmihghshpteellhmzuh.supabase.co"
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ybWloZ2hzaHB0ZWVsbGhtenVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5NDI4NDMsImV4cCI6MjA5NzUxODg0M30.X77HE62ZqYPVv7uOpjHNWgn7H4wIL_FoJLcs-CV1itQ"
+
+conversation_history = {}
+
+def parse_courses_from_html():
+    """Парсим все данные курсов из courses.html"""
     try:
         with open("courses.html", "r", encoding="utf-8") as f:
             html = f.read()
         
-        # Ищем все блоки с курсами
         courses = []
-        pattern = r'<!-- (.*?) -->.*?<span class="course-item-badge.*?">(.*?)</span>.*?<h3>(.*?)</h3>.*?<p>(.*?)</p>.*?meta-value">(.*?)</span>'
-        matches = re.findall(pattern, html, re.DOTALL)
+        onclick_pattern = r"openModal\(\{(.*?)\}\)"
+        matches = re.findall(onclick_pattern, html, re.DOTALL)
         
         for match in matches:
-            comment, badge, title, description, teacher = match
-            courses.append({
-                "title": title.strip(),
-                "badge": badge.strip(),
-                "description": description.strip(),
-                "teacher": teacher.strip() if teacher.strip() != "—" else "пока не назначен"
-            })
+            try:
+                course_data = {}
+                
+                title_match = re.search(r"title:'([^']*)'", match)
+                if title_match:
+                    course_data['title'] = title_match.group(1)
+                
+                badge_match = re.search(r"badge:'([^']*)'", match)
+                if badge_match:
+                    course_data['badge'] = badge_match.group(1)
+                
+                cat_match = re.search(r"category:'([^']*)'", match)
+                if cat_match:
+                    course_data['category'] = cat_match.group(1)
+                
+                desc_match = re.search(r"desc:'([^']*)'", match)
+                if desc_match:
+                    course_data['description'] = desc_match.group(1)
+                
+                teacher_match = re.search(r"teacher:'([^']*)'", match)
+                if teacher_match:
+                    course_data['teacher'] = teacher_match.group(1)
+                
+                prices_match = re.search(r"prices:\{([^}]+)\}", match)
+                if prices_match:
+                    prices_str = prices_match.group(1)
+                    prices = {}
+                    for p in prices_str.split(','):
+                        parts = p.split(':')
+                        if len(parts) == 2:
+                            prices[parts[0].strip()] = int(parts[1].strip())
+                    course_data['prices'] = prices
+                
+                ai_match = re.search(r"aiSurcharge:(\d+)", match)
+                if ai_match:
+                    course_data['ai_surcharge'] = int(ai_match.group(1))
+                
+                if course_data.get('title'):
+                    courses.append(course_data)
+                    
+            except Exception as e:
+                print(f"Error parsing course: {e}")
+                continue
         
+        print(f"Parsed {len(courses)} courses from courses.html")
         return courses
+        
     except Exception as e:
-        print(f"Error loading courses: {e}")
+        print(f"Error reading courses.html: {e}")
         return []
 
 def build_system_prompt(user_profile=None):
     """Строим системный промпт с актуальными данными"""
     
-    courses = load_courses_data()
+    courses = parse_courses_from_html()
     
     courses_text = ""
     for i, course in enumerate(courses, 1):
+        prices = course.get('prices', {})
+        price_1 = prices.get('1', '?')
+        price_5 = prices.get('5', '?')
+        price_10 = prices.get('10', '?')
+        price_20 = prices.get('20', '?')
+        ai = course.get('ai_surcharge', '?')
+        
         courses_text += f"{i}. {course['badge']} — {course['title']}\n"
-        courses_text += f"   Описание: {course['description']}\n"
-        courses_text += f"   Преподаватель: {course['teacher']}\n\n"
+        courses_text += f"   {course['description']}\n"
+        courses_text += f"   Преподаватель: {course['teacher']}\n"
+        courses_text += f"   Тарифы: 1 занятие — {price_1}₽, 5 занятий — {price_5}₽, 10 занятий — {price_10}₽, 20 занятий — {price_20}₽\n"
+        courses_text += f"   Доплата за Rubi AI: +{ai}₽ за занятие\n\n"
     
     profile_text = ""
     if user_profile:
         profile_text = f"""
-ИНФОРМАЦИЯ О ПОЛЬЗОВАТЕЛЕ:
-- Имя: {user_profile.get('name', 'не указано')}
-- Уровень: {user_profile.get('level', 'не указан')}
-- Интересы: {user_profile.get('interests', 'не указаны')}
-- История запросов: {user_profile.get('history', 'нет')}
+О ПОЛЬЗОВАТЕЛЕ:
+Имя: {user_profile.get('name', 'неизвестно')}
+Уровень: {user_profile.get('level', 'не указан')}
+Интересы: {user_profile.get('interests', 'не указаны')}
 
-Используй эту информацию чтобы персонализировать ответ. Обращайся по имени если оно есть. Учитывай уровень подготовки.
 """
     
-    return f"""Ты Rubi AI — персональный тьютор онлайн-школы Stud&School. Ты помогаешь подобрать идеальный курс.
+    return f"""Ты Rubi AI — персональный тьютор онлайн-школы Stud&School. Ты помогаешь подобрать идеальный курс и записать пользователя на обучение.
 
 {profile_text}
-
-АКТУАЛЬНЫЙ СПИСОК КУРСОВ (загружен из courses.html):
+ДОСТУПНЫЕ КУРСЫ (с ценами):
 {courses_text}
 
-ТВОЯ РОЛЬ:
-- Вести живую консультацию как настоящий тьютор
-- Задавать уточняющие вопросы если нужно
-- Объяснять почему конкретный курс подходит именно этому пользователю
-- Рассказывать что будет на курсе
-- Учитывать уровень подготовки из профиля
-- Если пользователь не в сети (нет профиля) — работать в обычном режиме
+ТВОЯ ЗАДАЧА:
+1. Помоги пользователю выбрать курс — уточни предмет, уровень, цель
+2. Расскажи о подходящем курсе: что изучают, кто преподаёт, какие тарифы
+3. Обсуди количество занятий и нужен ли Rubi AI
+4. Когда пользователь готов записаться — запроси имя и номер телефона
+5. Если пользователь оставил имя и телефон — подтверди заявку и попрощайся
 
-ПРАВИЛА ОТВЕТА:
-- Не используй обозначения из markdown, пиши как человек
-- Размытый запрос → 1-2 уточняющих вопроса
-- Коротко, 1-2 предложения
-- Если курс не найден → предложи ближайший похожий
-- Упоминай преподавателя если он назначен
-- Можно использовать эмодзи
-- Никогда не придумывать ложной информации
-- В случае отсутствия информации говорить что ей не владеешь
-- Внимательно проверяй наличие курсов
-"""
+ФОРМАТ ОТВЕТА:
+- Пиши обычным текстом, без маркдауна, без звёздочек
+- Будь дружелюбным, как живой преподаватель
+- Когда пользователь готов записаться, скажи: "Отлично! Оставь, пожалуйста, имя и номер телефона, и мы свяжемся с тобой в ближайшее время."
+- После получения контактов подтверди: "Спасибо, [имя]! Мы приняли твою заявку на курс [название]. Скоро наш менеджер позвонит тебе по номеру [телефон]. Хорошей подготовки!"
 
-conversation_history = {}
+ВАЖНО: Ты не создаёшь заявки автоматически. Просто собираешь контакты в диалоге. Система сама сохранит их."""
 
-def get_user_profile(session_id):
-    """Заглушка для получения профиля. Потом заменишь на свою БД."""
-    # Пока возвращаем тестовые данные
-    # В будущем здесь будет запрос к БД или localStorage через API
-    test_profiles = {
-        "user_123": {
-            "name": "Максим",
-            "level": "11 класс, готовлюсь к ЕГЭ",
-            "interests": "математика, физика",
-            "history": "интересовался ЕГЭ по математике"
-        }
-    }
-    return test_profiles.get(session_id)
 
 @app.route("/api/consult", methods=["POST"])
 def consult():
@@ -111,23 +140,12 @@ def consult():
     session_id = data.get("session_id", "default")
 
     if not user_query:
-        return jsonify({"response": "Расскажи, что тебя интересует. Например: «готовлюсь к ЕГЭ по физике»."})
+        return jsonify({"response": "Расскажи, что тебя интересует. Например: «хочу подготовиться к ЕГЭ по физике» или «помоги выбрать курс по Python»."})
 
-    # Получаем профиль пользователя
-    user_profile = get_user_profile(session_id)
-
-    # Для каждой сессии строим системный промпт заново
-    # (можно оптимизировать, но для разработки норм)
     if session_id not in conversation_history:
         conversation_history[session_id] = [
-            {"role": "system", "content": build_system_prompt(user_profile)}
+            {"role": "system", "content": build_system_prompt()}
         ]
-    else:
-        # Обновляем системный промпт если изменились курсы или профиль
-        conversation_history[session_id][0] = {
-            "role": "system", 
-            "content": build_system_prompt(user_profile)
-        }
 
     conversation_history[session_id].append({"role": "user", "content": user_query})
 
@@ -141,7 +159,7 @@ def consult():
             json={
                 "model": "deepseek-chat",
                 "messages": conversation_history[session_id],
-                "temperature": 0.8,
+                "temperature": 0.75,
                 "max_tokens": 500
             },
             timeout=20
@@ -149,11 +167,12 @@ def consult():
         resp.raise_for_status()
         body = resp.json()
         reply = body["choices"][0]["message"]["content"]
+        
+        reply = reply.replace("**", "").replace("__", "")
+        
         conversation_history[session_id].append({"role": "assistant", "content": reply})
 
-        # Держим историю в разумных пределах
         if len(conversation_history[session_id]) > 20:
-            # Сохраняем системный промпт + последние сообщения
             conversation_history[session_id] = [
                 conversation_history[session_id][0]
             ] + conversation_history[session_id][-19:]
@@ -163,36 +182,97 @@ def consult():
     except Exception as e:
         print(f"DeepSeek API error: {e}")
         return jsonify({
-            "response": "Что-то пошло не так. Попробуй ещё раз или напиши нам в Telegram."
+            "response": "Что-то пошло не так на стороне сервера. Попробуй ещё раз через пару секунд. Если ошибка повторяется — напиши нам в Telegram."
         })
 
-@app.route("/api/profile", methods=["POST"])
-def update_profile():
-    """Эндпоинт для обновления профиля с фронтенда"""
+
+@app.route("/api/leads", methods=["POST"])
+def create_lead():
+    """Сохраняет заявку в Supabase"""
     data = request.get_json()
-    session_id = data.get("session_id")
-    profile_data = data.get("profile")
     
-    # Здесь потом будет сохранение в БД
-    print(f"Profile update for {session_id}: {profile_data}")
+    course_title = data.get("course_title", "")
     
-    # Очищаем историю чтобы перестроить промпт с новым профилем
-    if session_id in conversation_history:
-        del conversation_history[session_id]
+    # Ищем преподавателя по курсу
+    teacher_name = ""
+    courses = parse_courses_from_html()
+    for course in courses:
+        if course['title'].lower() in course_title.lower() or course_title.lower() in course['title'].lower():
+            teacher_name = course.get('teacher', '')
+            break
     
-    return jsonify({"status": "ok"})
+    try:
+        resp = requests.post(
+            f"{SUPABASE_URL}/rest/v1/leads",
+            headers={
+                "apikey": SUPABASE_KEY,
+                "Authorization": f"Bearer {SUPABASE_KEY}",
+                "Content-Type": "application/json",
+                "Prefer": "return=minimal"
+            },
+            json={
+                "client_name": data.get("client_name", ""),
+                "phone": data.get("phone", ""),
+                "course_title": course_title,
+                "teacher_name": teacher_name,
+                "chat_history": data.get("chat_history", ""),
+                "status": "new"
+            }
+        )
+        
+        if resp.status_code == 201:
+            return jsonify({"status": "ok", "message": "Заявка сохранена", "teacher": teacher_name})
+        else:
+            print(f"Supabase error: {resp.status_code} {resp.text}")
+            return jsonify({"status": "error", "message": "Ошибка сохранения"}), 500
+            
+    except Exception as e:
+        print(f"Error saving lead: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+
+@app.route("/api/leads", methods=["GET"])
+def get_leads():
+    """Получает заявки"""
+    user_id = request.args.get("user_id")
+    
+    try:
+        url = f"{SUPABASE_URL}/rest/v1/leads?select=*&order=created_at.desc"
+        if user_id:
+            url += f"&user_id=eq.{user_id}"
+        
+        resp = requests.get(
+            url,
+            headers={"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}"}
+        )
+        
+        if resp.status_code == 200:
+            return jsonify(resp.json())
+        else:
+            return jsonify([])
+            
+    except Exception as e:
+        print(f"Error fetching leads: {e}")
+        return jsonify([])
+
 
 @app.route("/api/courses", methods=["GET"])
 def get_courses():
     """Отдаём список курсов для фронтенда"""
-    courses = load_courses_data()
+    courses = parse_courses_from_html()
     return jsonify({"courses": courses})
 
+
+@app.route("/api/health", methods=["GET"])
+def health():
+    return jsonify({"status": "ok", "courses_parsed": len(parse_courses_from_html())})
+
+
 if __name__ == "__main__":
-    # Проверяем что курсы загрузились
-    courses = load_courses_data()
-    print(f"Loaded {len(courses)} courses from courses.html")
+    courses = parse_courses_from_html()
+    print(f"Loaded {len(courses)} courses:")
     for c in courses:
-        print(f"  - {c['badge']}: {c['title']}")
+        prices = c.get('prices', {})
+        print(f"  - {c['badge']}: {c['title']} ({c['teacher']}) от {prices.get('1', '?')}₽")
     
     app.run(host="0.0.0.0", port=5001, debug=True)
