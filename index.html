@@ -1,14 +1,28 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stud&School — подготовка к ЕГЭ и ОГЭ</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
     <style>
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             background: #FAF8FC;
@@ -19,7 +33,8 @@
             overflow-x: hidden;
         }
 
-        body::before, body::after {
+        body::before,
+        body::after {
             content: '';
             position: fixed;
             border-radius: 50%;
@@ -28,27 +43,55 @@
             filter: blur(140px);
             opacity: 0.04;
         }
+
         body::before {
-            width: 620px; height: 620px;
+            width: 620px;
+            height: 620px;
             background: #8B5CF6;
-            top: -180px; right: -180px;
+            top: -180px;
+            right: -180px;
             animation: driftA 28s ease-in-out infinite;
         }
+
         body::after {
-            width: 460px; height: 460px;
+            width: 460px;
+            height: 460px;
             background: #E11D8D;
-            bottom: -130px; left: -130px;
+            bottom: -130px;
+            left: -130px;
             animation: driftB 32s ease-in-out infinite;
         }
+
         @keyframes driftA {
-            0%, 100% { transform: translate(0, 0); }
-            33% { transform: translate(-40px, 30px); }
-            66% { transform: translate(20px, -15px); }
+
+            0%,
+            100% {
+                transform: translate(0, 0);
+            }
+
+            33% {
+                transform: translate(-40px, 30px);
+            }
+
+            66% {
+                transform: translate(20px, -15px);
+            }
         }
+
         @keyframes driftB {
-            0%, 100% { transform: translate(0, 0); }
-            33% { transform: translate(30px, -25px); }
-            66% { transform: translate(-15px, 30px); }
+
+            0%,
+            100% {
+                transform: translate(0, 0);
+            }
+
+            33% {
+                transform: translate(30px, -25px);
+            }
+
+            66% {
+                transform: translate(-15px, 30px);
+            }
         }
 
         .reveal {
@@ -56,7 +99,11 @@
             transform: translateY(24px);
             transition: opacity 0.6s ease, transform 0.6s ease;
         }
-        .reveal.visible { opacity: 1; transform: translateY(0); }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
         /* ===== HEADER ===== */
         .header {
@@ -72,6 +119,7 @@
             backdrop-filter: blur(24px) saturate(180%);
             -webkit-backdrop-filter: blur(24px) saturate(180%);
         }
+
         .logo {
             font-size: 1.3rem;
             font-weight: 800;
@@ -82,9 +130,24 @@
             gap: 10px;
             text-decoration: none;
         }
-        .logo img { width: 38px; height: 38px; object-fit: contain; }
-        .header-right { display: flex; align-items: center; gap: 14px; }
-        .header-actions { display: flex; align-items: center; gap: 10px; }
+
+        .logo img {
+            width: 38px;
+            height: 38px;
+            object-fit: contain;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
         .btn-outline-sm {
             padding: 9px 20px;
@@ -104,10 +167,12 @@
             gap: 6px;
             letter-spacing: -0.2px;
         }
+
         .btn-outline-sm:hover {
             background: rgba(225, 29, 141, 0.05);
             transform: translateY(-1px);
         }
+
         .header-user-block {
             display: flex;
             align-items: center;
@@ -125,10 +190,12 @@
             white-space: nowrap;
             letter-spacing: -0.2px;
         }
+
         .header-user-block:hover {
             background: rgba(139, 92, 246, 0.1);
             transform: translateY(-1px);
         }
+
         .burger-btn {
             display: flex;
             flex-direction: column;
@@ -142,10 +209,12 @@
             flex-shrink: 0;
             transition: all 0.28s ease;
         }
+
         .burger-btn:hover {
             border-color: #8B5CF6;
             background: rgba(139, 92, 246, 0.08);
         }
+
         .burger-btn span {
             display: block;
             width: 22px;
@@ -166,10 +235,16 @@
             pointer-events: none;
             transition: opacity 0.35s ease;
         }
-        .nav-overlay.open { opacity: 1; pointer-events: auto; }
+
+        .nav-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
         .nav-links {
             position: fixed;
-            top: 0; right: 0;
+            top: 0;
+            right: 0;
             width: 320px;
             height: 100dvh;
             display: flex;
@@ -188,7 +263,13 @@
             pointer-events: none;
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s ease;
         }
-        .nav-links.open { transform: translateX(0); opacity: 1; pointer-events: auto; }
+
+        .nav-links.open {
+            transform: translateX(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
         .nav-links a {
             padding: 13px 16px;
             border-radius: 14px;
@@ -202,15 +283,18 @@
             transition: all 0.25s ease;
             letter-spacing: -0.2px;
         }
+
         .nav-links a:hover {
             background: rgba(139, 92, 246, 0.06);
             color: #8B5CF6;
         }
+
         .nav-divider {
             height: 1px;
             background: rgba(139, 92, 246, 0.08);
             margin: 10px 6px;
         }
+
         .nav-links .menu-btn {
             padding: 13px 20px !important;
             font-size: 0.9rem !important;
@@ -221,21 +305,25 @@
             font-weight: 600 !important;
             letter-spacing: -0.2px !important;
         }
+
         .nav-links .menu-login {
             background: transparent !important;
             border: 1.5px solid rgba(139, 92, 246, 0.25) !important;
             color: #8B5CF6 !important;
         }
+
         .nav-links .menu-signup {
             background: #8B5CF6 !important;
             color: #fff !important;
             box-shadow: 0 4px 14px rgba(139, 92, 246, 0.2);
         }
+
         .nav-links .menu-account {
             background: rgba(139, 92, 246, 0.06) !important;
             color: #8B5CF6 !important;
             border: 1px solid rgba(139, 92, 246, 0.15) !important;
         }
+
         .nav-links .menu-logout {
             background: rgba(107, 114, 128, 0.06) !important;
             color: #6B7280 !important;
@@ -244,17 +332,21 @@
             font-family: inherit;
             transition: all 0.25s ease !important;
         }
+
         .nav-links .menu-logout:hover {
             background: rgba(239, 68, 68, 0.08) !important;
             color: #EF4444 !important;
         }
+
         .menu-close-btn {
             position: absolute;
-            top: 16px; right: 16px;
+            top: 16px;
+            right: 16px;
             background: rgba(139, 92, 246, 0.04);
             border: 1px solid rgba(139, 92, 246, 0.12);
             color: #6B7280;
-            width: 40px; height: 40px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             cursor: pointer;
             font-size: 1rem;
@@ -264,6 +356,7 @@
             transition: all 0.25s ease;
             z-index: 10;
         }
+
         .menu-close-btn:hover {
             border-color: #8B5CF6;
             color: #8B5CF6;
@@ -278,10 +371,12 @@
             margin: 0 auto;
             width: 100%;
         }
+
         .section-header {
             text-align: center;
             margin-bottom: 48px;
         }
+
         .section-label-text {
             font-size: 0.72rem;
             font-weight: 700;
@@ -290,6 +385,7 @@
             letter-spacing: 2px;
             margin-bottom: 8px;
         }
+
         .section-title {
             font-size: clamp(1.8rem, 3vw, 2.4rem);
             font-weight: 800;
@@ -298,6 +394,7 @@
             line-height: 1.15;
             margin-bottom: 10px;
         }
+
         .section-subtitle {
             font-size: 0.95rem;
             color: #6B7280;
@@ -313,6 +410,7 @@
             gap: 36px;
             flex-wrap: wrap;
         }
+
         .hero-text {
             flex: 1 1 400px;
             display: flex;
@@ -321,7 +419,13 @@
             min-width: 300px;
             justify-content: center;
         }
-        .tags { display: flex; gap: 8px; flex-wrap: wrap; }
+
+        .tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
         .tag {
             padding: 7px 16px;
             border-radius: 50px;
@@ -331,16 +435,19 @@
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
         }
+
         .tag-purple {
             background: rgba(139, 92, 246, 0.06);
             color: #8B5CF6;
             border: 1px solid rgba(139, 92, 246, 0.12);
         }
+
         .tag-pink {
             background: rgba(225, 29, 141, 0.04);
             color: #E11D8D;
             border: 1px solid rgba(225, 29, 141, 0.1);
         }
+
         .hero-text h1 {
             font-size: clamp(2.4rem, 5vw, 3.6rem);
             font-weight: 900;
@@ -348,19 +455,28 @@
             color: #1F2937;
             letter-spacing: -2px;
         }
+
         .hero-text h1 .highlight {
             background: linear-gradient(135deg, #8B5CF6, #E11D8D);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
+
         .hero-text .subtitle {
             font-size: 1rem;
             color: #6B7280;
             line-height: 1.6;
             max-width: 500px;
         }
-        .hero-buttons { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 4px; }
+
+        .hero-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 4px;
+        }
+
         .btn-primary {
             padding: 14px 32px;
             border-radius: 50px;
@@ -379,10 +495,12 @@
             align-items: center;
             gap: 8px;
         }
+
         .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 12px 32px rgba(139, 92, 246, 0.3);
         }
+
         .btn-secondary {
             padding: 14px 32px;
             border-radius: 50px;
@@ -400,16 +518,19 @@
             align-items: center;
             gap: 8px;
         }
+
         .btn-secondary:hover {
             background: rgba(225, 29, 141, 0.04);
             transform: translateY(-2px);
         }
+
         .stats-row {
             display: flex;
             gap: 12px;
             flex-wrap: wrap;
             margin-top: 8px;
         }
+
         .stat-item {
             display: flex;
             flex-direction: column;
@@ -421,11 +542,13 @@
             border: 1px solid rgba(139, 92, 246, 0.08);
             transition: all 0.28s ease;
         }
+
         .stat-item:hover {
             transform: translateY(-2px);
             border-color: rgba(139, 92, 246, 0.2);
             box-shadow: 0 8px 24px rgba(139, 92, 246, 0.06);
         }
+
         .stat-number {
             font-size: 0.95rem;
             font-weight: 700;
@@ -435,7 +558,14 @@
             align-items: center;
             gap: 6px;
         }
-        .stat-label { font-size: 0.7rem; color: #9CA3AF; font-weight: 500; white-space: nowrap; margin-top: 2px; }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: #9CA3AF;
+            font-weight: 500;
+            white-space: nowrap;
+            margin-top: 2px;
+        }
 
         /* ===== COURSE PANEL ===== */
         .course-panel {
@@ -445,6 +575,7 @@
             gap: 14px;
             min-width: 280px;
         }
+
         .section-label-inline {
             font-size: 0.7rem;
             font-weight: 700;
@@ -455,6 +586,7 @@
             align-items: center;
             gap: 8px;
         }
+
         .course-card {
             background: rgba(255, 255, 255, 0.6);
             backdrop-filter: blur(20px) saturate(180%);
@@ -470,22 +602,48 @@
             position: relative;
             overflow: hidden;
         }
+
         .course-card::before {
             content: '';
             position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 3px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
         }
-        .course-card.ege::before { background: #8B5CF6; }
-        .course-card.oge::before { background: #E11D8D; }
+
+        .course-card.ege::before {
+            background: #8B5CF6;
+        }
+
+        .course-card.oge::before {
+            background: #E11D8D;
+        }
+
         .course-card:hover {
             transform: translateY(-3px);
             box-shadow: 0 12px 32px rgba(139, 92, 246, 0.07);
             border-color: rgba(139, 92, 246, 0.14);
         }
-        .course-icon { font-size: 1.8rem; line-height: 1; }
-        .course-card h3 { font-size: 1.5rem; font-weight: 700; color: #1F2937; letter-spacing: -0.3px; }
-        .course-card p { font-size: 0.78rem; color: #9CA3AF; line-height: 1.5; }
+
+        .course-icon {
+            font-size: 1.8rem;
+            line-height: 1;
+        }
+
+        .course-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1F2937;
+            letter-spacing: -0.3px;
+        }
+
+        .course-card p {
+            font-size: 0.78rem;
+            color: #9CA3AF;
+            line-height: 1.5;
+        }
+
         .btn-course {
             padding: 10px 18px;
             border-radius: 50px;
@@ -504,20 +662,24 @@
             gap: 8px;
             margin-top: 4px;
         }
+
         .btn-course-purple {
             background: #8B5CF6;
             color: #fff;
             box-shadow: 0 4px 12px rgba(139, 92, 246, 0.16);
         }
+
         .btn-course-purple:hover {
             box-shadow: 0 8px 22px rgba(139, 92, 246, 0.28);
             transform: translateY(-2px);
         }
+
         .btn-course-pink {
             background: #E11D8D;
             color: #fff;
             box-shadow: 0 4px 12px rgba(225, 29, 141, 0.14);
         }
+
         .btn-course-pink:hover {
             box-shadow: 0 8px 22px rgba(225, 29, 141, 0.26);
             transform: translateY(-2px);
@@ -529,6 +691,7 @@
             grid-template-columns: repeat(3, 1fr);
             gap: 20px;
         }
+
         .step-card {
             background: rgba(255, 255, 255, 0.5);
             backdrop-filter: blur(14px);
@@ -539,13 +702,16 @@
             text-align: center;
             transition: all 0.3s ease;
         }
+
         .step-card:hover {
             transform: translateY(-3px);
             border-color: rgba(139, 92, 246, 0.14);
             box-shadow: 0 10px 28px rgba(139, 92, 246, 0.06);
         }
+
         .step-number {
-            width: 48px; height: 48px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             background: rgba(139, 92, 246, 0.08);
             color: #8B5CF6;
@@ -556,12 +722,14 @@
             justify-content: center;
             margin: 0 auto 16px;
         }
+
         .step-card h3 {
             font-size: 1rem;
             font-weight: 700;
             margin-bottom: 6px;
             letter-spacing: -0.3px;
         }
+
         .step-card p {
             font-size: 0.8rem;
             color: #9CA3AF;
@@ -574,6 +742,7 @@
             grid-template-columns: repeat(2, 1fr);
             gap: 20px;
         }
+
         .social-card {
             position: relative;
             background: rgba(255, 255, 255, 0.55);
@@ -589,6 +758,7 @@
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1.2);
             overflow: hidden;
         }
+
         .social-card::after {
             content: '';
             position: absolute;
@@ -598,28 +768,38 @@
             transition: opacity 0.4s ease;
             pointer-events: none;
         }
+
         .social-card.tg::after {
             background: radial-gradient(circle at 70% 30%, rgba(0, 136, 204, 0.12), transparent 60%);
         }
+
         .social-card.vk::after {
             background: radial-gradient(circle at 70% 30%, rgba(0, 119, 255, 0.12), transparent 60%);
         }
-        .social-card:hover::after { opacity: 1; }
+
+        .social-card:hover::after {
+            opacity: 1;
+        }
+
         .social-card:hover {
             transform: translateY(-4px);
             border-color: transparent;
             box-shadow: 0 16px 40px rgba(139, 92, 246, 0.1);
         }
+
         .social-card.tg:hover {
             border-color: rgba(0, 136, 204, 0.3);
             box-shadow: 0 16px 40px rgba(0, 136, 204, 0.12);
         }
+
         .social-card.vk:hover {
             border-color: rgba(0, 119, 255, 0.3);
             box-shadow: 0 16px 40px rgba(0, 119, 255, 0.12);
         }
+
         .social-icon-box {
-            width: 56px; height: 56px;
+            width: 56px;
+            height: 56px;
             border-radius: 16px;
             display: flex;
             align-items: center;
@@ -628,17 +808,21 @@
             flex-shrink: 0;
             transition: all 0.4s ease;
         }
+
         .social-card.tg .social-icon-box {
             background: rgba(0, 136, 204, 0.1);
             color: #0088cc;
         }
+
         .social-card.vk .social-icon-box {
             background: rgba(0, 119, 255, 0.1);
             color: #0077ff;
         }
+
         .social-card:hover .social-icon-box {
             transform: scale(1.08);
         }
+
         .social-info h4 {
             font-size: 0.95rem;
             font-weight: 700;
@@ -646,17 +830,20 @@
             margin-bottom: 4px;
             letter-spacing: -0.3px;
         }
+
         .social-info p {
             font-size: 0.78rem;
             color: #9CA3AF;
             line-height: 1.4;
         }
+
         .social-arrow {
             margin-left: auto;
             font-size: 0.9rem;
             color: #9CA3AF;
             transition: all 0.3s ease;
         }
+
         .social-card:hover .social-arrow {
             transform: translateX(4px);
             color: #6B7280;
@@ -672,6 +859,7 @@
             backdrop-filter: blur(14px);
             -webkit-backdrop-filter: blur(14px);
         }
+
         .footer-grid {
             max-width: 1200px;
             margin: 0 auto;
@@ -679,6 +867,7 @@
             grid-template-columns: 2fr 1fr 1fr 1fr;
             gap: 32px;
         }
+
         .footer-brand .logo {
             font-size: 1.2rem;
             font-weight: 800;
@@ -690,12 +879,14 @@
             text-decoration: none;
             margin-bottom: 10px;
         }
+
         .footer-brand p {
             font-size: 0.78rem;
             color: #9CA3AF;
             line-height: 1.55;
             max-width: 280px;
         }
+
         .footer-col h4 {
             font-size: 0.72rem;
             font-weight: 700;
@@ -704,6 +895,7 @@
             letter-spacing: 1px;
             margin-bottom: 14px;
         }
+
         .footer-col a {
             display: block;
             font-size: 0.82rem;
@@ -713,7 +905,11 @@
             transition: color 0.2s ease;
             letter-spacing: -0.1px;
         }
-        .footer-col a:hover { color: #8B5CF6; }
+
+        .footer-col a:hover {
+            color: #8B5CF6;
+        }
+
         .footer-bottom {
             max-width: 1200px;
             margin: 28px auto 0;
@@ -727,9 +923,15 @@
             flex-wrap: wrap;
             gap: 12px;
         }
-        .footer-social { display: flex; gap: 10px; }
+
+        .footer-social {
+            display: flex;
+            gap: 10px;
+        }
+
         .footer-social a {
-            width: 34px; height: 34px;
+            width: 34px;
+            height: 34px;
             border-radius: 50%;
             background: rgba(139, 92, 246, 0.06);
             color: #8B5CF6;
@@ -740,6 +942,7 @@
             transition: all 0.25s ease;
             font-size: 0.85rem;
         }
+
         .footer-social a:hover {
             background: rgba(139, 92, 246, 0.14);
             transform: translateY(-1px);
@@ -747,39 +950,107 @@
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 960px) {
-            .section { padding: 56px 28px; }
-            .hero-row { flex-direction: column; gap: 28px; }
-            .course-panel { flex: 0 0 auto; flex-direction: row; width: 100%; }
-            .course-card { flex: 1; }
-            .steps-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
-            .social-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
-            .footer { padding: 40px 28px 24px; }
+            .section {
+                padding: 56px 28px;
+            }
+
+            .hero-row {
+                flex-direction: column;
+                gap: 28px;
+            }
+
+            .course-panel {
+                flex: 0 0 auto;
+                flex-direction: row;
+                width: 100%;
+            }
+
+            .course-card {
+                flex: 1;
+            }
+
+            .steps-grid {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+                margin: 0 auto;
+            }
+
+            .social-grid {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+                margin: 0 auto;
+            }
+
+            .footer {
+                padding: 40px 28px 24px;
+            }
+
             .footer-grid {
                 grid-template-columns: 1fr 1fr;
                 gap: 28px;
             }
+
             .footer-brand {
                 grid-column: 1 / -1;
                 max-width: 100%;
             }
-            .footer-brand p { max-width: 100%; }
+
+            .footer-brand p {
+                max-width: 100%;
+            }
         }
+
         @media (max-width: 640px) {
-            .header { padding: 10px 18px; }
-            .section { padding: 40px 16px; }
-            .hero-text { align-items: center; text-align: center; }
-            .hero-text .subtitle { max-width: 100%; }
-            .hero-buttons { justify-content: center; }
-            .stats-row { justify-content: center; }
-            .course-panel { flex-direction: column; }
-            .footer { padding: 32px 18px 20px; }
+            .header {
+                padding: 10px 18px;
+            }
+
+            .section {
+                padding: 40px 16px;
+            }
+
+            .hero-text {
+                align-items: center;
+                text-align: center;
+            }
+
+            .hero-text .subtitle {
+                max-width: 100%;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+
+            .stats-row {
+                justify-content: center;
+            }
+
+            .course-panel {
+                flex-direction: column;
+            }
+
+            .footer {
+                padding: 32px 18px 20px;
+            }
+
             .footer-grid {
                 grid-template-columns: 1fr;
                 gap: 22px;
             }
-            .footer-brand { grid-column: 1; }
-            .footer-col h4 { margin-bottom: 10px; }
-            .footer-col a { margin-bottom: 7px; }
+
+            .footer-brand {
+                grid-column: 1;
+            }
+
+            .footer-col h4 {
+                margin-bottom: 10px;
+            }
+
+            .footer-col a {
+                margin-bottom: 7px;
+            }
+
             .footer-bottom {
                 flex-direction: column;
                 text-align: center;
@@ -787,252 +1058,270 @@
                 margin-top: 24px;
                 padding-top: 16px;
             }
-            .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
+
+            .btn-primary,
+            .btn-secondary {
+                width: 100%;
+                justify-content: center;
+            }
         }
     </style>
 </head>
+
 <body>
 
-<header class="header">
-    <a href="#" class="logo"><img src="data/logo.png" alt="Stud&School"></a>
-    <div class="header-right">
-        <div class="header-actions" id="headerActions"></div>
-        <button class="burger-btn" id="burgerBtn" aria-label="Меню"><span></span><span></span><span></span></button>
+    <header class="header">
+        <a href="#" class="logo"><img src="data/logo.png" alt="Stud&School"></a>
+        <div class="header-right">
+            <div class="header-actions" id="headerActions"></div>
+            <button class="burger-btn" id="burgerBtn" aria-label="Меню"><span></span><span></span><span></span></button>
+        </div>
+    </header>
+
+    <div class="nav-overlay" id="navOverlay"></div>
+    <div class="nav-links" id="navLinks">
+        <button class="menu-close-btn" id="menuCloseBtn" aria-label="Закрыть меню"><i class="fas fa-times"></i></button>
+        <a href="#how"><i class="fas fa-circle-question"></i> Как это работает</a>
+        <a href="courses"><i class="fas fa-book"></i> Курсы</a>
+        <a href="#social"><i class="fas fa-share-nodes"></i> Соцсети</a>
+        <a href="#"><i class="fas fa-user-graduate"></i> Преподаватели</a>
+        <div class="nav-divider"></div>
     </div>
-</header>
 
-<div class="nav-overlay" id="navOverlay"></div>
-<div class="nav-links" id="navLinks">
-    <button class="menu-close-btn" id="menuCloseBtn" aria-label="Закрыть меню"><i class="fas fa-times"></i></button>
-    <a href="#how"><i class="fas fa-circle-question"></i> Как это работает</a>
-    <a href="courses"><i class="fas fa-book"></i> Курсы</a>
-    <a href="#social"><i class="fas fa-share-nodes"></i> Соцсети</a>
-    <a href="#"><i class="fas fa-user-graduate"></i> Преподаватели</a>
-    <div class="nav-divider"></div>
-</div>
-
-<!-- HERO -->
-<section class="section" style="padding-bottom: 48px;">
-    <div class="hero-row reveal">
-        <div class="hero-text">
-            <div class="tags">
-                <span class="tag tag-purple"><i class="fas fa-bolt"></i> Подготовка к ЕГЭ и ОГЭ</span>
-                <span class="tag tag-pink"><i class="fas fa-users"></i> Занятия для студентов</span>
+    <!-- HERO -->
+    <section class="section" style="padding-bottom: 48px;">
+        <div class="hero-row reveal">
+            <div class="hero-text">
+                <div class="tags">
+                    <span class="tag tag-purple"><i class="fas fa-bolt"></i> Подготовка к ЕГЭ и ОГЭ</span>
+                    <span class="tag tag-pink"><i class="fas fa-users"></i> Занятия для студентов</span>
+                </div>
+                <h1><span class="highlight">Stud&</span>School</h1>
+                <p class="subtitle">Инновационная онлайн-школа от студентов МГТУ им. Баумана и Beijing Institute of
+                    Technology. Готовим к экзаменам с душой и технологиями.</p>
+                <div class="hero-buttons">
+                    <a href="#how" class="btn-primary"><i class="fas fa-compass"></i> Гид по школе</a>
+                    <a href="#" class="btn-secondary"><i class="fas fa-gift"></i> Бесплатное занятие</a>
+                </div>
+                <div class="stats-row">
+                    <div class="stat-item"><span class="stat-number"><i class="fas fa-robot"></i> Rubi AI</span><span
+                            class="stat-label">персональный ассистент</span></div>
+                    <div class="stat-item"><span class="stat-number"><i class="fas fa-user-graduate"></i>
+                            Преподаватели</span><span class="stat-label">студенты топ вузов</span></div>
+                    <div class="stat-item"><span class="stat-number"><i class="fas fa-headset"></i> 24/7</span><span
+                            class="stat-label">поддержка</span></div>
+                </div>
             </div>
-            <h1><span class="highlight">Stud&</span>School</h1>
-            <p class="subtitle">Инновационная онлайн-школа от студентов МГТУ им. Баумана и Beijing Institute of Technology. Готовим к экзаменам с душой и технологиями.</p>
-            <div class="hero-buttons">
-                <a href="#how" class="btn-primary"><i class="fas fa-compass"></i> Гид по школе</a>
-                <a href="#" class="btn-secondary"><i class="fas fa-gift"></i> Бесплатное занятие</a>
-            </div>
-            <div class="stats-row">
-                <div class="stat-item"><span class="stat-number"><i class="fas fa-robot"></i> Rubi AI</span><span class="stat-label">персональный ассистент</span></div>
-                <div class="stat-item"><span class="stat-number"><i class="fas fa-user-graduate"></i> Преподаватели</span><span class="stat-label">студенты топ вузов</span></div>
-                <div class="stat-item"><span class="stat-number"><i class="fas fa-headset"></i> 24/7</span><span class="stat-label">поддержка</span></div>
-            </div>
-        </div>
 
-        <div class="course-panel" id="courses">
-            <span class="section-label-inline"><i class="fas fa-bullseye"></i> Наши программы</span>
-            <div class="course-card ege">
-                <h3>Каталог курсов</h3>
-                <p>Все предметы. Пробники каждый месяц, личный куратор, проверка домашки.</p>
-                <a href="courses.html" class="btn-course btn-course-purple">Смотреть <i class="fas fa-arrow-right"></i></a>
-            </div>
-            <div class="course-card oge">
-                <h3>Не можешь выбрать?</h3>
-                <p>Спроси у Rubi AI. Он проанализирует твой запрос и предложит подходящий курс.</p>
-                <a href="consult.html" class="btn-course btn-course-pink">Проконсультироваться <i class="fas fa-arrow-right"></i></a>
+            <div class="course-panel" id="courses">
+                <span class="section-label-inline"><i class="fas fa-bullseye"></i> Наши программы</span>
+                <div class="course-card ege">
+                    <h3>Каталог курсов</h3>
+                    <p>Все предметы. Пробники каждый месяц, личный куратор, проверка домашки.</p>
+                    <a href="courses.html" class="btn-course btn-course-purple">Смотреть <i
+                            class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="course-card oge">
+                    <h3>Не можешь выбрать?</h3>
+                    <p>Спроси у Rubi AI. Он проанализирует твой запрос и предложит подходящий курс.</p>
+                    <a href="consult.html" class="btn-course btn-course-pink">Проконсультироваться <i
+                            class="fas fa-arrow-right"></i></a>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- HOW IT WORKS -->
-<section class="section reveal" id="how">
-    <div class="section-header">
-        <div class="section-label-text">Процесс</div>
-        <h2 class="section-title">Как начать обучение</h2>
-        <p class="section-subtitle">Три простых шага до первого результата</p>
-    </div>
-    <div class="steps-grid">
-        <div class="step-card">
-            <div class="step-number">1</div>
-            <h3>Выберите курс</h3>
-            <p>Определитесь с предметом и форматом — ЕГЭ или ОГЭ. Мы поможем подобрать уровень.</p>
+    <!-- HOW IT WORKS -->
+    <section class="section reveal" id="how">
+        <div class="section-header">
+            <div class="section-label-text">Процесс</div>
+            <h2 class="section-title">Как начать обучение</h2>
+            <p class="section-subtitle">Три простых шага до первого результата</p>
         </div>
-        <div class="step-card">
-            <div class="step-number">2</div>
-            <h3>Пройдите пробный урок</h3>
-            <p>Бесплатное занятие с преподавателем, чтобы оценить методику и платформу.</p>
-        </div>
-        <div class="step-card">
-            <div class="step-number">3</div>
-            <h3>Начните подготовку</h3>
-            <p>Регулярные занятия, домашки, пробники и поддержка Rubi AI — всё для вашего результата.</p>
-        </div>
-    </div>
-</section>
-
-<!-- SOCIAL -->
-<section class="section reveal" id="social">
-    <div class="section-header">
-        <div class="section-label-text">Сообщество</div>
-        <h2 class="section-title">Будьте с нами</h2>
-        <p class="section-subtitle">Анонсы, полезные материалы и поддержка в наших соцсетях</p>
-    </div>
-    <div class="social-grid">
-        <a href="https://t.me/studschool" class="social-card tg" target="_blank" rel="noopener">
-            <div class="social-icon-box"><i class="fab fa-telegram-plane"></i></div>
-            <div class="social-info">
-                <h4>Telegram-канал</h4>
-                <p>Ежедневные разборы заданий, лайфхаки и анонсы вебинаров</p>
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <h3>Выберите курс</h3>
+                <p>Определитесь с предметом и форматом — ЕГЭ или ОГЭ. Мы поможем подобрать уровень.</p>
             </div>
-            <span class="social-arrow"><i class="fas fa-arrow-right"></i></span>
-        </a>
-        <a href="https://vk.com/club239939458" class="social-card vk" target="_blank" rel="noopener">
-            <div class="social-icon-box"><i class="fab fa-vk"></i></div>
-            <div class="social-info">
-                <h4>Группа ВКонтакте</h4>
-                <p>Обсуждения, голосования, прямые эфиры с преподавателями</p>
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <h3>Пройдите пробный урок</h3>
+                <p>Бесплатное занятие с преподавателем, чтобы оценить методику и платформу.</p>
             </div>
-            <span class="social-arrow"><i class="fas fa-arrow-right"></i></span>
-        </a>
-    </div>
-</section>
-
-<!-- FOOTER -->
-<footer class="footer">
-    <div class="footer-grid">
-        <div class="footer-brand">
-            <a href="#" class="logo"><img src="data/logo.png" alt="Stud&School">Stud&School</a>
-            <p>Онлайн-школа от студентов МГТУ им. Баумана и BIT. Готовим к ЕГЭ и ОГЭ с помощью передовых методик и собственного AI-ассистента.</p>
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <h3>Начните подготовку</h3>
+                <p>Регулярные занятия, домашки, пробники и поддержка Rubi AI — всё для вашего результата.</p>
+            </div>
         </div>
-        <div class="footer-col">
-            <h4>Обучение</h4>
-            <a href="courses.html">Курсы ЕГЭ</a>
-            <a href="courses.html">Курсы ОГЭ</a>
-            <a href="#">Пробное занятие</a>
-            <a href="#">Rubi AI</a>
+    </section>
+
+    <!-- SOCIAL -->
+    <section class="section reveal" id="social">
+        <div class="section-header">
+            <div class="section-label-text">Сообщество</div>
+            <h2 class="section-title">Будьте с нами</h2>
+            <p class="section-subtitle">Анонсы, полезные материалы и поддержка в наших соцсетях</p>
         </div>
-        <div class="footer-col">
-            <h4>О нас</h4>
-            <a href="#">Преподаватели</a>
-            <a href="#">Блог</a>
-            <a href="#">Контакты</a>
+        <div class="social-grid">
+            <a href="https://t.me/studschool" class="social-card tg" target="_blank" rel="noopener">
+                <div class="social-icon-box"><i class="fab fa-telegram-plane"></i></div>
+                <div class="social-info">
+                    <h4>Telegram-канал</h4>
+                    <p>Ежедневные разборы заданий, лайфхаки и анонсы вебинаров</p>
+                </div>
+                <span class="social-arrow"><i class="fas fa-arrow-right"></i></span>
+            </a>
+            <a href="https://vk.com/club239939458" class="social-card vk" target="_blank" rel="noopener">
+                <div class="social-icon-box"><i class="fab fa-vk"></i></div>
+                <div class="social-info">
+                    <h4>Группа ВКонтакте</h4>
+                    <p>Обсуждения, голосования, прямые эфиры с преподавателями</p>
+                </div>
+                <span class="social-arrow"><i class="fas fa-arrow-right"></i></span>
+            </a>
         </div>
-        <div class="footer-col">
-            <h4>Документы</h4>
-            <a href="#">Оферта</a>
-            <a href="#">Политика конфиденциальности</a>
-            <a href="#">Реквизиты</a>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="#" class="logo"><img src="data/logo.png" alt="Stud&School">Stud&School</a>
+                <p>Онлайн-школа от студентов МГТУ им. Баумана и BIT. Готовим к ЕГЭ и ОГЭ с помощью передовых методик и
+                    собственного AI-ассистента.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Обучение</h4>
+                <a href="courses.html">Курсы ЕГЭ</a>
+                <a href="courses.html">Курсы ОГЭ</a>
+                <a href="#">Пробное занятие</a>
+                <a href="#">Rubi AI</a>
+            </div>
+            <div class="footer-col">
+                <h4>О нас</h4>
+                <a href="#">Преподаватели</a>
+                <a href="#">Блог</a>
+                <a href="#">Контакты</a>
+            </div>
+            <div class="footer-col">
+                <h4>Документы</h4>
+                <a href="#">Оферта</a>
+                <a href="#">Политика конфиденциальности</a>
+                <a href="#">Реквизиты</a>
+            </div>
         </div>
-    </div>
-    <div class="footer-bottom">
-        <span>© 2026 Stud&School. Все права защищены.</span>
-        <div class="footer-social">
-            <a href="#" aria-label="Telegram"><i class="fab fa-telegram-plane"></i></a>
-            <a href="#" aria-label="VK"><i class="fab fa-vk"></i></a>
+        <div class="footer-bottom">
+            <span>© 2026 Stud&School. Все права защищены.</span>
+            <div class="footer-social">
+                <a href="#" aria-label="Telegram"><i class="fab fa-telegram-plane"></i></a>
+                <a href="#" aria-label="VK"><i class="fab fa-vk"></i></a>
+            </div>
         </div>
-    </div>
-</footer>
+    </footer>
 
-<script>
-(function(){
-    var burger = document.getElementById('burgerBtn');
-    var menu = document.getElementById('navLinks');
-    var overlay = document.getElementById('navOverlay');
-    var closeBtn = document.getElementById('menuCloseBtn');
+    <script>
+        (function () {
+            var burger = document.getElementById('burgerBtn');
+            var menu = document.getElementById('navLinks');
+            var overlay = document.getElementById('navOverlay');
+            var closeBtn = document.getElementById('menuCloseBtn');
 
-    function openMenu() { menu.classList.add('open'); overlay.classList.add('open'); }
-    function closeMenu() { menu.classList.remove('open'); overlay.classList.remove('open'); }
+            function openMenu() { menu.classList.add('open'); overlay.classList.add('open'); }
+            function closeMenu() { menu.classList.remove('open'); overlay.classList.remove('open'); }
 
-    burger.addEventListener('click', function() {
-        menu.classList.contains('open') ? closeMenu() : openMenu();
-    });
-    overlay.addEventListener('click', closeMenu);
-    closeBtn.addEventListener('click', closeMenu);
-    menu.querySelectorAll('a').forEach(function(link) {
-        link.addEventListener('click', closeMenu);
-    });
+            burger.addEventListener('click', function () {
+                menu.classList.contains('open') ? closeMenu() : openMenu();
+            });
+            overlay.addEventListener('click', closeMenu);
+            closeBtn.addEventListener('click', closeMenu);
+            menu.querySelectorAll('a').forEach(function (link) {
+                link.addEventListener('click', closeMenu);
+            });
 
-    function updateNavBar() {
-        var ha = document.getElementById('headerActions');
-        var nl = document.getElementById('navLinks');
-        var loggedIn = localStorage.getItem('logged_in') === 'true';
+            async function updateNavBar() {
+                var ha = document.getElementById('headerActions');
+                var nl = document.getElementById('navLinks');
 
-        if (ha) {
-            ha.innerHTML = '';
-            if (loggedIn) {
-                var name = localStorage.getItem('user_name') || 'Профиль';
-                var ub = document.createElement('a');
-                ub.href = 'profile.html';
-                ub.className = 'header-user-block';
-                ub.innerHTML = '<i class="fas fa-user"></i> ' + name;
-                ha.appendChild(ub);
-            } else {
-                var lb = document.createElement('a');
-                lb.href = 'login.html';
-                lb.className = 'btn-outline-sm';
-                lb.innerHTML = '<i class="fas fa-sign-in-alt"></i> Войти';
-                ha.appendChild(lb);
+                // Проверяем сессию через Supabase
+                var { data: sessionData } = await supabase.auth.getSession();
+                var loggedIn = sessionData && sessionData.session && sessionData.session.user;
+
+                if (ha) {
+                    ha.innerHTML = '';
+                    if (loggedIn) {
+                        var user = sessionData.session.user;
+                        var firstName = user.user_metadata?.first_name || '';
+                        var fullName = firstName || user.email?.split('@')[0] || 'Профиль';
+
+                        // Сохраняем для других страниц
+                        localStorage.setItem('logged_in', 'true');
+                        localStorage.setItem('user_name', fullName);
+
+                        var ub = document.createElement('a');
+                        ub.href = 'profile.html';
+                        ub.className = 'header-user-block';
+                        ub.innerHTML = '<i class="fas fa-user"></i> ' + fullName;
+                        ha.appendChild(ub);
+                    } else {
+                        localStorage.removeItem('logged_in');
+                        localStorage.removeItem('user_name');
+
+                        var lb = document.createElement('a');
+                        lb.href = 'login.html';
+                        lb.className = 'btn-outline-sm';
+                        lb.innerHTML = '<i class="fas fa-sign-in-alt"></i> Войти';
+                        ha.appendChild(lb);
+                    }
+                }
+
+                if (nl) {
+                    nl.querySelectorAll('.menu-login, .menu-signup, .menu-account, .menu-logout').forEach(function (el) { el.remove(); });
+                    if (loggedIn) {
+                        var user = sessionData.session.user;
+                        var firstName = user.user_metadata?.first_name || '';
+                        var fullName = firstName || user.email?.split('@')[0] || 'Профиль';
+
+                        var al = document.createElement('a');
+                        al.href = 'profile.html';
+                        al.className = 'menu-btn menu-account';
+                        al.innerHTML = '<i class="fas fa-user"></i> ' + fullName;
+                        nl.appendChild(al);
+                        // Без кнопки выхода
+                    } else {
+                        var ll = document.createElement('a');
+                        ll.href = 'login.html';
+                        ll.className = 'menu-btn menu-login';
+                        ll.innerHTML = '<i class="fas fa-sign-in-alt"></i> Войти';
+                        nl.appendChild(ll);
+
+                        var sl = document.createElement('a');
+                        sl.href = 'register.html';
+                        sl.className = 'menu-btn menu-signup';
+                        sl.innerHTML = '<i class="fas fa-pen-to-square"></i> Записаться';
+                        nl.appendChild(sl);
+                    }
+                }
             }
-        }
 
-        if (nl) {
-            nl.querySelectorAll('.menu-login, .menu-signup, .menu-account, .menu-logout').forEach(function(el) { el.remove(); });
-            if (loggedIn) {
-                var name = localStorage.getItem('user_name') || 'Профиль';
-                var al = document.createElement('a');
-                al.href = 'profile.html';
-                al.className = 'menu-btn menu-account';
-                al.innerHTML = '<i class="fas fa-user"></i> ' + name;
-                nl.appendChild(al);
+            updateNavBar();
 
-                var lo = document.createElement('button');
-                lo.className = 'menu-btn menu-logout';
-                lo.innerHTML = '<i class="fas fa-sign-out-alt"></i> Выйти';
-                lo.onclick = function() {
-                    localStorage.removeItem('logged_in');
-                    localStorage.removeItem('user_name');
-                    window.location.reload();
-                };
-                nl.appendChild(lo);
-            } else {
-                var ll = document.createElement('a');
-                ll.href = 'login.html';
-                ll.className = 'menu-btn menu-login';
-                ll.innerHTML = '<i class="fas fa-sign-in-alt"></i> Войти';
-                nl.appendChild(ll);
-
-                var sl = document.createElement('a');
-                sl.href = 'register.html';
-                sl.className = 'menu-btn menu-signup';
-                sl.innerHTML = '<i class="fas fa-pen-to-square"></i> Записаться';
-                nl.appendChild(sl);
+            var revealElements = document.querySelectorAll('.reveal');
+            function checkReveal() {
+                var windowHeight = window.innerHeight;
+                revealElements.forEach(function (el) {
+                    var top = el.getBoundingClientRect().top;
+                    if (top < windowHeight - 60) {
+                        el.classList.add('visible');
+                    }
+                });
             }
-        }
-    }
-    updateNavBar();
-    window.addEventListener('storage', function(e) {
-        if (e.key === 'logged_in' || e.key === 'user_name') updateNavBar();
-    });
-    window.addEventListener('focus', updateNavBar);
-
-    var revealElements = document.querySelectorAll('.reveal');
-    function checkReveal() {
-        var windowHeight = window.innerHeight;
-        revealElements.forEach(function(el) {
-            var top = el.getBoundingClientRect().top;
-            if (top < windowHeight - 60) {
-                el.classList.add('visible');
-            }
-        });
-    }
-    window.addEventListener('scroll', checkReveal);
-    window.addEventListener('resize', checkReveal);
-    checkReveal();
-})();
-</script>
+            window.addEventListener('scroll', checkReveal);
+            window.addEventListener('resize', checkReveal);
+            checkReveal();
+        })();
+    </script>
 </body>
+
 </html>

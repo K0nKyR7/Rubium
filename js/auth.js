@@ -1,29 +1,20 @@
-// js/auth.js
-
 const AUTH = {
     async getUser() {
-        const { data: { user }, error } = await supabase.auth.getUser();
-        if (error || !user) return null;
-        return user;
+        const { data } = await supabase.auth.getSession();
+        if (!data || !data.session) return null;
+        return data.session.user;
     },
 
     async getProfile() {
         const user = await this.getUser();
         if (!user) return null;
-
-        const { data, error } = await supabase
-            .from('users')
-            .select('*')
-            .eq('id', user.id)
-            .single();
-
-        if (error || !data) return null;
-        return data;
+        const { data } = await supabase.from('users').select('*').eq('id', user.id).single();
+        return data || null;
     },
 
     async logout() {
-        localStorage.removeItem('logged_in');
         await supabase.auth.signOut();
+        localStorage.clear();
         window.location.href = 'index.html';
     },
 
@@ -34,14 +25,5 @@ const AUTH = {
             return null;
         }
         return user;
-    },
-
-    async requireAdmin() {
-        const profile = await this.getProfile();
-        if (!profile || profile.role !== 'admin') {
-            window.location.href = 'index.html';
-            return null;
-        }
-        return profile;
     }
 };
