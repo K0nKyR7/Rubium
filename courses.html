@@ -474,10 +474,7 @@
             background: #E11D8D;
         }
 
-        .course-item.uni::before {
-            background: linear-gradient(90deg, #8B5CF6, #E11D8D);
-        }
-
+        .course-item.uni::before,
         .course-item.oth::before {
             background: linear-gradient(90deg, #8B5CF6, #E11D8D);
         }
@@ -514,11 +511,7 @@
             color: #E11D8D;
         }
 
-        .badge-uni {
-            background: rgba(139, 92, 246, 0.06);
-            color: #7C3AED;
-        }
-
+        .badge-uni,
         .badge-oth {
             background: rgba(139, 92, 246, 0.06);
             color: #7C3AED;
@@ -598,7 +591,7 @@
             background: #fff;
             border-radius: 24px;
             width: 90%;
-            max-width: 500px;
+            max-width: 520px;
             max-height: 90vh;
             overflow-y: auto;
             z-index: 201;
@@ -659,11 +652,7 @@
             color: #E11D8D;
         }
 
-        .modal-badge.uni {
-            background: rgba(139, 92, 246, 0.06);
-            color: #7C3AED;
-        }
-
+        .modal-badge.uni,
         .modal-badge.oth {
             background: rgba(139, 92, 246, 0.06);
             color: #7C3AED;
@@ -695,6 +684,73 @@
             font-size: 0.85rem;
             font-weight: 600;
             color: #8B5CF6;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .modal-teacher:hover {
+            background: rgba(139, 92, 246, 0.08);
+        }
+
+        .teacher-info {
+            background: rgba(139, 92, 246, 0.03);
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 20px;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .teacher-info-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .teacher-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8B5CF6, #E11D8D);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .teacher-details {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .teacher-detail-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.78rem;
+            color: #6B7280;
+        }
+
+        .teacher-desc {
+            font-size: 0.82rem;
+            color: #4B5563;
+            line-height: 1.5;
         }
 
         .modal-label {
@@ -906,6 +962,20 @@
             .course-item-meta .meta-row {
                 font-size: 0.74rem;
             }
+
+            .modal {
+                padding: 24px 18px;
+                border-radius: 20px;
+            }
+
+            .modal-title {
+                font-size: 1.3rem;
+            }
+
+            .lesson-btn {
+                padding: 8px 6px;
+                font-size: 0.78rem;
+            }
         }
 
         @media (max-width: 480px) {
@@ -937,20 +1007,6 @@
 
             .page-title {
                 font-size: 1.8rem;
-            }
-
-            .modal {
-                padding: 24px 18px;
-                border-radius: 20px;
-            }
-
-            .modal-title {
-                font-size: 1.3rem;
-            }
-
-            .lesson-btn {
-                padding: 8px 6px;
-                font-size: 0.78rem;
             }
         }
     </style>
@@ -1066,7 +1122,7 @@
                     <div class="meta-row"><span class="meta-label">Преподаватель</span><span
                             class="meta-value">Емельянов Илья</span></div>
                     <div class="meta-row"><span class="meta-label">Стоимость</span><span class="meta-value price">от 1
-                            200 ₽</span></div>
+                            300 ₽</span></div>
                 </div>
             </div>
 
@@ -1081,20 +1137,20 @@
                     <div class="meta-row"><span class="meta-label">Преподаватель</span><span
                             class="meta-value">Емельянов Илья</span></div>
                     <div class="meta-row"><span class="meta-label">Стоимость</span><span class="meta-value price">от 1
-                            500 ₽</span></div>
+                            400 ₽</span></div>
                 </div>
             </div>
 
             <!-- Математический анализ -->
             <div class="course-item uni" data-category="uni"
-                onclick="openModal({title:'Математический анализ',badge:'Университет',category:'uni',desc:'Пределы, производные, ряды, функции нескольких переменных. Для студентов 1–2 курса.',teacher:'Назначается',prices:{1:1800,5:8000,10:15000,20:28000},aiSurcharge:350})">
+                onclick="openModal({title:'Математический анализ',badge:'Университет',category:'uni',desc:'Пределы, производные, ряды, функции нескольких переменных. Для студентов 1–2 курса.',teacher:'Коняхин Михаил',prices:{1:1800,5:8000,10:15000,20:28000},aiSurcharge:350})">
                 <div class="course-item-icon">∫</div>
                 <span class="course-item-badge badge-uni">Университет</span>
                 <h3>Математический анализ</h3>
                 <p>Пределы, производные, ряды, функции нескольких переменных. 1–2 курс.</p>
                 <div class="course-item-meta">
-                    <div class="meta-row"><span class="meta-label">Преподаватель</span><span
-                            class="meta-value">Коняхин Михаил</span></div>
+                    <div class="meta-row"><span class="meta-label">Преподаватель</span><span class="meta-value">Коняхин
+                            Михаил</span></div>
                     <div class="meta-row"><span class="meta-label">Стоимость</span><span class="meta-value price">от 1
                             800 ₽</span></div>
                 </div>
@@ -1102,14 +1158,14 @@
 
             <!-- Аналитическая геометрия -->
             <div class="course-item uni" data-category="uni"
-                onclick="openModal({title:'Аналитическая геометрия',badge:'Университет',category:'uni',desc:'Векторы, прямые и плоскости, кривые второго порядка, матрицы преобразований.',teacher:'Назначается',prices:{1:1700,5:7500,10:14000,20:26000},aiSurcharge:350})">
+                onclick="openModal({title:'Аналитическая геометрия',badge:'Университет',category:'uni',desc:'Векторы, прямые и плоскости, кривые второго порядка, матрицы преобразований.',teacher:'Коняхин Михаил',prices:{1:1700,5:7500,10:14000,20:26000},aiSurcharge:350})">
                 <div class="course-item-icon">📊</div>
                 <span class="course-item-badge badge-uni">Университет</span>
                 <h3>Аналитическая геометрия</h3>
                 <p>Векторы, прямые и плоскости, кривые второго порядка, матрицы.</p>
                 <div class="course-item-meta">
-                    <div class="meta-row"><span class="meta-label">Преподаватель</span><span
-                            class="meta-value">Коняхин Михаил</span></div>
+                    <div class="meta-row"><span class="meta-label">Преподаватель</span><span class="meta-value">Коняхин
+                            Михаил</span></div>
                     <div class="meta-row"><span class="meta-label">Стоимость</span><span class="meta-value price">от 1
                             700 ₽</span></div>
                 </div>
@@ -1117,14 +1173,14 @@
 
             <!-- Интегралы и диффуры -->
             <div class="course-item uni" data-category="uni"
-                onclick="openModal({title:'Интегралы и диф. уравнения',badge:'Университет',category:'uni',desc:'Неопределённые и определённые интегралы, ДУ первого и высших порядков, системы.',teacher:'Назначается',prices:{1:1800,5:8000,10:15000,20:28000},aiSurcharge:350})">
+                onclick="openModal({title:'Интегралы и диф. уравнения',badge:'Университет',category:'uni',desc:'Неопределённые и определённые интегралы, ДУ первого и высших порядков, системы.',teacher:'Коняхин Михаил',prices:{1:1800,5:8000,10:15000,20:28000},aiSurcharge:350})">
                 <div class="course-item-icon">📝</div>
                 <span class="course-item-badge badge-uni">Университет</span>
                 <h3>Интегралы и диф. уравнения</h3>
                 <p>Неопределённые и определённые интегралы, ДУ, системы.</p>
                 <div class="course-item-meta">
-                    <div class="meta-row"><span class="meta-label">Преподаватель</span><span
-                            class="meta-value">Коняхин Михаил</span></div>
+                    <div class="meta-row"><span class="meta-label">Преподаватель</span><span class="meta-value">Коняхин
+                            Михаил</span></div>
                     <div class="meta-row"><span class="meta-label">Стоимость</span><span class="meta-value price">от 1
                             800 ₽</span></div>
                 </div>
@@ -1132,14 +1188,14 @@
 
             <!-- Линейная алгебра -->
             <div class="course-item uni" data-category="uni"
-                onclick="openModal({title:'Линейная алгебра',badge:'Университет',category:'uni',desc:'Матрицы, определители, СЛАУ, собственные значения, квадратичные формы.',teacher:'Назначается',prices:{1:1700,5:7500,10:14000,20:26000},aiSurcharge:350})">
+                onclick="openModal({title:'Линейная алгебра',badge:'Университет',category:'uni',desc:'Матрицы, определители, СЛАУ, собственные значения, квадратичные формы.',teacher:'Коняхин Михаил',prices:{1:1700,5:7500,10:14000,20:26000},aiSurcharge:350})">
                 <div class="course-item-icon">📐</div>
                 <span class="course-item-badge badge-uni">Университет</span>
                 <h3>Линейная алгебра</h3>
                 <p>Матрицы, определители, СЛАУ, собственные значения, квадратичные формы.</p>
                 <div class="course-item-meta">
-                    <div class="meta-row"><span class="meta-label">Преподаватель</span><span
-                            class="meta-value">Коняхин Михаил</span></div>
+                    <div class="meta-row"><span class="meta-label">Преподаватель</span><span class="meta-value">Коняхин
+                            Михаил</span></div>
                     <div class="meta-row"><span class="meta-label">Стоимость</span><span class="meta-value price">от 1
                             700 ₽</span></div>
                 </div>
@@ -1157,8 +1213,28 @@
             <h2 class="modal-title" id="modalTitle"></h2>
             <p class="modal-desc" id="modalDesc"></p>
 
-            <div class="modal-teacher">
+            <div class="modal-teacher" id="modalTeacherBlock" onclick="toggleTeacherInfo()">
                 <i class="fas fa-user-graduate"></i> <span id="modalTeacherName"></span>
+                <span style="margin-left:auto;font-size:0.7rem;color:#8B5CF6;">Подробнее <i class="fas fa-chevron-down"
+                        id="teacherArrow"></i></span>
+            </div>
+            <div class="teacher-info" id="teacherInfo" style="display:none;">
+                <div class="teacher-info-header">
+                    <div class="teacher-avatar" id="teacherAvatar">
+                        <img id="teacherPhoto" src="" alt=""
+                            style="width:100%;height:100%;border-radius:50%;object-fit:cover;display:none;">
+                        <span id="teacherInitial">👤</span>
+                    </div>
+                    <div>
+                        <strong id="teacherFullName"></strong>
+                        <span style="display:block;font-size:0.78rem;color:#6B7280;" id="teacherSubj"></span>
+                    </div>
+                </div>
+                <div class="teacher-details">
+                    <div class="teacher-detail-row"><span>🏫</span> <span id="teacherUni"></span></div>
+                    <div class="teacher-detail-row"><span>⏳</span> <span id="teacherExp"></span></div>
+                </div>
+                <p class="teacher-desc" id="teacherDesc"></p>
             </div>
 
             <div class="modal-lessons">
@@ -1190,8 +1266,34 @@
     </footer>
 
     <script>
+        var teachers = {
+            "Ковалёв Максим": {
+                name: "Ковалёв Максим",
+                photo: "data/maxim.jpg",
+                subjects: "Математика, Физика (ЕГЭ и ОГЭ)",
+                university: "МГТУ им. Баумана",
+                exp: "2 года преподавания",
+                desc: "Студент МГТУ. Готовлю к экзаменам с душой и технологиями."
+            },
+            "Емельянов Илья": {
+                name: "Емельянов Илья",
+                photo: "data/Ilya.jpg",
+                subjects: "Информатика, Python",
+                university: "Beijing Institute of Technology",
+                exp: "2 года преподавания",
+                desc: "Backend разработчик, ML Engineer и преподаватель. Python с нуля до проектов и ОГЭ/ЕГЭ. Подготовка к ОГЭ."
+            },
+            "Коняхин Михаил": {
+                name: "Коняхин Михаил",
+                photo: "data/Misha.jpg",
+                subjects: "Высшая математика",
+                university: "МГТУ им. Баумана",
+                exp: "2 года преподавания",
+                desc: "Студент МГТУ. Преподаю линейную алгебру, математический анализ и диффуры."
+            }
+        };
+
         (function () {
-            // Mobile menu
             var burger = document.getElementById('burgerBtn');
             var menu = document.getElementById('navLinks');
             var overlay = document.getElementById('navOverlay');
@@ -1200,20 +1302,14 @@
             function openMenu() { menu.classList.add('open'); overlay.classList.add('open'); }
             function closeMenu() { menu.classList.remove('open'); overlay.classList.remove('open'); }
 
-            burger.addEventListener('click', function () {
-                menu.classList.contains('open') ? closeMenu() : openMenu();
-            });
+            burger.addEventListener('click', function () { menu.classList.contains('open') ? closeMenu() : openMenu(); });
             overlay.addEventListener('click', closeMenu);
             closeBtn.addEventListener('click', closeMenu);
-            menu.querySelectorAll('a').forEach(function (link) {
-                link.addEventListener('click', closeMenu);
-            });
+            menu.querySelectorAll('a').forEach(function (link) { link.addEventListener('click', closeMenu); });
 
-            // Auth UI
             async function updateNavBar() {
                 var ha = document.getElementById('headerActions');
                 var nl = document.getElementById('navLinks');
-
                 var { data: sessionData } = await supabase.auth.getSession();
                 var loggedIn = sessionData && sessionData.session && sessionData.session.user;
 
@@ -1225,7 +1321,6 @@
                         var fullName = firstName || user.email?.split('@')[0] || 'Профиль';
                         localStorage.setItem('logged_in', 'true');
                         localStorage.setItem('user_name', fullName);
-
                         var ub = document.createElement('a');
                         ub.href = 'profile.html';
                         ub.className = 'header-user-block';
@@ -1259,7 +1354,6 @@
                         ll.className = 'menu-btn menu-login';
                         ll.innerHTML = '<i class="fas fa-sign-in-alt"></i> Войти';
                         nl.appendChild(ll);
-
                         var sl = document.createElement('a');
                         sl.href = 'register.html';
                         sl.className = 'menu-btn menu-signup';
@@ -1270,49 +1364,38 @@
             }
             updateNavBar();
 
-            // Filter
             var filterBtns = document.querySelectorAll('.filter-btn');
             var courses = document.querySelectorAll('.course-item');
-
             filterBtns.forEach(function (btn) {
                 btn.addEventListener('click', function () {
                     filterBtns.forEach(function (b) { b.classList.remove('active'); });
                     btn.classList.add('active');
                     var filter = btn.getAttribute('data-filter');
-
                     courses.forEach(function (course) {
-                        if (filter === 'all' || course.getAttribute('data-category') === filter) {
-                            course.style.display = 'flex';
-                        } else {
-                            course.style.display = 'none';
-                        }
+                        course.style.display = (filter === 'all' || course.getAttribute('data-category') === filter) ? 'flex' : 'none';
                     });
                 });
             });
         })();
 
-        // Modal
         var currentCourse = null;
         var selectedLessons = 1;
 
         function openModal(course) {
             currentCourse = course;
             selectedLessons = 1;
-
             document.getElementById('modalBadge').textContent = course.badge;
             document.getElementById('modalBadge').className = 'modal-badge ' + course.category;
             document.getElementById('modalTitle').textContent = course.title;
             document.getElementById('modalDesc').textContent = course.desc;
             document.getElementById('modalTeacherName').textContent = course.teacher;
-
+            updateTeacherInfo(course.teacher);
             document.querySelectorAll('.lesson-btn').forEach(function (btn) {
                 btn.classList.remove('active');
                 if (parseInt(btn.dataset.lessons) === 1) btn.classList.add('active');
             });
-
             document.getElementById('aiToggle').checked = false;
             updatePrice();
-
             document.getElementById('modalOverlay').classList.add('open');
             document.getElementById('courseModal').classList.add('open');
             document.body.style.overflow = 'hidden';
@@ -1333,10 +1416,49 @@
             document.getElementById('modalPrice').textContent = price.toLocaleString('ru-RU') + ' ₽';
         }
 
+        function toggleTeacherInfo() {
+            var info = document.getElementById('teacherInfo');
+            var arrow = document.getElementById('teacherArrow');
+            if (info.style.display === 'none' || !info.style.display) {
+                info.style.display = 'block';
+                arrow.className = 'fas fa-chevron-up';
+            } else {
+                info.style.display = 'none';
+                arrow.className = 'fas fa-chevron-down';
+            }
+        }
+
+        function updateTeacherInfo(teacherName) {
+            var teacher = teachers[teacherName] || teachers["Назначается"];
+
+            var photo = document.getElementById('teacherPhoto');
+            var initial = document.getElementById('teacherInitial');
+
+            if (teacher.photo) {
+                photo.src = teacher.photo;
+                photo.style.display = 'block';
+                initial.style.display = 'none';
+            } else {
+                photo.style.display = 'none';
+                initial.style.display = 'block';
+                initial.textContent = teacher.name.charAt(0);
+            }
+
+            document.getElementById('teacherFullName').textContent = teacher.name;
+            document.getElementById('teacherSubj').textContent = teacher.subjects;
+            document.getElementById('teacherUni').textContent = teacher.university;
+            document.getElementById('teacherExp').textContent = teacher.exp;
+            document.getElementById('teacherDesc').textContent = teacher.desc;
+            document.getElementById('teacherInfo').style.display = 'none';
+            document.getElementById('teacherArrow').className = 'fas fa-chevron-down';
+        }
+
         function enrollCourse() {
             if (!currentCourse) return;
             var withAI = document.getElementById('aiToggle').checked;
-            alert('Заявка на курс: ' + currentCourse.title + '\nЗанятий: ' + selectedLessons + '\nAI: ' + (withAI ? 'Да' : 'Нет') + '\nСумма: ' + document.getElementById('modalPrice').textContent + '\n\nФорма записи будет добавлена позже.');
+            var price = currentCourse.prices[selectedLessons];
+            if (withAI) price += currentCourse.aiSurcharge * selectedLessons;
+            alert('Заявка на курс: ' + currentCourse.title + '\nЗанятий: ' + selectedLessons + '\nAI: ' + (withAI ? 'Да' : 'Нет') + '\nСумма: ' + price + ' ₽');
             closeModal();
         }
 
@@ -1349,7 +1471,6 @@
             }
         });
 
-        // Закрытие модалки по Escape
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') closeModal();
         });

@@ -348,6 +348,11 @@
             color: #22C55E;
         }
 
+        .lead-status.expired {
+            background: rgba(239, 68, 68, 0.08);
+            color: #EF4444;
+        }
+
         @media (max-width: 768px) {
             .header {
                 padding: 12px 20px;
@@ -490,16 +495,18 @@
                     <span class="info-label">Дата регистрации</span>
                     <span class="info-value" id="infoDate">—</span>
                 </div>
-                <div class="info-row">
-                    <span class="info-label">Мои курсы</span>
-                    <span class="info-value"><a href="courses.html" style="color:#8B5CF6;text-decoration:none;">Перейти
-                            <i class="fas fa-arrow-right" style="font-size:0.7rem;"></i></a></span>
-                </div>
             </div>
 
             <div class="info-card" id="leadsSection" style="display:none;">
                 <h3>📋 Входящие заявки</h3>
                 <div id="leadsList">
+                    <p style="color:#9CA3AF;text-align:center;padding:20px;">Загрузка...</p>
+                </div>
+            </div>
+
+            <div class="info-card" id="studentsSection" style="display:none;">
+                <h3 id="studentsTitle">📚</h3>
+                <div id="studentsList">
                     <p style="color:#9CA3AF;text-align:center;padding:20px;">Загрузка...</p>
                 </div>
             </div>
@@ -554,9 +561,20 @@
             badge.className = 'role-badge ' + (roleClasses[role] || 'role-student');
             badge.style.display = 'inline-block';
 
+            // Заявки для преподавателей и админов
             if (role === 'teacher' || role === 'admin') {
                 document.getElementById('leadsSection').style.display = 'block';
                 loadLeads();
+                document.getElementById('studentsSection').style.display = 'block';
+                document.getElementById('studentsTitle').textContent = '👥 Мои ученики';
+                loadStudents(fullName);
+            }
+
+            // Курсы для студентов
+            if (role === 'student') {
+                document.getElementById('studentsSection').style.display = 'block';
+                document.getElementById('studentsTitle').textContent = '📚 Мои курсы';
+                loadMyCourses();
             }
         }
 
@@ -589,7 +607,80 @@
                     container.appendChild(item);
                 });
             } catch (e) {
-                document.getElementById('leadsList').innerHTML = '<p style="color:#EF4444;text-align:center;padding:20px;">Ошибка загрузки заявок</p>';
+                document.getElementById('leadsList').innerHTML = '<p style="color:#EF4444;text-align:center;padding:20px;">Ошибка загрузки</p>';
+            }
+        }
+
+        async function loadStudents(teacherName) {
+            try {
+                var { data: students, error } = await supabase
+                    .from('enrollments')
+                    .select('*')
+                    .eq('teacher_name', teacherName)
+                    .order('created_at', { ascending: false });
+
+                var container = document.getElementById('studentsList');
+                container.innerHTML = '';
+
+                if (!students || students.length === 0) {
+                    container.innerHTML = '<p style="color:#9CA3AF;text-align:center;padding:20px;">Пока нет учеников</p>';
+                    return;
+                }
+
+                students.forEach(function (s) {
+                    var item = document.createElement('div');
+                    item.className = 'lead-item';
+                    item.innerHTML = `
+                <div class="lead-item-header">
+                    <strong>${s.course_title}</strong>
+                    <span class="lead-item-date">${new Date(s.created_at).toLocaleDateString('ru-RU')}</span>
+                </div>
+                <span class="lead-item-phone">📚 ${s.lessons} занятий ${s.with_ai ? '+ AI' : ''}</span>
+                <span class="lead-status ${s.status === 'active' ? 'done' : 'new'}">${s.status === 'active' ? 'Активен' : s.status}</span>
+            `;
+                    container.appendChild(item);
+                });
+            } catch (e) {
+                console.log('Error loading students:', e);
+            }
+        }
+
+        async function loadMyCourses() {
+            var user = await supabase.auth.getUser();
+            var userId = user.data.user?.id;
+
+            try {
+                var { data: enrollments, error } = await supabase
+                    .from('enrollments')
+                    .select('*')
+                    .eq('student_id', userId)
+                    .order('created_at', { ascending: false });
+
+                var container = document.getElementById('studentsList');
+                container.innerHTML = '';
+
+                if (!enrollments || enrollments.length === 0) {
+                    container.innerHTML = '<p style="color:#9CA3AF;text-align:center;padding:20px;">Нет активных курсов</p>';
+                    return;
+                }
+
+                enrollments.forEach(function (enr) {
+                    var item = document.createElement('div');
+                    item.className = 'lead-item';
+                    item.innerHTML = `
+                <div class="lead-item-header">
+                    <strong>${enr.course_title}</strong>
+                    <span class="lead-item-date">${new Date(enr.created_at).toLocaleDateString('ru-RU')}</span>
+                </div>
+                <span class="lead-item-phone">👨‍🏫 ${enr.teacher_name}</span>
+                ${enr.teacher_contact ? `<span class="lead-item-phone">📞 ${enr.teacher_contact}</span>` : ''}
+                <span class="lead-item-phone">📚 ${enr.lessons} занятий ${enr.with_ai ? '+ AI' : ''}</span>
+                <span class="lead-status ${enr.status === 'active' ? 'done' : 'new'}">${enr.status === 'active' ? 'Активен' : enr.status}</span>
+            `;
+                    container.appendChild(item);
+                });
+            } catch (e) {
+                console.log('Error:', e);
             }
         }
 
