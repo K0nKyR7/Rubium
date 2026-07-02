@@ -1257,7 +1257,17 @@
 
             <div class="modal-price" id="modalPrice">— ₽</div>
 
-            <button class="btn-enroll-modal" onclick="enrollCourse()">Записаться</button>
+            <div class="modal-message" style="margin-bottom:16px;">
+                <span class="modal-label">Твои данные</span>
+                <input type="text" id="studentName" placeholder="Твоё имя"
+                    style="width:100%;padding:12px 16px;border:1.5px solid rgba(139,92,246,0.15);border-radius:14px;font-family:inherit;font-size:0.85rem;margin-bottom:10px;background:rgba(255,255,255,0.5);">
+                <input type="tel" id="studentPhone" placeholder="Телефон (11 цифр)"
+                    style="width:100%;padding:12px 16px;border:1.5px solid rgba(139,92,246,0.15);border-radius:14px;font-family:inherit;font-size:0.85rem;margin-bottom:10px;background:rgba(255,255,255,0.5);">
+                <textarea id="studentMessage" placeholder="Расскажи о себе, уровне подготовки, цели..."
+                    style="width:100%;padding:12px 16px;border:1.5px solid rgba(139,92,246,0.15);border-radius:14px;font-family:inherit;font-size:0.85rem;resize:vertical;min-height:80px;background:rgba(255,255,255,0.5);"></textarea>
+            </div>
+
+            <button class="btn-enroll-modal" onclick="submitApplication()">Отправить заявку</button>
         </div>
     </div>
 
@@ -1453,13 +1463,53 @@
             document.getElementById('teacherArrow').className = 'fas fa-chevron-down';
         }
 
-        function enrollCourse() {
+        async function submitApplication() {
             if (!currentCourse) return;
+
+            var name = document.getElementById('studentName').value.trim();
+            var phone = document.getElementById('studentPhone').value.trim();
+            var message = document.getElementById('studentMessage').value.trim();
             var withAI = document.getElementById('aiToggle').checked;
             var price = currentCourse.prices[selectedLessons];
             if (withAI) price += currentCourse.aiSurcharge * selectedLessons;
-            alert('Заявка на курс: ' + currentCourse.title + '\nЗанятий: ' + selectedLessons + '\nAI: ' + (withAI ? 'Да' : 'Нет') + '\nСумма: ' + price + ' ₽');
-            closeModal();
+
+            if (!name) { alert('Введи имя'); return; }
+            if (!phone || phone.replace(/\D/g, '').length < 11) { alert('Введи корректный телефон (11 цифр)'); return; }
+
+            // Получаем текущего пользователя если залогинен
+            var userId = null;
+            try {
+                var { data: { user } } = await supabase.auth.getUser();
+                if (user) userId = user.id;
+            } catch (e) { }
+
+            try {
+                var response = await fetch('http://localhost:5001/api/leads', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        client_name: name,
+                        phone: phone.replace(/\D/g, ''),
+                        course_title: currentCourse.title,
+                        teacher_name: currentCourse.teacher,
+                        lessons: selectedLessons,
+                        with_ai: withAI,
+                        total_price: price,
+                        student_message: message,
+                        student_id: userId,
+                        chat_history: 'Заявка с сайта'
+                    })
+                });
+
+                if (response.ok) {
+                    alert('Заявка отправлена! Преподаватель свяжется с тобой.');
+                    closeModal();
+                } else {
+                    alert('Ошибка отправки. Попробуй ещё раз.');
+                }
+            } catch (e) {
+                alert('Ошибка соединения с сервером.');
+            }
         }
 
         document.addEventListener('click', function (e) {
