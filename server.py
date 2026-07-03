@@ -1,13 +1,9 @@
 import json
 import os
 import re
-
 import requests
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-
-
-# ─── Configuration ────────────────────────────────────────────────────────────
 
 app = Flask(__name__)
 CORS(app)
@@ -28,81 +24,51 @@ SUPABASE_KEY = (
 conversation_history = {}
 
 
-# ─── HTML Parsers ─────────────────────────────────────────────────────────────
-
 def parse_teachers_from_html():
-    """Extract teacher data from courses.html."""
     try:
         with open("courses.html", "r", encoding="utf-8") as f:
             html = f.read()
-
         teachers_match = re.search(r"var teachers = \{(.*?)\};", html, re.DOTALL)
         if not teachers_match:
             return {}
-
         teachers = {}
-        teacher_blocks = re.findall(
-            r'"([^"]+)":\s*\{(.*?)\}', teachers_match.group(1), re.DOTALL
-        )
-
+        teacher_blocks = re.findall(r'"([^"]+)":\s*\{(.*?)\}', teachers_match.group(1), re.DOTALL)
         for name, block in teacher_blocks:
             teachers[name] = {"name": name}
             for field in ["subjects", "university", "exp", "description"]:
                 m = re.search(rf'{field}:\s*"([^"]*)"', block)
                 if m:
                     teachers[name][field] = m.group(1)
-
         print(f"Parsed {len(teachers)} teachers")
         return teachers
-
     except Exception as e:
         print(f"Error parsing teachers: {e}")
         return {}
 
 
-def parse_courses_from_html():
-    """Extract course data from courses.html."""
+def get_courses_from_db():
+    """Get courses from Supabase."""
     try:
-        with open("courses.html", "r", encoding="utf-8") as f:
-            html = f.read()
-
-        courses = []
-        for match in re.findall(r"openModal\(\{(.*?)\}\)", html, re.DOTALL):
-            c = {}
-            for field in ["title", "badge", "category", "desc", "teacher"]:
-                m = re.search(rf"{field}:'([^']*)'", match)
-                if m:
-                    c[field] = m.group(1)
-
-            pm = re.search(r"prices:\{([^}]+)\}", match)
-            if pm:
-                c["prices"] = {}
-                for p in pm.group(1).split(","):
-                    k, v = p.split(":")
-                    c["prices"][k.strip()] = int(v.strip())
-
-            am = re.search(r"aiSurcharge:(\d+)", match)
-            if am:
-                c["ai_surcharge"] = int(am.group(1))
-
-            if c.get("title"):
-                courses.append(c)
-
-        print(f"Parsed {len(courses)} courses")
-        return courses
-
+        r = requests.get(
+            f"{SUPABASE_URL}/rest/v1/courses?select=*&order=created_at.asc",
+            headers={"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}"},
+        )
+        if r.status_code == 200:
+            courses = r.json()
+            for c in courses:
+                if isinstance(c.get("prices"), str):
+                    c["prices"] = json.loads(c["prices"])
+            print(f"Loaded {len(courses)} courses from DB")
+            return courses
+        return []
     except Exception as e:
-        print(f"Error parsing courses: {e}")
+        print(f"Error loading courses: {e}")
         return []
 
 
-# ─── AI System Prompt ─────────────────────────────────────────────────────────
-
 def build_system_prompt():
-    """Build the Rubi AI tutor system prompt with live course/teacher data."""
-    courses = parse_courses_from_html()
+    courses = get_courses_from_db()
     teachers = parse_teachers_from_html()
-
     t_text = ""
     for name, t in teachers.items():
         if name != "Назначается":
@@ -111,7 +77,6 @@ def build_system_prompt():
                 f"{t.get('university', '')}. {t.get('exp', '')}. "
                 f"{t.get('description', '')}\n"
             )
-
     c_text = ""
     for c in courses:
         p = c.get("prices", {})
@@ -122,7 +87,6 @@ def build_system_prompt():
             f"10={p.get('10', '?')}₽, 20={p.get('20', '?')}₽ | "
             f"AI: +{c.get('ai_surcharge', '?')}₽\n"
         )
-
     return f"""Ты Rubi — персональный тьютор онлайн-школы Stud&School. Ты помогаешь выбрать курс и записаться на обучение.
 
 ТВОЙ ХАРАКТЕР:
@@ -164,10 +128,7 @@ def build_system_prompt():
 НЕ показывай пользователю JSON, не пиши "создаю заявку в формате JSON", не используй технические термины. Просто скажи "ОТЛИЧНО! Заявка создана." и всё."""
 
 
-# ─── AI Lead Extraction ───────────────────────────────────────────────────────
-
 def extract_lead_via_ai(full_chat):
-    """Use DeepSeek to extract lead data from conversation history."""
     prompt = f"""Из этого диалога между пользователем и AI-консультантом извлеки данные заявки в JSON.
 
 Диалог:
@@ -184,7 +145,6 @@ def extract_lead_via_ai(full_chat):
 - lessons — число (1,5,10,20)
 - with_ai — true/false
 - total_price — число без знака валюты"""
-
     try:
         resp = requests.post(
             DEEPSEEK_API_URL,
@@ -201,53 +161,57 @@ def extract_lead_via_ai(full_chat):
             timeout=10,
         )
         resp.raise_for_status()
-
         text = resp.json()["choices"][0]["message"]["content"].strip()
         text = text.replace("```json", "").replace("```", "").strip()
         lead = json.loads(text)
-
         print(f"📋 AI extracted: {lead}")
         return lead
-
     except Exception as e:
         print(f"❌ AI extraction failed: {e}")
         return None
 
-
-# ─── Supabase Helpers ─────────────────────────────────────────────────────────
 
 def supabase_headers():
     return {
         "apikey": SUPABASE_KEY,
         "Authorization": f"Bearer {SUPABASE_KEY}",
         "Content-Type": "application/json",
-        "Prefer": "return=minimal",
     }
 
 
 def save_lead(lead):
-    """Save a lead record to Supabase."""
+    body = {
+        "client_name": lead.get("client_name", ""),
+        "phone": lead.get("phone", ""),
+        "course_title": lead.get("course_title", ""),
+        "teacher_name": lead.get("teacher_name", ""),
+        "lessons": lead.get("lessons", 1),
+        "with_ai": lead.get("with_ai", False),
+        "total_price": lead.get("total_price"),
+        "chat_history": lead.get("chat_history", ""),
+        "status": "new",
+    }
+    if lead.get("student_id"):
+        body["student_id"] = lead["student_id"]
+    if lead.get("student_message"):
+        body["student_message"] = lead["student_message"]
+    if lead.get("tg_username"):
+        body["tg_username"] = lead["tg_username"]
+    if lead.get("vk_username"):
+        body["vk_username"] = lead["vk_username"]
+
     r = requests.post(
         f"{SUPABASE_URL}/rest/v1/leads",
-        headers=supabase_headers(),
-        json={
-            "client_name": lead.get("client_name", ""),
-            "phone": lead.get("phone", ""),
-            "course_title": lead.get("course_title", ""),
-            "teacher_name": lead.get("teacher_name", ""),
-            "lessons": lead.get("lessons", 1),
-            "with_ai": lead.get("with_ai", False),
-            "total_price": lead.get("total_price"),
-            "student_message": "",
-            "student_id": None,
-            "chat_history": lead.get("chat_history", ""),
-            "status": "new",
+        headers={
+            "apikey": SUPABASE_KEY,
+            "Authorization": f"Bearer {SUPABASE_KEY}",
+            "Content-Type": "application/json",
         },
+        json=body,
     )
+    print(f"📤 save_lead: {r.status_code} {r.text[:200]}")
     return r.status_code == 201
 
-
-# ─── API Routes ───────────────────────────────────────────────────────────────
 
 @app.route("/api/consult", methods=["POST"])
 def consult():
@@ -288,14 +252,12 @@ def consult():
         reply = reply.replace("**", "").replace("*", "").replace("__", "").replace("##", "")
         conversation_history[session_id].append({"role": "assistant", "content": reply})
 
-        # Trim history to last 20 messages (keeping system prompt)
         if len(conversation_history[session_id]) > 20:
             conversation_history[session_id] = [
                 conversation_history[session_id][0],
                 *conversation_history[session_id][-19:],
             ]
 
-        # Auto-extract lead when AI confirms registration
         if "ОТЛИЧНО" in reply.upper() and "заявка создана" in reply.lower():
             print("🔍 Lead confirmation!")
             full_chat = "\n".join(
@@ -304,14 +266,10 @@ def consult():
                 if m["role"] != "system"
             )
             lead = extract_lead_via_ai(full_chat)
-
             if lead and lead.get("client_name") and lead.get("phone"):
                 lead["chat_history"] = full_chat
                 if save_lead(lead):
-                    print(
-                        f"✅ Saved: {lead.get('client_name')}, "
-                        f"{lead.get('phone')}, {lead.get('course_title')}"
-                    )
+                    print(f"✅ Saved: {lead.get('client_name')}, {lead.get('phone')}, {lead.get('course_title')}")
                 else:
                     print("❌ DB error")
             else:
@@ -340,10 +298,13 @@ def create_lead():
             "chat_history": data.get("chat_history", ""),
             "status": "new",
         }
-        # student_id добавляем только если он реально есть
         sid = data.get("student_id")
         if sid:
             body["student_id"] = sid
+        if data.get("tg_username"):
+            body["tg_username"] = data["tg_username"]
+        if data.get("vk_username"):
+            body["vk_username"] = data["vk_username"]
 
         r = requests.post(
             f"{SUPABASE_URL}/rest/v1/leads",
@@ -354,43 +315,13 @@ def create_lead():
             },
             json=body,
         )
-        print("📤 Supabase insert:", r.status_code, r.text[:200])
+        print(f"📤 Supabase insert: {r.status_code} {r.text[:200]}")
         if r.status_code == 201:
             return jsonify({"status": "ok"})
         return jsonify({"status": "error", "detail": r.text[:200]}), 500
     except Exception as e:
         print("❌ Exception:", e)
         return jsonify({"status": "error"}), 500
-    
-def save_lead(lead):
-    body = {
-        "client_name": lead.get("client_name", ""),
-        "phone": lead.get("phone", ""),
-        "course_title": lead.get("course_title", ""),
-        "teacher_name": lead.get("teacher_name", ""),
-        "lessons": lead.get("lessons", 1),
-        "with_ai": lead.get("with_ai", False),
-        "total_price": lead.get("total_price"),
-        "chat_history": lead.get("chat_history", ""),
-        "status": "new",
-    }
-    # student_id и student_message только если есть
-    if lead.get("student_id"):
-        body["student_id"] = lead["student_id"]
-    if lead.get("student_message"):
-        body["student_message"] = lead["student_message"]
-
-    r = requests.post(
-        f"{SUPABASE_URL}/rest/v1/leads",
-        headers={
-            "apikey": SUPABASE_KEY,
-            "Authorization": f"Bearer {SUPABASE_KEY}",
-            "Content-Type": "application/json",
-        },
-        json=body,
-    )
-    print(f"📤 save_lead: {r.status_code} {r.text[:200]}")
-    return r.status_code == 201
 
 
 @app.route("/api/leads", methods=["GET"])
@@ -414,7 +345,8 @@ def update_lead(lead_id):
             body["status"] = data["status"]
         if "reject_reason" in data:
             body["reject_reason"] = data["reject_reason"]
-        
+        if "teacher_name" in data:
+            body["teacher_name"] = data["teacher_name"]
         if not body:
             return jsonify({"status": "error", "detail": "no fields"}), 400
 
@@ -433,55 +365,51 @@ def update_lead(lead_id):
         print("❌ PATCH error:", e)
         return jsonify({"status": "error"}), 500
 
-@app.route("/api/leads/<lead_id>/accept", methods=["POST"])
-def accept_lead(lead_id):
-    """Принять заявку — назначает учителя и меняет статус"""
+
+@app.route("/api/leads/<lead_id>", methods=["DELETE"])
+def delete_lead(lead_id):
     try:
-        data = request.get_json() or {}
-        teacher_id = data.get("teacher_id")
-        
-        body = {"status": "accepted"}
-        if teacher_id:
-            body["teacher_id"] = teacher_id
-        
-        r = requests.patch(
+        r = requests.delete(
             f"{SUPABASE_URL}/rest/v1/leads?id=eq.{lead_id}",
-            headers=supabase_headers(),
-            json=body,
+            headers={
+                "apikey": SUPABASE_KEY,
+                "Authorization": f"Bearer {SUPABASE_KEY}",
+            },
         )
-        return jsonify({"status": "ok" if r.status_code == 204 else "error"})
-    except Exception:
+        print(f"🗑 DELETE lead {lead_id}: {r.status_code}")
+        return jsonify({"status": "ok" if r.status_code in (200, 204) else "error"})
+    except Exception as e:
+        print("❌ DELETE error:", e)
         return jsonify({"status": "error"}), 500
 
-@app.route("/api/teacher/<teacher_id>/leads", methods=["GET"])
-def get_teacher_leads(teacher_id):
-    """Получить заявки для конкретного учителя"""
+@app.route("/api/courses", methods=["GET"])
+def get_courses():
     try:
         r = requests.get(
-            f"{SUPABASE_URL}/rest/v1/leads"
-            f"?teacher_id=eq.{teacher_id}"
-            f"&select=*"
-            f"&order=created_at.desc",
-            headers={"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}"},
+            f"{SUPABASE_URL}/rest/v1/courses?select=*&order=created_at.asc",
+            headers={
+                "apikey": SUPABASE_KEY,
+                "Authorization": f"Bearer {SUPABASE_KEY}",
+            },
         )
+        print(f"📚 Courses API: {r.status_code} {r.text[:200]}")
         return jsonify(r.json() if r.status_code == 200 else [])
-    except Exception:
+    except Exception as e:
+        print(f"❌ Courses error: {e}")
         return jsonify([])
 
 @app.route("/api/health", methods=["GET"])
 def health():
     return jsonify({
         "status": "ok",
-        "courses": len(parse_courses_from_html()),
+        "courses": len(get_courses_from_db()),
         "teachers": len(parse_teachers_from_html()),
     })
 
 
-# ─── Entry Point ──────────────────────────────────────────────────────────────
-
 if __name__ == "__main__":
     print(
-        f"Loaded {len(parse_courses_from_html())} courses and "
+        f"Loaded {len(get_courses_from_db())} courses and "
         f"{len(parse_teachers_from_html())} teachers"
     )
     app.run(host="0.0.0.0", port=5001, debug=True)

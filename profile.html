@@ -552,6 +552,89 @@
             white-space: nowrap;
         }
 
+        .teacher-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            gap: 12px;
+        }
+
+        .teacher-row:last-child {
+            border-bottom: none;
+        }
+
+        .teacher-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .teacher-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .teacher-email {
+            font-size: 0.75rem;
+            color: #9CA3AF;
+        }
+
+        .teacher-stats {
+            font-size: 0.78rem;
+            color: #6B7280;
+            text-align: right;
+        }
+
+        .teacher-stats span {
+            font-weight: 600;
+            color: #8B5CF6;
+        }
+
+        .unassigned-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            gap: 12px;
+        }
+
+        .unassigned-card:last-child {
+            border-bottom: none;
+        }
+
+        .unassigned-info {
+            font-size: 0.82rem;
+        }
+
+        .unassigned-info strong {
+            color: #8B5CF6;
+        }
+
+        .assign-select {
+            padding: 6px 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            font-family: inherit;
+            font-size: 0.78rem;
+            outline: none;
+        }
+
+        .btn-assign {
+            padding: 6px 14px;
+            border-radius: 8px;
+            border: none;
+            background: #8B5CF6;
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.76rem;
+            cursor: pointer;
+            font-family: inherit;
+            white-space: nowrap;
+        }
+
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -725,12 +808,10 @@
                 </div>
             </div>
             <div class="info-card">
-                <h3>Мои курсы</h3>
-                <div class="empty"><i class="fas fa-graduation-cap"></i> Пока нет активных курсов</div>
-            </div>
-            <div class="info-card">
-                <h3>Статистика</h3>
-                <div class="empty"><i class="fas fa-chart-line"></i> Начни обучение чтобы увидеть прогресс</div>
+                <h3>Мои заявки</h3>
+                <div id="studentLeadsList">
+                    <div class="empty"><i class="fas fa-inbox"></i> У вас пока нет заявок</div>
+                </div>
             </div>
         </div>
 
@@ -765,9 +846,50 @@
         </div>
 
         <div class="content-block" id="adminTab">
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-num" id="adminTotalLeads">0</div>
+                    <div class="stat-lbl">Всего заявок</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-num" id="adminNewLeads">0</div>
+                    <div class="stat-lbl">Новых</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-num" id="adminAcceptedLeads">0</div>
+                    <div class="stat-lbl">Принято</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-num" id="adminIncome">0 ₽</div>
+                    <div class="stat-lbl">Доход школы</div>
+                </div>
+            </div>
+
             <div class="info-card">
-                <h3>Управление школой</h3>
-                <div class="empty"><i class="fas fa-crown"></i> Панель администратора — в разработке</div>
+                <h3>Преподаватели</h3>
+                <div id="teachersList">
+                    <div class="empty"><i class="fas fa-chalkboard-teacher"></i> Загружаем...</div>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3>Все заявки школы</h3>
+                <div class="filters-row" style="margin-bottom:12px;">
+                    <button class="filter-btn active" data-filter="all" data-section="admin">Все</button>
+                    <button class="filter-btn" data-filter="new" data-section="admin">Новые</button>
+                    <button class="filter-btn" data-filter="accepted" data-section="admin">Принятые</button>
+                    <button class="filter-btn" data-filter="rejected" data-section="admin">Отклонённые</button>
+                </div>
+                <div id="adminLeadsList">
+                    <div class="empty"><i class="fas fa-inbox"></i> Загружаем...</div>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3>Распределение заявок</h3>
+                <div id="unassignedLeads">
+                    <div class="empty"><i class="fas fa-inbox"></i> Проверяем...</div>
+                </div>
             </div>
         </div>
     </div>
@@ -784,7 +906,6 @@
     </div>
 
     <script>
-        // Supabase client
         var supabase = window.supabase.createClient(
             'https://nrmihghshpteellhmzuh.supabase.co',
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ybWloZ2hzaHB0ZWVsbGhtenVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5NDI4NDMsImV4cCI6MjA5NzUxODg0M30.X77HE62ZqYPVv7uOpjHNWgn7H4wIL_FoJLcs-CV1itQ'
@@ -793,6 +914,7 @@
         var currentUser = null;
         var userRole = 'student';
         var allLeads = [];
+        var allSchoolLeads = [];
         var activeRejectId = null;
         var editField = '';
 
@@ -804,9 +926,17 @@
             var { data: profile } = await supabase.from('users').select('role, avatar_url, first_name, last_name').eq('id', user.id).single();
             userRole = profile?.role || 'student';
 
+            if (!user.user_metadata?.role || user.user_metadata.role !== userRole) {
+                await supabase.auth.updateUser({ data: { role: userRole } });
+            }
+
             setupTabs();
             loadProfileCard(profile);
+
             if (userRole === 'teacher' || userRole === 'admin') await loadLeads();
+            if (userRole === 'student') await loadStudentLeads();
+            if (userRole === 'admin') await loadAdminData();
+
             switchTab(userRole === 'admin' ? 'teacherTab' : (userRole === 'teacher' ? 'teacherTab' : 'studentTab'));
         }
 
@@ -828,13 +958,13 @@
             tabs.addEventListener('click', function (e) {
                 if (!e.target.classList.contains('tab-btn')) return;
                 switchTab(e.target.dataset.tab);
+                if (e.target.dataset.tab === 'adminTab') loadAdminData();
             });
         }
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
             document.querySelectorAll('.content-block').forEach(function (b) { b.classList.remove('active'); });
-
             var btn = document.querySelector('[data-tab="' + tabId + '"]');
             if (btn) btn.classList.add('active');
             document.getElementById(tabId).classList.add('active');
@@ -869,6 +999,45 @@
             badge.className = 'role-badge ' + (roleClasses[userRole] || 'role-student');
             badge.style.display = 'inline-block';
         }
+
+        // ─── Student Leads ───
+
+        async function loadStudentLeads() {
+            var resp = await fetch('http://localhost:5001/api/leads');
+            var all = await resp.json();
+            var myLeads = all.filter(function (l) {
+                return l.student_id === currentUser.id;
+            });
+            renderStudentLeads(myLeads);
+        }
+
+        function renderStudentLeads(leads) {
+            var container = document.getElementById('studentLeadsList');
+            if (!leads.length) {
+                container.innerHTML = '<div class="empty"><i class="fas fa-inbox"></i> У вас пока нет заявок</div>';
+                return;
+            }
+            container.innerHTML = leads.map(function (lead) {
+                var statusLabels = { 'new': 'На рассмотрении', 'accepted': 'Принята', 'rejected': 'Отклонена' };
+                var statusBadges = { 'new': 'badge-new', 'accepted': 'badge-accepted', 'rejected': 'badge-rejected' };
+                return `
+                    <div class="lead-card">
+                        <div class="lead-header">
+                            <div class="lead-student">${lead.course_title || '—'}</div>
+                            <span class="lead-badge ${statusBadges[lead.status] || ''}">${statusLabels[lead.status] || lead.status}</span>
+                        </div>
+                        <div class="lead-body">
+                            <div class="lead-field"><span class="lbl">Преподаватель:</span><span class="val">${lead.teacher_name || '—'}</span></div>
+                            <div class="lead-field"><span class="lbl">Занятий:</span><span class="val">${lead.lessons || '—'}</span></div>
+                            <div class="lead-field"><span class="lbl">Сумма:</span><span class="val" style="color:#8B5CF6;font-weight:700;">${(lead.total_price || 0).toLocaleString('ru-RU')} ₽</span></div>
+                        </div>
+                        ${lead.reject_reason ? '<div class="lead-msg">Причина отказа: ' + lead.reject_reason + '</div>' : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ─── Teacher Leads ───
 
         async function loadLeads() {
             var resp = await fetch('http://localhost:5001/api/leads');
@@ -916,7 +1085,6 @@
                 var isNew = lead.status === 'new';
                 var statusLabels = { 'new': 'Новая', 'accepted': 'Принята', 'rejected': 'Отклонена' };
                 var statusBadges = { 'new': 'badge-new', 'accepted': 'badge-accepted', 'rejected': 'badge-rejected' };
-
                 var aiIcon = lead.with_ai ? ' <i class="fas fa-robot" style="color:#8B5CF6;font-size:0.75rem;" title="С AI"></i>' : '';
                 var actionsHtml = '';
 
@@ -948,6 +1116,8 @@
                             <div class="lead-field"><span class="lbl">Курс:</span><span class="val">${lead.course_title || '—'}</span></div>
                             <div class="lead-field"><span class="lbl">Занятий:</span><span class="val">${lead.lessons || '—'}</span></div>
                             <div class="lead-field"><span class="lbl">Сумма:</span><span class="val" style="color:#8B5CF6;font-weight:700;">${(lead.total_price || 0).toLocaleString('ru-RU')} ₽</span></div>
+                            ${lead.tg_username ? '<div class="lead-field"><span class="lbl">TG:</span><span class="val">@' + lead.tg_username + '</span></div>' : ''}
+                            ${lead.vk_username ? '<div class="lead-field"><span class="lbl">VK:</span><span class="val">' + lead.vk_username + '</span></div>' : ''}
                         </div>
                         ${lead.student_message ? '<div class="lead-msg">' + lead.student_message + '</div>' : ''}
                         <div class="lead-actions">${actionsHtml}</div>
@@ -986,33 +1156,212 @@
             if (resp.ok) { activeRejectId = null; await loadLeads(); }
         }
 
+        // ─── Admin functions ───
+
+        async function loadAdminData() {
+            var resp = await fetch('http://localhost:5001/api/leads');
+            allSchoolLeads = await resp.json();
+
+            var total = allSchoolLeads.length;
+            var newCount = allSchoolLeads.filter(function (l) { return l.status === 'new'; }).length;
+            var accepted = allSchoolLeads.filter(function (l) { return l.status === 'accepted'; }).length;
+            var rejected = allSchoolLeads.filter(function (l) { return l.status === 'rejected'; }).length;
+            var income = allSchoolLeads
+                .filter(function (l) { return l.status === 'accepted'; })
+                .reduce(function (s, l) { return s + (l.total_price || 0); }, 0);
+            var withAI = allSchoolLeads.filter(function (l) { return l.with_ai; }).length;
+
+            document.getElementById('adminTotalLeads').textContent = total;
+            document.getElementById('adminNewLeads').textContent = newCount;
+            document.getElementById('adminAcceptedLeads').textContent = accepted;
+            document.getElementById('adminIncome').textContent = income.toLocaleString('ru-RU') + ' ₽';
+
+            var { data: teachers } = await supabase
+                .from('users')
+                .select('id, first_name, last_name, email, role')
+                .in('role', ['teacher', 'admin']);
+            renderTeachers(teachers, allSchoolLeads, { total, newCount, accepted, rejected, income, withAI });
+            renderAdminLeads(allSchoolLeads);
+
+            var unassigned = allSchoolLeads.filter(function (l) {
+                return !l.teacher_name || l.teacher_name === 'Назначается' || l.teacher_name.trim() === '';
+            });
+            renderUnassigned(unassigned, teachers);
+        }
+
+        function renderTeachers(teachers, leads, stats) {
+            var container = document.getElementById('teachersList');
+            if (!teachers || !teachers.length) {
+                container.innerHTML = '<div class="empty"><i class="fas fa-chalkboard-teacher"></i> Нет преподавателей</div>';
+                return;
+            }
+
+            var html = '<div style="margin-bottom:14px;display:flex;gap:16px;flex-wrap:wrap;font-size:0.78rem;color:#6B7280;">';
+            html += '<span>Всего заявок: <strong style="color:#8B5CF6;">' + stats.total + '</strong></span>';
+            html += '<span>Новых: <strong style="color:#8B5CF6;">' + stats.newCount + '</strong></span>';
+            html += '<span>Принято: <strong style="color:#22C55E;">' + stats.accepted + '</strong></span>';
+            html += '<span>Отклонено: <strong style="color:#EF4444;">' + stats.rejected + '</strong></span>';
+            html += '<span>С AI: <strong style="color:#8B5CF6;">' + stats.withAI + '</strong></span>';
+            html += '<span>Доход: <strong style="color:#8B5CF6;">' + stats.income.toLocaleString('ru-RU') + ' ₽</strong></span>';
+            html += '</div>';
+
+            html += teachers.map(function (t) {
+                var fullName = (t.first_name || '') + ' ' + (t.last_name || '');
+                fullName = fullName.trim() || 'Без имени';
+                var roleLabel = t.role === 'admin' ? '<span style="font-size:0.65rem;color:#EF4444;margin-left:4px;">админ</span>' : '';
+
+                var teacherLeads = leads.filter(function (l) {
+                    if (!l.teacher_name) return false;
+                    var nameParts = fullName.toLowerCase().split(' ');
+                    return nameParts.some(function (part) {
+                        return part.length > 2 && l.teacher_name.toLowerCase().includes(part);
+                    });
+                });
+                var acceptedCount = teacherLeads.filter(function (l) { return l.status === 'accepted'; }).length;
+                var teacherIncome = teacherLeads
+                    .filter(function (l) { return l.status === 'accepted'; })
+                    .reduce(function (s, l) { return s + (l.total_price || 0); }, 0);
+
+                return `
+                    <div class="teacher-row">
+                        <div class="teacher-info">
+                            <span class="teacher-name">${fullName} ${roleLabel}</span>
+                            <span class="teacher-email">${t.email || '—'}</span>
+                        </div>
+                        <div class="teacher-stats">
+                            Заявок: <span>${teacherLeads.length}</span> | Учеников: <span>${acceptedCount}</span> | Доход: <span>${teacherIncome.toLocaleString('ru-RU')} ₽</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = html;
+        }
+
+        function renderAdminLeads(leads) {
+            var container = document.getElementById('adminLeadsList');
+            if (!leads.length) {
+                container.innerHTML = '<div class="empty"><i class="fas fa-inbox"></i> Заявок пока нет</div>';
+                return;
+            }
+            container.innerHTML = leads.map(function (lead) {
+                var statusLabels = { 'new': 'Новая', 'accepted': 'Принята', 'rejected': 'Отклонена' };
+                var statusBadges = { 'new': 'badge-new', 'accepted': 'badge-accepted', 'rejected': 'badge-rejected' };
+                return `
+                    <div class="lead-card" style="margin-bottom:10px;">
+                        <div class="lead-header">
+                            <div class="lead-student">${lead.client_name || '—'}</div>
+                            <div style="display:flex;gap:8px;align-items:center;">
+                                <span class="lead-badge ${statusBadges[lead.status] || ''}">${statusLabels[lead.status] || lead.status}</span>
+                                <button class="btn-reject" onclick="deleteLeadAdmin('${lead.id}')" style="border-color:rgba(239,68,68,0.3);color:#EF4444;" title="Удалить"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <div class="lead-body">
+                            <div class="lead-field"><span class="lbl">Телефон:</span><span class="val">${lead.phone || '—'}</span></div>
+                            <div class="lead-field"><span class="lbl">Курс:</span><span class="val">${lead.course_title || '—'}</span></div>
+                            <div class="lead-field"><span class="lbl">Преподаватель:</span><span class="val">${lead.teacher_name || '—'}</span></div>
+                            <div class="lead-field"><span class="lbl">Сумма:</span><span class="val" style="color:#8B5CF6;font-weight:700;">${(lead.total_price || 0).toLocaleString('ru-RU')} ₽</span></div>
+                            ${lead.tg_username ? '<div class="lead-field"><span class="lbl">TG:</span><span class="val">@' + lead.tg_username + '</span></div>' : ''}
+                            ${lead.vk_username ? '<div class="lead-field"><span class="lbl">VK:</span><span class="val">' + lead.vk_username + '</span></div>' : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function deleteLeadAdmin(id) {
+            if (!confirm('Точно удалить заявку?')) return;
+            var resp = await fetch('http://localhost:5001/api/leads/' + id, { method: 'DELETE' });
+            if (resp.ok) await loadAdminData();
+        }
+
+        function renderUnassigned(leads, teachers) {
+            var container = document.getElementById('unassignedLeads');
+            if (!leads.length) {
+                container.innerHTML = '<div class="empty"><i class="fas fa-check-circle"></i> Все заявки распределены</div>';
+                return;
+            }
+            var optionsHtml = (teachers || []).map(function (t) {
+                var fullName = (t.first_name || '') + ' ' + (t.last_name || '');
+                return '<option value="' + fullName.trim() + '">' + fullName.trim() + '</option>';
+            }).join('');
+
+            container.innerHTML = leads.map(function (lead) {
+                return `
+                    <div class="unassigned-card" id="unassigned-${lead.id}">
+                        <div class="unassigned-info">
+                            <strong>${lead.client_name || '—'}</strong> — ${lead.course_title || '—'}
+                            <br><span style="font-size:0.72rem;color:#9CA3AF;">${lead.phone || ''}</span>
+                        </div>
+                        <div style="display:flex;gap:8px;align-items:center;">
+                            <select class="assign-select" id="assignSelect-${lead.id}">
+                                <option value="">Назначить...</option>
+                                ${optionsHtml}
+                            </select>
+                            <button class="btn-assign" onclick="assignLead('${lead.id}')">Ок</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function assignLead(leadId) {
+            var select = document.getElementById('assignSelect-' + leadId);
+            var teacherName = select.value;
+            if (!teacherName) return;
+            var resp = await fetch('http://localhost:5001/api/leads/' + leadId, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ teacher_name: teacherName })
+            });
+            if (resp.ok) {
+                document.getElementById('unassigned-' + leadId).style.opacity = '0';
+                setTimeout(function () {
+                    loadAdminData();
+                    if (userRole === 'teacher' || userRole === 'admin') loadLeads();
+                }, 300);
+            }
+        }
+
+        // ─── Filters ───
+
         document.addEventListener('click', function (e) {
             if (!e.target.classList.contains('filter-btn')) return;
-            var container = e.target.parentElement;
-            container.querySelectorAll('.filter-btn').forEach(function (b) { b.classList.remove('active'); });
-            e.target.classList.add('active');
 
-            var filter = e.target.dataset.filter;
-            var filtered = filter === 'all' ? allLeads : allLeads.filter(function (l) { return l.status === filter; });
-            renderLeads(filtered);
+            var section = e.target.dataset.section;
+
+            if (section === 'admin') {
+                var container = e.target.parentElement;
+                container.querySelectorAll('.filter-btn').forEach(function (b) { b.classList.remove('active'); });
+                e.target.classList.add('active');
+                var filter = e.target.dataset.filter;
+                var filtered = filter === 'all' ? allSchoolLeads : allSchoolLeads.filter(function (l) { return l.status === filter; });
+                renderAdminLeads(filtered);
+            } else {
+                var container = e.target.parentElement;
+                container.querySelectorAll('.filter-btn').forEach(function (b) { b.classList.remove('active'); });
+                e.target.classList.add('active');
+                var filter = e.target.dataset.filter;
+                var filtered = filter === 'all' ? allLeads : allLeads.filter(function (l) { return l.status === filter; });
+                renderLeads(filtered);
+            }
         });
+
+        // ─── Photo ───
 
         function handlePhoto(event) {
             var file = event.target.files[0];
             if (!file || file.size > 2 * 1024 * 1024) return;
             if (!file.type.match(/image\/(jpeg|png)/)) return;
-
             var reader = new FileReader();
             reader.onload = async function (e) {
                 var base64 = e.target.result;
                 document.getElementById('avatarCircle').style.backgroundImage = 'url(' + base64 + ')';
                 document.getElementById('avatarInitial').style.display = 'none';
-
                 var fileName = 'avatars/' + currentUser.id + '.jpg';
                 var binary = atob(base64.split(',')[1]);
                 var array = new Uint8Array(binary.length);
                 for (var i = 0; i < binary.length; i++) array[i] = binary.charCodeAt(i);
-
                 var { error } = await supabase.storage.from('avatars').upload(fileName, array, {
                     contentType: 'image/jpeg', upsert: true
                 });

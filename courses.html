@@ -94,7 +94,6 @@
             }
         }
 
-        /* ===== HEADER ===== */
         .header {
             display: flex;
             align-items: center;
@@ -235,7 +234,6 @@
             border-radius: 2px;
         }
 
-        /* ===== MOBILE MENU ===== */
         .nav-overlay {
             position: fixed;
             inset: 0;
@@ -360,7 +358,6 @@
             color: #8B5CF6;
         }
 
-        /* ===== MAIN ===== */
         .main {
             position: relative;
             z-index: 1;
@@ -398,7 +395,6 @@
             max-width: 500px;
         }
 
-        /* ===== FILTERS ===== */
         .filters {
             display: flex;
             gap: 8px;
@@ -433,7 +429,6 @@
             border-color: #8B5CF6;
         }
 
-        /* ===== COURSES GRID ===== */
         .courses-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -566,7 +561,6 @@
             font-weight: 700;
         }
 
-        /* ===== MODAL ===== */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -848,8 +842,17 @@
             font-size: 2rem;
             font-weight: 900;
             color: #8B5CF6;
-            margin-bottom: 16px;
+            margin-bottom: 8px;
             letter-spacing: -1px;
+        }
+
+        .modal-discount {
+            display: none;
+            text-align: center;
+            font-size: 0.82rem;
+            color: #22C55E;
+            font-weight: 600;
+            margin-bottom: 16px;
         }
 
         .btn-enroll-modal {
@@ -873,7 +876,6 @@
             box-shadow: 0 12px 30px rgba(139, 92, 246, 0.3);
         }
 
-        /* ===== FOOTER ===== */
         .footer {
             border-top: 1px solid rgba(139, 92, 246, 0.08);
             padding: 32px 40px 24px;
@@ -983,6 +985,10 @@
                 padding: 10px 14px;
             }
 
+            .header-actions {
+                display: none;
+            }
+
             .main {
                 padding: 24px 14px 48px;
             }
@@ -1034,7 +1040,6 @@
     </div>
 
     <main class="main">
-
         <div class="page-header">
             <div class="page-label">Обучение</div>
             <h1 class="page-title">Наши курсы</h1>
@@ -1050,161 +1055,12 @@
         </div>
 
         <div class="courses-grid" id="coursesGrid">
-
-            <!-- ЕГЭ математика -->
-            <div class="course-item ege" data-category="ege"
-                onclick="openModal({title:'Математика',badge:'ЕГЭ',category:'ege',desc:'Профильный уровень. Задачи с параметром, планиметрия, стереометрия, экономическая задача.',teacher:'Ковалёв Максим',prices:{1:1500,5:6500,10:12000,20:22000},aiSurcharge:300})">
-                <div class="course-item-icon">📐</div>
-                <span class="course-item-badge badge-ege">ЕГЭ</span>
-                <h3>Математика</h3>
-                <p>Профильный уровень. Задачи с параметром, планиметрия, стереометрия.</p>
-                <div class="course-item-meta">
-                    <div class="meta-row"><span class="meta-label">Преподаватель</span><span class="meta-value">Ковалёв
-                            Максим</span></div>
-                    <div class="meta-row"><span class="meta-label">Стоимость</span><span class="meta-value price">от 1
-                            500 ₽</span></div>
-                </div>
+            <div style="text-align:center;padding:40px;color:#9CA3AF;grid-column:1/-1;">
+                <i class="fas fa-spinner fa-pulse"></i> Загружаем курсы...
             </div>
-
-            <!-- ЕГЭ физика -->
-            <div class="course-item ege" data-category="ege"
-                onclick="openModal({title:'Физика',badge:'ЕГЭ',category:'ege',desc:'Механика, МКТ, электродинамика, квантовая физика. Разбор реальных вариантов и лабораторных.',teacher:'Ковалёв Максим',prices:{1:1600,5:7000,10:13000,20:24000},aiSurcharge:350})">
-                <div class="course-item-icon">⚡</div>
-                <span class="course-item-badge badge-ege">ЕГЭ</span>
-                <h3>Физика</h3>
-                <p>Механика, МКТ, электродинамика, квантовая физика. Разбор реальных вариантов.</p>
-                <div class="course-item-meta">
-                    <div class="meta-row"><span class="meta-label">Преподаватель</span><span class="meta-value">Ковалёв
-                            Максим</span></div>
-                    <div class="meta-row"><span class="meta-label">Стоимость</span><span class="meta-value price">от 1
-                            600 ₽</span></div>
-                </div>
-            </div>
-
-            <!-- ОГЭ математика -->
-            <div class="course-item oge" data-category="oge"
-                onclick="openModal({title:'Математика',badge:'ОГЭ',category:'oge',desc:'Алгебра, геометрия, текстовые задачи. Закроем пробелы и подготовим к экзамену за 3 месяца.',teacher:'Ковалёв Максим',prices:{1:1200,5:5000,10:9000,20:16000},aiSurcharge:250})">
-                <div class="course-item-icon">🔢</div>
-                <span class="course-item-badge badge-oge">ОГЭ</span>
-                <h3>Математика</h3>
-                <p>Алгебра, геометрия, текстовые задачи. Закроем пробелы за 3 месяца.</p>
-                <div class="course-item-meta">
-                    <div class="meta-row"><span class="meta-label">Преподаватель</span><span class="meta-value">Ковалёв
-                            Максим</span></div>
-                    <div class="meta-row"><span class="meta-label">Стоимость</span><span class="meta-value price">от 1
-                            200 ₽</span></div>
-                </div>
-            </div>
-
-            <!-- ОГЭ физика -->
-            <div class="course-item oge" data-category="oge"
-                onclick="openModal({title:'Физика',badge:'ОГЭ',category:'oge',desc:'Основы механики, тепловых явлений, электричества. Опыты, задачи, пробники каждую неделю.',teacher:'Ковалёв Максим',prices:{1:1300,5:5500,10:10000,20:18000},aiSurcharge:250})">
-                <div class="course-item-icon">🧲</div>
-                <span class="course-item-badge badge-oge">ОГЭ</span>
-                <h3>Физика</h3>
-                <p>Основы механики, тепловых явлений, электричества. Опыты, задачи.</p>
-                <div class="course-item-meta">
-                    <div class="meta-row"><span class="meta-label">Преподаватель</span><span class="meta-value">Ковалёв
-                            Максим</span></div>
-                    <div class="meta-row"><span class="meta-label">Стоимость</span><span class="meta-value price">от 1
-                            300 ₽</span></div>
-                </div>
-            </div>
-
-            <!-- ОГЭ информатика -->
-            <div class="course-item oge" data-category="oge"
-                onclick="openModal({title:'Информатика',badge:'ОГЭ',category:'oge',desc:'Системы счисления, логика, алгоритмы, Python для ОГЭ. Практика на реальных заданиях ФИПИ.',teacher:'Емельянов Илья',prices:{1:1300,5:5500,10:10000,20:18000},aiSurcharge:250})">
-                <div class="course-item-icon">💻</div>
-                <span class="course-item-badge badge-oge">ОГЭ</span>
-                <h3>Информатика</h3>
-                <p>Системы счисления, логика, алгоритмы, Python. Практика на заданиях ФИПИ.</p>
-                <div class="course-item-meta">
-                    <div class="meta-row"><span class="meta-label">Преподаватель</span><span
-                            class="meta-value">Емельянов Илья</span></div>
-                    <div class="meta-row"><span class="meta-label">Стоимость</span><span class="meta-value price">от 1
-                            300 ₽</span></div>
-                </div>
-            </div>
-
-            <!-- Программирование на Python -->
-            <div class="course-item oth" data-category="oth"
-                onclick="openModal({title:'Программирование на Python',badge:'Универсальный',category:'oth',desc:'От переменных до ООП. Проекты, библиотеки, автоматизация. ЕГЭ/ОГЭ или старт в IT.',teacher:'Емельянов Илья',prices:{1:1400,5:6000,10:11000,20:20000},aiSurcharge:300})">
-                <div class="course-item-icon">🐍</div>
-                <span class="course-item-badge badge-oth">Универсальный</span>
-                <h3>Программирование на Python</h3>
-                <p>От переменных до ООП. Проекты, библиотеки, автоматизация. Старт в IT.</p>
-                <div class="course-item-meta">
-                    <div class="meta-row"><span class="meta-label">Преподаватель</span><span
-                            class="meta-value">Емельянов Илья</span></div>
-                    <div class="meta-row"><span class="meta-label">Стоимость</span><span class="meta-value price">от 1
-                            400 ₽</span></div>
-                </div>
-            </div>
-
-            <!-- Математический анализ -->
-            <div class="course-item uni" data-category="uni"
-                onclick="openModal({title:'Математический анализ',badge:'Университет',category:'uni',desc:'Пределы, производные, ряды, функции нескольких переменных. Для студентов 1–2 курса.',teacher:'Коняхин Михаил',prices:{1:1800,5:8000,10:15000,20:28000},aiSurcharge:350})">
-                <div class="course-item-icon">∫</div>
-                <span class="course-item-badge badge-uni">Университет</span>
-                <h3>Математический анализ</h3>
-                <p>Пределы, производные, ряды, функции нескольких переменных. 1–2 курс.</p>
-                <div class="course-item-meta">
-                    <div class="meta-row"><span class="meta-label">Преподаватель</span><span class="meta-value">Коняхин
-                            Михаил</span></div>
-                    <div class="meta-row"><span class="meta-label">Стоимость</span><span class="meta-value price">от 1
-                            800 ₽</span></div>
-                </div>
-            </div>
-
-            <!-- Аналитическая геометрия -->
-            <div class="course-item uni" data-category="uni"
-                onclick="openModal({title:'Аналитическая геометрия',badge:'Университет',category:'uni',desc:'Векторы, прямые и плоскости, кривые второго порядка, матрицы преобразований.',teacher:'Коняхин Михаил',prices:{1:1700,5:7500,10:14000,20:26000},aiSurcharge:350})">
-                <div class="course-item-icon">📊</div>
-                <span class="course-item-badge badge-uni">Университет</span>
-                <h3>Аналитическая геометрия</h3>
-                <p>Векторы, прямые и плоскости, кривые второго порядка, матрицы.</p>
-                <div class="course-item-meta">
-                    <div class="meta-row"><span class="meta-label">Преподаватель</span><span class="meta-value">Коняхин
-                            Михаил</span></div>
-                    <div class="meta-row"><span class="meta-label">Стоимость</span><span class="meta-value price">от 1
-                            700 ₽</span></div>
-                </div>
-            </div>
-
-            <!-- Интегралы и диффуры -->
-            <div class="course-item uni" data-category="uni"
-                onclick="openModal({title:'Интегралы и диф. уравнения',badge:'Университет',category:'uni',desc:'Неопределённые и определённые интегралы, ДУ первого и высших порядков, системы.',teacher:'Коняхин Михаил',prices:{1:1800,5:8000,10:15000,20:28000},aiSurcharge:350})">
-                <div class="course-item-icon">📝</div>
-                <span class="course-item-badge badge-uni">Университет</span>
-                <h3>Интегралы и диф. уравнения</h3>
-                <p>Неопределённые и определённые интегралы, ДУ, системы.</p>
-                <div class="course-item-meta">
-                    <div class="meta-row"><span class="meta-label">Преподаватель</span><span class="meta-value">Коняхин
-                            Михаил</span></div>
-                    <div class="meta-row"><span class="meta-label">Стоимость</span><span class="meta-value price">от 1
-                            800 ₽</span></div>
-                </div>
-            </div>
-
-            <!-- Линейная алгебра -->
-            <div class="course-item uni" data-category="uni"
-                onclick="openModal({title:'Линейная алгебра',badge:'Университет',category:'uni',desc:'Матрицы, определители, СЛАУ, собственные значения, квадратичные формы.',teacher:'Коняхин Михаил',prices:{1:1700,5:7500,10:14000,20:26000},aiSurcharge:350})">
-                <div class="course-item-icon">📐</div>
-                <span class="course-item-badge badge-uni">Университет</span>
-                <h3>Линейная алгебра</h3>
-                <p>Матрицы, определители, СЛАУ, собственные значения, квадратичные формы.</p>
-                <div class="course-item-meta">
-                    <div class="meta-row"><span class="meta-label">Преподаватель</span><span class="meta-value">Коняхин
-                            Михаил</span></div>
-                    <div class="meta-row"><span class="meta-label">Стоимость</span><span class="meta-value price">от 1
-                            700 ₽</span></div>
-                </div>
-            </div>
-
         </div>
     </main>
 
-    <!-- Модальное окно -->
     <div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
     <div class="modal" id="courseModal">
         <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
@@ -1256,12 +1112,17 @@
             </div>
 
             <div class="modal-price" id="modalPrice">— ₽</div>
+            <div class="modal-discount" id="modalDiscount"></div>
 
             <div class="modal-message" style="margin-bottom:16px;">
                 <span class="modal-label">Твои данные</span>
                 <input type="text" id="studentName" placeholder="Твоё имя"
                     style="width:100%;padding:12px 16px;border:1.5px solid rgba(139,92,246,0.15);border-radius:14px;font-family:inherit;font-size:0.85rem;margin-bottom:10px;background:rgba(255,255,255,0.5);">
                 <input type="tel" id="studentPhone" placeholder="Телефон (11 цифр)"
+                    style="width:100%;padding:12px 16px;border:1.5px solid rgba(139,92,246,0.15);border-radius:14px;font-family:inherit;font-size:0.85rem;margin-bottom:10px;background:rgba(255,255,255,0.5);">
+                <input type="text" id="studentTG" placeholder="Telegram (username или номер)"
+                    style="width:100%;padding:12px 16px;border:1.5px solid rgba(139,92,246,0.15);border-radius:14px;font-family:inherit;font-size:0.85rem;margin-bottom:10px;background:rgba(255,255,255,0.5);">
+                <input type="text" id="studentVK" placeholder="ВКонтакте (ссылка или ник)"
                     style="width:100%;padding:12px 16px;border:1.5px solid rgba(139,92,246,0.15);border-radius:14px;font-family:inherit;font-size:0.85rem;margin-bottom:10px;background:rgba(255,255,255,0.5);">
                 <textarea id="studentMessage" placeholder="Расскажи о себе, уровне подготовки, цели..."
                     style="width:100%;padding:12px 16px;border:1.5px solid rgba(139,92,246,0.15);border-radius:14px;font-family:inherit;font-size:0.85rem;resize:vertical;min-height:80px;background:rgba(255,255,255,0.5);"></textarea>
@@ -1276,6 +1137,7 @@
     </footer>
 
     <script>
+
         var teachers = {
             "Ковалёв Максим": {
                 name: "Ковалёв Максим",
@@ -1291,7 +1153,7 @@
                 subjects: "Информатика, Python",
                 university: "Beijing Institute of Technology",
                 exp: "2 года преподавания",
-                desc: "Backend разработчик, ML Engineer и преподаватель. Python с нуля до проектов и ОГЭ/ЕГЭ. Подготовка к ОГЭ."
+                desc: "Backend разработчик, ML Engineer и преподаватель. Python с нуля до проектов и ОГЭ/ЕГЭ."
             },
             "Коняхин Михаил": {
                 name: "Коняхин Михаил",
@@ -1302,6 +1164,217 @@
                 desc: "Студент МГТУ. Преподаю линейную алгебру, математический анализ и диффуры."
             }
         };
+
+        var currentCourse = null;
+        var selectedLessons = 1;
+
+        // ─── Load courses from DB ───
+
+        async function loadCourses() {
+            try {
+                var resp = await fetch('http://localhost:5001/api/courses');
+                var courses = await resp.json();
+
+                if (!courses || !courses.length) {
+                    document.getElementById('coursesGrid').innerHTML =
+                        '<div style="text-align:center;padding:40px;color:#9CA3AF;grid-column:1/-1;">Курсы не найдены</div>';
+                    return;
+                }
+                renderCourses(courses);
+            } catch (e) {
+                document.getElementById('coursesGrid').innerHTML =
+                    '<div style="text-align:center;padding:40px;color:#9CA3AF;grid-column:1/-1;">Ошибка загрузки курсов</div>';
+            }
+        }
+
+        function renderCourses(courses) {
+            var grid = document.getElementById('coursesGrid');
+            var categoryLabels = { 'ege': 'badge-ege', 'oge': 'badge-oge', 'uni': 'badge-uni', 'oth': 'badge-oth' };
+
+            grid.innerHTML = courses.map(function (c) {
+                var prices = typeof c.prices === 'string' ? JSON.parse(c.prices) : c.prices;
+                var minPrice = Math.min.apply(null, Object.values(prices));
+
+                return `
+            <div class="course-item ${c.category}" data-category="${c.category}"
+                onclick='openModal(${JSON.stringify({
+                    title: c.title,
+                    badge: c.badge,
+                    category: c.category,
+                    desc: c.description || '',
+                    teacher: c.teacher_name,
+                    prices: prices,
+                    aiSurcharge: c.ai_surcharge || 0
+                }).replace(/'/g, "&#39;")})'>
+                <div class="course-item-icon">${c.icon || '📚'}</div>
+                <span class="course-item-badge ${categoryLabels[c.category] || 'badge-oth'}">${c.badge}</span>
+                <h3>${c.title}</h3>
+                <p>${c.description || ''}</p>
+                <div class="course-item-meta">
+                    <div class="meta-row"><span class="meta-label">Преподаватель</span><span class="meta-value">${c.teacher_name}</span></div>
+                    <div class="meta-row"><span class="meta-label">Стоимость</span><span class="meta-value price">от ${minPrice.toLocaleString('ru-RU')} ₽</span></div>
+                </div>
+            </div>
+        `;
+            }).join('');
+        }
+
+        // ─── Modal ───
+
+        function openModal(course) {
+            currentCourse = course;
+            selectedLessons = 1;
+            document.getElementById('modalBadge').textContent = course.badge;
+            document.getElementById('modalBadge').className = 'modal-badge ' + course.category;
+            document.getElementById('modalTitle').textContent = course.title;
+            document.getElementById('modalDesc').textContent = course.desc;
+            document.getElementById('modalTeacherName').textContent = course.teacher;
+            updateTeacherInfo(course.teacher);
+            document.querySelectorAll('.lesson-btn').forEach(function (btn) {
+                btn.classList.remove('active');
+                if (parseInt(btn.dataset.lessons) === 1) btn.classList.add('active');
+            });
+            document.getElementById('aiToggle').checked = false;
+            updatePrice();
+            document.getElementById('modalOverlay').classList.add('open');
+            document.getElementById('courseModal').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('open');
+            document.getElementById('courseModal').classList.remove('open');
+            document.body.style.overflow = '';
+            currentCourse = null;
+        }
+
+        function updatePrice() {
+            if (!currentCourse) return;
+            var withAI = document.getElementById('aiToggle').checked;
+            var basePrice = currentCourse.prices[1];
+            var price = currentCourse.prices[selectedLessons];
+            if (withAI) price += currentCourse.aiSurcharge * selectedLessons;
+            document.getElementById('modalPrice').textContent = price.toLocaleString('ru-RU') + ' ₽';
+
+            var fullPrice = basePrice * selectedLessons;
+            var discount = fullPrice - price;
+            var discountPercent = Math.round((discount / fullPrice) * 100);
+
+            var discEl = document.getElementById('modalDiscount');
+            if (discount > 0 && selectedLessons > 1) {
+                discEl.style.display = 'block';
+                discEl.textContent = 'Экономия ' + discount.toLocaleString('ru-RU') + ' ₽ (' + discountPercent + '%)';
+            } else {
+                discEl.style.display = 'none';
+            }
+        }
+
+        function toggleTeacherInfo() {
+            var info = document.getElementById('teacherInfo');
+            var arrow = document.getElementById('teacherArrow');
+            if (info.style.display === 'none' || !info.style.display) {
+                info.style.display = 'block';
+                arrow.className = 'fas fa-chevron-up';
+            } else {
+                info.style.display = 'none';
+                arrow.className = 'fas fa-chevron-down';
+            }
+        }
+
+        function updateTeacherInfo(teacherName) {
+            var teacher = teachers[teacherName] || teachers["Назначается"];
+            var photo = document.getElementById('teacherPhoto');
+            var initial = document.getElementById('teacherInitial');
+
+            if (teacher && teacher.photo) {
+                photo.src = teacher.photo;
+                photo.style.display = 'block';
+                initial.style.display = 'none';
+            } else {
+                photo.style.display = 'none';
+                initial.style.display = 'block';
+                initial.textContent = teacher ? teacher.name.charAt(0) : '?';
+            }
+
+            if (teacher) {
+                document.getElementById('teacherFullName').textContent = teacher.name;
+                document.getElementById('teacherSubj').textContent = teacher.subjects;
+                document.getElementById('teacherUni').textContent = teacher.university;
+                document.getElementById('teacherExp').textContent = teacher.exp;
+                document.getElementById('teacherDesc').textContent = teacher.desc;
+            }
+            document.getElementById('teacherInfo').style.display = 'none';
+            document.getElementById('teacherArrow').className = 'fas fa-chevron-down';
+        }
+
+        // ─── Submit ───
+
+        async function submitApplication() {
+            if (!currentCourse) return;
+
+            var name = document.getElementById('studentName').value.trim();
+            var phone = document.getElementById('studentPhone').value.trim();
+            var message = document.getElementById('studentMessage').value.trim();
+            var withAI = document.getElementById('aiToggle').checked;
+            var price = currentCourse.prices[selectedLessons];
+            if (withAI) price += currentCourse.aiSurcharge * selectedLessons;
+
+            if (!name) { alert('Введи имя'); return; }
+            if (!phone || phone.replace(/\D/g, '').length < 11) { alert('Введи корректный телефон (11 цифр)'); return; }
+
+            var userId = null;
+            try {
+                var { data: { user } } = await supabase.auth.getUser();
+                if (user) userId = user.id;
+            } catch (e) { }
+
+            try {
+                var response = await fetch('http://localhost:5001/api/leads', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        client_name: name,
+                        phone: phone.replace(/\D/g, ''),
+                        course_title: currentCourse.title,
+                        teacher_name: currentCourse.teacher,
+                        lessons: selectedLessons,
+                        with_ai: withAI,
+                        total_price: price,
+                        student_message: message,
+                        student_id: userId,
+                        chat_history: 'Заявка с сайта',
+                        tg_username: document.getElementById('studentTG').value.trim(),
+                        vk_username: document.getElementById('studentVK').value.trim()
+                    })
+                });
+
+                if (response.ok) {
+                    alert('Заявка отправлена! Преподаватель свяжется с тобой.');
+                    closeModal();
+                } else {
+                    alert('Ошибка отправки. Попробуй ещё раз.');
+                }
+            } catch (e) {
+                alert('Ошибка соединения с сервером.');
+            }
+        }
+
+        // ─── Event listeners ───
+
+        document.addEventListener('click', function (e) {
+            if (e.target.classList.contains('lesson-btn')) {
+                document.querySelectorAll('.lesson-btn').forEach(function (b) { b.classList.remove('active'); });
+                e.target.classList.add('active');
+                selectedLessons = parseInt(e.target.dataset.lessons);
+                updatePrice();
+            }
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // ─── Burger & Nav ───
 
         (function () {
             var burger = document.getElementById('burgerBtn');
@@ -1375,155 +1448,20 @@
             updateNavBar();
 
             var filterBtns = document.querySelectorAll('.filter-btn');
-            var courses = document.querySelectorAll('.course-item');
             filterBtns.forEach(function (btn) {
                 btn.addEventListener('click', function () {
                     filterBtns.forEach(function (b) { b.classList.remove('active'); });
                     btn.classList.add('active');
                     var filter = btn.getAttribute('data-filter');
-                    courses.forEach(function (course) {
+                    document.querySelectorAll('.course-item').forEach(function (course) {
                         course.style.display = (filter === 'all' || course.getAttribute('data-category') === filter) ? 'flex' : 'none';
                     });
                 });
             });
         })();
 
-        var currentCourse = null;
-        var selectedLessons = 1;
-
-        function openModal(course) {
-            currentCourse = course;
-            selectedLessons = 1;
-            document.getElementById('modalBadge').textContent = course.badge;
-            document.getElementById('modalBadge').className = 'modal-badge ' + course.category;
-            document.getElementById('modalTitle').textContent = course.title;
-            document.getElementById('modalDesc').textContent = course.desc;
-            document.getElementById('modalTeacherName').textContent = course.teacher;
-            updateTeacherInfo(course.teacher);
-            document.querySelectorAll('.lesson-btn').forEach(function (btn) {
-                btn.classList.remove('active');
-                if (parseInt(btn.dataset.lessons) === 1) btn.classList.add('active');
-            });
-            document.getElementById('aiToggle').checked = false;
-            updatePrice();
-            document.getElementById('modalOverlay').classList.add('open');
-            document.getElementById('courseModal').classList.add('open');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeModal() {
-            document.getElementById('modalOverlay').classList.remove('open');
-            document.getElementById('courseModal').classList.remove('open');
-            document.body.style.overflow = '';
-            currentCourse = null;
-        }
-
-        function updatePrice() {
-            if (!currentCourse) return;
-            var withAI = document.getElementById('aiToggle').checked;
-            var price = currentCourse.prices[selectedLessons];
-            if (withAI) price += currentCourse.aiSurcharge * selectedLessons;
-            document.getElementById('modalPrice').textContent = price.toLocaleString('ru-RU') + ' ₽';
-        }
-
-        function toggleTeacherInfo() {
-            var info = document.getElementById('teacherInfo');
-            var arrow = document.getElementById('teacherArrow');
-            if (info.style.display === 'none' || !info.style.display) {
-                info.style.display = 'block';
-                arrow.className = 'fas fa-chevron-up';
-            } else {
-                info.style.display = 'none';
-                arrow.className = 'fas fa-chevron-down';
-            }
-        }
-
-        function updateTeacherInfo(teacherName) {
-            var teacher = teachers[teacherName] || teachers["Назначается"];
-
-            var photo = document.getElementById('teacherPhoto');
-            var initial = document.getElementById('teacherInitial');
-
-            if (teacher.photo) {
-                photo.src = teacher.photo;
-                photo.style.display = 'block';
-                initial.style.display = 'none';
-            } else {
-                photo.style.display = 'none';
-                initial.style.display = 'block';
-                initial.textContent = teacher.name.charAt(0);
-            }
-
-            document.getElementById('teacherFullName').textContent = teacher.name;
-            document.getElementById('teacherSubj').textContent = teacher.subjects;
-            document.getElementById('teacherUni').textContent = teacher.university;
-            document.getElementById('teacherExp').textContent = teacher.exp;
-            document.getElementById('teacherDesc').textContent = teacher.desc;
-            document.getElementById('teacherInfo').style.display = 'none';
-            document.getElementById('teacherArrow').className = 'fas fa-chevron-down';
-        }
-
-        async function submitApplication() {
-            if (!currentCourse) return;
-
-            var name = document.getElementById('studentName').value.trim();
-            var phone = document.getElementById('studentPhone').value.trim();
-            var message = document.getElementById('studentMessage').value.trim();
-            var withAI = document.getElementById('aiToggle').checked;
-            var price = currentCourse.prices[selectedLessons];
-            if (withAI) price += currentCourse.aiSurcharge * selectedLessons;
-
-            if (!name) { alert('Введи имя'); return; }
-            if (!phone || phone.replace(/\D/g, '').length < 11) { alert('Введи корректный телефон (11 цифр)'); return; }
-
-            // Получаем текущего пользователя если залогинен
-            var userId = null;
-            try {
-                var { data: { user } } = await supabase.auth.getUser();
-                if (user) userId = user.id;
-            } catch (e) { }
-
-            try {
-                var response = await fetch('http://localhost:5001/api/leads', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        client_name: name,
-                        phone: phone.replace(/\D/g, ''),
-                        course_title: currentCourse.title,
-                        teacher_name: currentCourse.teacher,
-                        lessons: selectedLessons,
-                        with_ai: withAI,
-                        total_price: price,
-                        student_message: message,
-                        student_id: userId,
-                        chat_history: 'Заявка с сайта'
-                    })
-                });
-
-                if (response.ok) {
-                    alert('Заявка отправлена! Преподаватель свяжется с тобой.');
-                    closeModal();
-                } else {
-                    alert('Ошибка отправки. Попробуй ещё раз.');
-                }
-            } catch (e) {
-                alert('Ошибка соединения с сервером.');
-            }
-        }
-
-        document.addEventListener('click', function (e) {
-            if (e.target.classList.contains('lesson-btn')) {
-                document.querySelectorAll('.lesson-btn').forEach(function (b) { b.classList.remove('active'); });
-                e.target.classList.add('active');
-                selectedLessons = parseInt(e.target.dataset.lessons);
-                updatePrice();
-            }
-        });
-
-        document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') closeModal();
-        });
+        // ─── Init ───
+        loadCourses();
     </script>
 
 </body>
