@@ -992,6 +992,7 @@
             var { data: { user }, error } = await supabase.auth.getUser();
             if (error || !user) { window.location.replace('login.html'); return; }
             currentUser = user;
+            localStorage.setItem('supabase_user_id', user.id);
 
             var { data: profile } = await supabase.from('users').select('role, avatar_url, first_name, last_name').eq('id', user.id).single();
             userRole = profile?.role || 'student';

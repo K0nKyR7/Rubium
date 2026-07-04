@@ -23,6 +23,47 @@ SUPABASE_KEY = (
 
 conversation_history = {}
 
+TEACHERS_MAP = {
+    "Ковалёв Максим": "d41bc28c-df35-47c4-a508-cd46c394e980",
+    "Максим Ковалёв": "d41bc28c-df35-47c4-a508-cd46c394e980",
+    "Ковалев Максим": "d41bc28c-df35-47c4-a508-cd46c394e980",
+    "Максим Ковалев": "d41bc28c-df35-47c4-a508-cd46c394e980",
+    "Максим": "d41bc28c-df35-47c4-a508-cd46c394e980",
+    "Ковалёв": "d41bc28c-df35-47c4-a508-cd46c394e980",
+    "Ковалев": "d41bc28c-df35-47c4-a508-cd46c394e980",
+    "Емельянов Илья": "0f339b36-c20e-47d0-97f4-51ae9837333b",
+    "Илья Емельянов": "0f339b36-c20e-47d0-97f4-51ae9837333b",
+    "Емельянов": "0f339b36-c20e-47d0-97f4-51ae9837333b",
+    "Илья": "0f339b36-c20e-47d0-97f4-51ae9837333b",
+    "Коняхин Михаил": None,
+    "Михаил Коняхин": None,
+    "Коняхин": None,
+    "Михаил": None,
+}
+
+
+def get_teacher_id(name):
+    if not name:
+        return None
+    if name in TEACHERS_MAP:
+        return TEACHERS_MAP[name]
+    for key, tid in TEACHERS_MAP.items():
+        if tid and (key.lower() in name.lower() or name.lower() in key.lower()):
+            return tid
+    name_normalized = name.replace('ё', 'е').replace('Ё', 'Е')
+    parts = name_normalized.split()
+    if len(parts) >= 2:
+        for first, last in [(parts[0], parts[1]), (parts[1], parts[0])]:
+            r = requests.get(
+                f"{SUPABASE_URL}/rest/v1/users?select=id&first_name=ilike.*{first}*&last_name=ilike.*{last}*",
+                headers={"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}"},
+            )
+            if r.status_code == 200 and r.json():
+                tid = r.json()[0]["id"]
+                TEACHERS_MAP[name] = tid
+                return tid
+    return None
+
 
 def parse_teachers_from_html():
     try:
@@ -110,8 +151,9 @@ def build_system_prompt():
 6. Спроси нужен ли Rubi AI (помощник с проверкой заданий)
 7. Посчитай ИТОГОВУЮ цену и назови её
 8. Запроси ИМЯ и ТЕЛЕФОН
-9. Проверь что телефон 11 цифр, начинается с 8 или +7
-10. Если всё правильно — скажи: "ОТЛИЧНО! Заявка создана. Менеджер позвонит тебе в ближайшее время."
+9. ОБЯЗАТЕЛЬНО спроси Telegram (username) и/или ВКонтакте (ссылка или ник). Это необязательно, но предложи.
+10. Проверь что телефон 11 цифр, начинается с 8 или +7
+11. Если всё правильно — скажи: "ОТЛИЧНО! Заявка создана. Менеджер позвонит тебе в ближайшее время."
 
 ПРАВИЛА БЕЗОПАСНОСТИ:
 • Не даёшь медицинские советы
@@ -121,7 +163,7 @@ def build_system_prompt():
 • Если вопрос не про курсы — мягко переводишь тему обратно
 
 ПРИМЕР ФИНАЛА ДИАЛОГА:
-Пользователь: Маша, 89161234567
+Пользователь: Илья, 89161234567, tg: @ilya_dev
 Ты: ОТЛИЧНО! Заявка создана. Менеджер позвонит тебе в ближайшее время.
 
 НЕ показывай пользователю JSON, не пиши "создаю заявку в формате JSON", не используй технические термины. Просто скажи "ОТЛИЧНО! Заявка создана." и всё."""
@@ -134,29 +176,23 @@ def extract_lead_via_ai(full_chat):
 {full_chat}
 
 Верни ТОЛЬКО валидный JSON, без комментариев, без маркдауна:
-{{"client_name":"","phone":"","course_title":"","teacher_name":"","lessons":1,"with_ai":false,"total_price":0}}
+{{"client_name":"","phone":"","course_title":"","teacher_name":"","lessons":1,"with_ai":false,"total_price":0,"tg_username":"","vk_username":""}}
 
 Правила:
 - client_name — имя с большой буквы
-- phone — только цифры, без пробелов
+- phone — только цифры, без пробелов, 11 цифр
 - course_title — точное название курса из диалога
 - teacher_name — имя преподавателя
 - lessons — число (1,5,10,20)
 - with_ai — true/false
-- total_price — число без знака валюты"""
+- total_price — число без знака валюты
+- tg_username — telegram username без @, или пустая строка
+- vk_username — ссылка или ник ВКонтакте, или пустая строка"""
     try:
         resp = requests.post(
             DEEPSEEK_API_URL,
-            headers={
-                "Authorization": f"Bearer {DEEPSEEK_API_KEY}",
-                "Content-Type": "application/json",
-            },
-            json={
-                "model": "deepseek-chat",
-                "messages": [{"role": "user", "content": prompt}],
-                "temperature": 0.1,
-                "max_tokens": 200,
-            },
+            headers={"Authorization": f"Bearer {DEEPSEEK_API_KEY}", "Content-Type": "application/json"},
+            json={"model": "deepseek-chat", "messages": [{"role": "user", "content": prompt}], "temperature": 0.1, "max_tokens": 300},
             timeout=10,
         )
         resp.raise_for_status()
@@ -170,96 +206,74 @@ def extract_lead_via_ai(full_chat):
         return None
 
 
-def save_lead(lead):
+def save_lead(lead, student_id=None):
     body = {
         "client_name": lead.get("client_name", ""),
         "phone": lead.get("phone", ""),
         "course_title": lead.get("course_title", ""),
         "teacher_name": lead.get("teacher_name", ""),
+        "teacher_id": get_teacher_id(lead.get("teacher_name", "")),
         "lessons": lead.get("lessons", 1),
         "with_ai": lead.get("with_ai", False),
         "total_price": lead.get("total_price"),
         "chat_history": lead.get("chat_history", ""),
         "status": "new",
+        "tg_username": lead.get("tg_username", ""),
+        "vk_username": lead.get("vk_username", ""),
     }
-    if lead.get("student_id"):
-        body["student_id"] = lead["student_id"]
+    if student_id:
+        body["student_id"] = student_id
     if lead.get("student_message"):
         body["student_message"] = lead["student_message"]
-    if lead.get("tg_username"):
-        body["tg_username"] = lead["tg_username"]
-    if lead.get("vk_username"):
-        body["vk_username"] = lead["vk_username"]
 
     r = requests.post(
         f"{SUPABASE_URL}/rest/v1/leads",
-        headers={
-            "apikey": SUPABASE_KEY,
-            "Authorization": f"Bearer {SUPABASE_KEY}",
-            "Content-Type": "application/json",
-        },
+        headers={"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}", "Content-Type": "application/json"},
         json=body,
     )
     print(f"📤 save_lead: {r.status_code} {r.text[:200]}")
     return r.status_code == 201
 
 
+# ─── Routes ───
+
 @app.route("/api/consult", methods=["POST"])
 def consult():
     data = request.get_json()
     user_query = data.get("query", "").strip()
     session_id = data.get("session_id", "default")
+    student_id = data.get("student_id")  # Студент может передать свой ID
 
     if not user_query:
-        return jsonify({
-            "response": "Привет! Расскажи, какой предмет интересует и для чего — ЕГЭ, ОГЭ или просто хочется подтянуть знания?"
-        })
+        return jsonify({"response": "Привет! Расскажи, какой предмет интересует и для чего — ЕГЭ, ОГЭ или просто хочется подтянуть знания?"})
 
     if session_id not in conversation_history:
-        conversation_history[session_id] = [
-            {"role": "system", "content": build_system_prompt()}
-        ]
+        conversation_history[session_id] = [{"role": "system", "content": build_system_prompt()}]
 
     conversation_history[session_id].append({"role": "user", "content": user_query})
 
     try:
         resp = requests.post(
             DEEPSEEK_API_URL,
-            headers={
-                "Authorization": f"Bearer {DEEPSEEK_API_KEY}",
-                "Content-Type": "application/json",
-            },
-            json={
-                "model": "deepseek-chat",
-                "messages": conversation_history[session_id],
-                "temperature": 0.75,
-                "max_tokens": 600,
-            },
+            headers={"Authorization": f"Bearer {DEEPSEEK_API_KEY}", "Content-Type": "application/json"},
+            json={"model": "deepseek-chat", "messages": conversation_history[session_id], "temperature": 0.75, "max_tokens": 600},
             timeout=15,
         )
         resp.raise_for_status()
-
         reply = resp.json()["choices"][0]["message"]["content"]
         reply = reply.replace("**", "").replace("*", "").replace("__", "").replace("##", "")
         conversation_history[session_id].append({"role": "assistant", "content": reply})
 
         if len(conversation_history[session_id]) > 20:
-            conversation_history[session_id] = [
-                conversation_history[session_id][0],
-                *conversation_history[session_id][-19:],
-            ]
+            conversation_history[session_id] = [conversation_history[session_id][0], *conversation_history[session_id][-19:]]
 
         if "ОТЛИЧНО" in reply.upper() and "заявка создана" in reply.lower():
             print("🔍 Lead confirmation!")
-            full_chat = "\n".join(
-                m["content"]
-                for m in conversation_history[session_id]
-                if m["role"] != "system"
-            )
+            full_chat = "\n".join(m["content"] for m in conversation_history[session_id] if m["role"] != "system")
             lead = extract_lead_via_ai(full_chat)
             if lead and lead.get("client_name") and lead.get("phone"):
                 lead["chat_history"] = full_chat
-                if save_lead(lead):
+                if save_lead(lead, student_id):
                     print(f"✅ Saved: {lead.get('client_name')}, {lead.get('phone')}, {lead.get('course_title')}")
                 else:
                     print("❌ DB error")
@@ -267,7 +281,6 @@ def consult():
                 print("❌ Invalid lead data from AI")
 
         return jsonify({"response": reply})
-
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({"response": "Что-то пошло не так. Попробуй ещё раз."})
@@ -282,28 +295,23 @@ def create_lead():
             "phone": data.get("phone", ""),
             "course_title": data.get("course_title", ""),
             "teacher_name": data.get("teacher_name", ""),
+            "teacher_id": get_teacher_id(data.get("teacher_name", "")),
             "lessons": data.get("lessons", 1),
             "with_ai": data.get("with_ai", False),
             "total_price": data.get("total_price"),
             "student_message": data.get("student_message", ""),
             "chat_history": data.get("chat_history", ""),
             "status": "new",
+            "tg_username": data.get("tg_username", ""),
+            "vk_username": data.get("vk_username", ""),
         }
         sid = data.get("student_id")
         if sid:
             body["student_id"] = sid
-        if data.get("tg_username"):
-            body["tg_username"] = data["tg_username"]
-        if data.get("vk_username"):
-            body["vk_username"] = data["vk_username"]
 
         r = requests.post(
             f"{SUPABASE_URL}/rest/v1/leads",
-            headers={
-                "apikey": SUPABASE_KEY,
-                "Authorization": f"Bearer {SUPABASE_KEY}",
-                "Content-Type": "application/json",
-            },
+            headers={"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}", "Content-Type": "application/json"},
             json=body,
         )
         print(f"📤 Supabase insert: {r.status_code} {r.text[:200]}")
@@ -338,16 +346,13 @@ def update_lead(lead_id):
             body["reject_reason"] = data["reject_reason"]
         if "teacher_name" in data:
             body["teacher_name"] = data["teacher_name"]
+            body["teacher_id"] = get_teacher_id(data["teacher_name"])
         if not body:
             return jsonify({"status": "error", "detail": "no fields"}), 400
 
         r = requests.patch(
             f"{SUPABASE_URL}/rest/v1/leads?id=eq.{lead_id}",
-            headers={
-                "apikey": SUPABASE_KEY,
-                "Authorization": f"Bearer {SUPABASE_KEY}",
-                "Content-Type": "application/json",
-            },
+            headers={"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}", "Content-Type": "application/json"},
             json=body,
         )
         print(f"📤 PATCH lead {lead_id}: {r.status_code} {r.text[:200]}")
@@ -362,10 +367,7 @@ def delete_lead(lead_id):
     try:
         r = requests.delete(
             f"{SUPABASE_URL}/rest/v1/leads?id=eq.{lead_id}",
-            headers={
-                "apikey": SUPABASE_KEY,
-                "Authorization": f"Bearer {SUPABASE_KEY}",
-            },
+            headers={"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}"},
         )
         print(f"🗑 DELETE lead {lead_id}: {r.status_code}")
         return jsonify({"status": "ok" if r.status_code in (200, 204) else "error"})
@@ -379,42 +381,30 @@ def get_courses():
     try:
         r = requests.get(
             f"{SUPABASE_URL}/rest/v1/courses?select=*&order=created_at.asc",
-            headers={
-                "apikey": SUPABASE_KEY,
-                "Authorization": f"Bearer {SUPABASE_KEY}",
-            },
+            headers={"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}"},
         )
-        print(f"📚 Courses API: {r.status_code} {r.text[:200]}")
         return jsonify(r.json() if r.status_code == 200 else [])
     except Exception as e:
         print(f"❌ Courses error: {e}")
         return jsonify([])
 
 
-# ─── Subscriptions ───
-
 @app.route("/api/subscriptions", methods=["GET"])
 def get_subscriptions():
     try:
         student_id = request.args.get("student_id")
         teacher_id = request.args.get("teacher_id")
-
         url = f"{SUPABASE_URL}/rest/v1/subscriptions?select=*&order=created_at.desc"
-
         if student_id:
             url += f"&student_id=eq.{student_id}"
         if teacher_id:
             url += f"&teacher_id=eq.{teacher_id}"
 
-        r = requests.get(
-            url,
-            headers={"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}"},
-        )
+        r = requests.get(url, headers={"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}"})
 
         if r.status_code == 200:
             subs = r.json()
             for s in subs:
-                # Имя студента
                 if s.get("student_id"):
                     ur = requests.get(
                         f"{SUPABASE_URL}/rest/v1/users?id=eq.{s['student_id']}&select=first_name,last_name,email",
@@ -424,7 +414,6 @@ def get_subscriptions():
                         u = ur.json()[0]
                         s["student_name"] = (u.get("first_name", "") + " " + u.get("last_name", "")).strip()
                         s["student_email"] = u.get("email", "")
-                # Имя учителя
                 if s.get("teacher_id"):
                     tr = requests.get(
                         f"{SUPABASE_URL}/rest/v1/users?id=eq.{s['teacher_id']}&select=first_name,last_name",
@@ -452,12 +441,9 @@ def create_subscription():
                 f"{SUPABASE_URL}/rest/v1/leads?id=eq.{lead_id}&select=*",
                 headers={"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}"},
             )
-            print(f"📋 Lead lookup: {r.status_code} {r.text[:200]}")
-
             if r.status_code == 200 and r.json():
                 lead = r.json()[0]
 
-                # Проверяем — нет ли уже подписки на этот lead
                 check = requests.get(
                     f"{SUPABASE_URL}/rest/v1/subscriptions?lead_id=eq.{lead_id}&select=id",
                     headers={"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}"},
@@ -465,40 +451,7 @@ def create_subscription():
                 if check.status_code == 200 and check.json():
                     return jsonify({"status": "error", "detail": "Подписка уже существует"}), 409
 
-                # Ищем учителя — пробуем разные комбинации Имя/Фамилия
-                teacher_id = None
-                if lead.get("teacher_name"):
-                    teacher_name = lead["teacher_name"]
-                    parts = teacher_name.split()
-                    
-                    if len(parts) >= 2:
-                        # Пробуем "Имя Фамилия" и "Фамилия Имя"
-                        combos = [
-                            (parts[0], parts[1]),  # Имя Фамилия
-                            (parts[1], parts[0]),  # Фамилия Имя
-                        ]
-                        for first, last in combos:
-                            lookup_url = (
-                                f"{SUPABASE_URL}/rest/v1/users"
-                                f"?select=id"
-                                f"&first_name=ilike.*{first}*"
-                                f"&last_name=ilike.*{last}*"
-                            )
-                            tr = requests.get(lookup_url, headers={"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}"})
-                            print(f"👤 Teacher lookup ({first} {last}): {tr.status_code} {tr.text[:200]}")
-                            if tr.status_code == 200 and tr.json():
-                                teacher_id = tr.json()[0]["id"]
-                                break
-                    else:
-                        lookup_url = (
-                            f"{SUPABASE_URL}/rest/v1/users"
-                            f"?select=id"
-                            f"&or=(first_name.ilike.*{teacher_name}*,last_name.ilike.*{teacher_name}*)"
-                        )
-                        tr = requests.get(lookup_url, headers={"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}"})
-                        print(f"👤 Teacher lookup (single): {tr.status_code} {tr.text[:200]}")
-                        if tr.status_code == 200 and tr.json():
-                            teacher_id = tr.json()[0]["id"]
+                teacher_id = lead.get("teacher_id") or get_teacher_id(lead.get("teacher_name", ""))
 
                 body = {
                     "lead_id": lead_id,
@@ -528,11 +481,7 @@ def create_subscription():
 
         r = requests.post(
             f"{SUPABASE_URL}/rest/v1/subscriptions",
-            headers={
-                "apikey": SUPABASE_KEY,
-                "Authorization": f"Bearer {SUPABASE_KEY}",
-                "Content-Type": "application/json",
-            },
+            headers={"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}", "Content-Type": "application/json"},
             json=body,
         )
         print(f"📤 Create subscription: {r.status_code} {r.text[:300]}")
@@ -542,17 +491,14 @@ def create_subscription():
     except Exception as e:
         print(f"❌ Create subscription error: {e}")
         return jsonify({"status": "error"}), 500
-    
+
+
 @app.route("/api/subscriptions/<sub_id>/pay", methods=["POST"])
 def mark_subscription_paid(sub_id):
     try:
         r = requests.patch(
             f"{SUPABASE_URL}/rest/v1/subscriptions?id=eq.{sub_id}",
-            headers={
-                "apikey": SUPABASE_KEY,
-                "Authorization": f"Bearer {SUPABASE_KEY}",
-                "Content-Type": "application/json",
-            },
+            headers={"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}", "Content-Type": "application/json"},
             json={"is_paid": True},
         )
         print(f"💰 Mark paid {sub_id}: {r.status_code}")
@@ -572,8 +518,5 @@ def health():
 
 
 if __name__ == "__main__":
-    print(
-        f"Loaded {len(get_courses_from_db())} courses and "
-        f"{len(parse_teachers_from_html())} teachers"
-    )
+    print(f"Loaded {len(get_courses_from_db())} courses and {len(parse_teachers_from_html())} teachers")
     app.run(host="0.0.0.0", port=5001, debug=True)

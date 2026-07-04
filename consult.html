@@ -513,7 +513,11 @@
                 var response = await fetch('http://localhost:5001/api/consult', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ query: text, session_id: 'user_session_1' })
+                    body: JSON.stringify({
+                        query: text,
+                        session_id: 'user_session_1',
+                        student_id: localStorage.getItem('supabase_user_id') || null
+                    })
                 });
 
                 removeTypingIndicator();
