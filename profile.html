@@ -444,6 +444,16 @@
             color: #EF4444;
         }
 
+        .badge-paid {
+            background: rgba(34, 197, 94, 0.12);
+            color: #16A34A;
+        }
+
+        .badge-unpaid {
+            background: rgba(245, 158, 11, 0.1);
+            color: #F59E0B;
+        }
+
         .lead-body {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -515,6 +525,24 @@
 
         .btn-reject:hover {
             background: rgba(239, 68, 68, 0.05);
+        }
+
+        .btn-pay {
+            padding: 8px 18px;
+            border-radius: 50px;
+            border: none;
+            background: #F59E0B;
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.25s ease;
+        }
+
+        .btn-pay:hover {
+            background: #D97706;
+            transform: translateY(-1px);
         }
 
         .reject-row {
@@ -784,9 +812,11 @@
         <div class="tabs" id="tabsContainer" style="display:none;">
             <button class="tab-btn active" data-tab="studentTab">Учёба</button>
             <button class="tab-btn" data-tab="teacherTab">Заявки</button>
+            <button class="tab-btn" data-tab="studentsTab" style="display:none;">Ученики</button>
             <button class="tab-btn" data-tab="adminTab">Управление</button>
         </div>
 
+        <!-- СТУДЕНТ -->
         <div class="content-block active" id="studentTab">
             <div class="info-card">
                 <h3>Информация</h3>
@@ -808,6 +838,12 @@
                 </div>
             </div>
             <div class="info-card">
+                <h3>Мои подписки</h3>
+                <div id="studentSubscriptionsList">
+                    <div class="empty"><i class="fas fa-graduation-cap"></i> Нет активных подписок</div>
+                </div>
+            </div>
+            <div class="info-card">
                 <h3>Мои заявки</h3>
                 <div id="studentLeadsList">
                     <div class="empty"><i class="fas fa-inbox"></i> У вас пока нет заявок</div>
@@ -815,6 +851,7 @@
             </div>
         </div>
 
+        <!-- УЧИТЕЛЬ: ЗАЯВКИ -->
         <div class="content-block" id="teacherTab">
             <div class="stats-row">
                 <div class="stat-card">
@@ -845,6 +882,32 @@
             </div>
         </div>
 
+        <!-- УЧИТЕЛЬ: УЧЕНИКИ -->
+        <div class="content-block" id="studentsTab">
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-num" id="tStudTotal">0</div>
+                    <div class="stat-lbl">Всего учеников</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-num" id="tStudActive">0</div>
+                    <div class="stat-lbl">Активных</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-num" id="tStudIncome">0 ₽</div>
+                    <div class="stat-lbl">Оплачено</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-num" id="tStudDebt">0 ₽</div>
+                    <div class="stat-lbl">Долг</div>
+                </div>
+            </div>
+            <div id="teacherStudentsList">
+                <div class="empty"><i class="fas fa-users"></i> Загружаем учеников...</div>
+            </div>
+        </div>
+
+        <!-- АДМИН -->
         <div class="content-block" id="adminTab">
             <div class="stats-row">
                 <div class="stat-card">
@@ -869,6 +932,13 @@
                 <h3>Преподаватели</h3>
                 <div id="teachersList">
                     <div class="empty"><i class="fas fa-chalkboard-teacher"></i> Загружаем...</div>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3>Все студенты</h3>
+                <div id="adminStudentsList">
+                    <div class="empty"><i class="fas fa-users"></i> Загружаем...</div>
                 </div>
             </div>
 
@@ -933,8 +1003,14 @@
             setupTabs();
             loadProfileCard(profile);
 
-            if (userRole === 'teacher' || userRole === 'admin') await loadLeads();
-            if (userRole === 'student') await loadStudentLeads();
+            if (userRole === 'student') {
+                await loadStudentLeads();
+                await loadStudentSubscriptions();
+            }
+            if (userRole === 'teacher' || userRole === 'admin') {
+                await loadLeads();
+                await loadTeacherStudents();
+            }
             if (userRole === 'admin') await loadAdminData();
 
             switchTab(userRole === 'admin' ? 'teacherTab' : (userRole === 'teacher' ? 'teacherTab' : 'studentTab'));
@@ -943,10 +1019,20 @@
         function setupTabs() {
             var tabs = document.getElementById('tabsContainer');
             var teacherBtn = tabs.querySelector('[data-tab="teacherTab"]');
+            var studentsBtn = tabs.querySelector('[data-tab="studentsTab"]');
             var adminBtn = tabs.querySelector('[data-tab="adminTab"]');
 
-            teacherBtn.style.display = (userRole === 'teacher' || userRole === 'admin') ? '' : 'none';
-            adminBtn.style.display = userRole === 'admin' ? '' : 'none';
+            teacherBtn.style.display = 'none';
+            studentsBtn.style.display = 'none';
+            adminBtn.style.display = 'none';
+
+            if (userRole === 'teacher' || userRole === 'admin') {
+                teacherBtn.style.display = '';
+                studentsBtn.style.display = '';
+            }
+            if (userRole === 'admin') {
+                adminBtn.style.display = '';
+            }
 
             var visibleTabs = tabs.querySelectorAll('.tab-btn:not([style*="display: none"])');
             if (visibleTabs.length <= 1) {
@@ -959,6 +1045,7 @@
                 if (!e.target.classList.contains('tab-btn')) return;
                 switchTab(e.target.dataset.tab);
                 if (e.target.dataset.tab === 'adminTab') loadAdminData();
+                if (e.target.dataset.tab === 'studentsTab') loadTeacherStudents();
             });
         }
 
@@ -1000,15 +1087,61 @@
             badge.style.display = 'inline-block';
         }
 
-        // ─── Student Leads ───
+        // ─── STUDENT: Subscriptions ───
+
+        async function loadStudentSubscriptions() {
+            try {
+                var resp = await fetch('http://localhost:5001/api/subscriptions?student_id=' + currentUser.id);
+                var subs = await resp.json();
+                renderStudentSubscriptions(subs || []);
+            } catch (e) {
+                document.getElementById('studentSubscriptionsList').innerHTML =
+                    '<div class="empty"><i class="fas fa-graduation-cap"></i> Нет активных подписок</div>';
+            }
+        }
+
+        function renderStudentSubscriptions(subs) {
+            var container = document.getElementById('studentSubscriptionsList');
+            if (!subs.length) {
+                container.innerHTML = '<div class="empty"><i class="fas fa-graduation-cap"></i> Нет активных подписок</div>';
+                return;
+            }
+            container.innerHTML = subs.map(function (s) {
+                return `
+                    <div class="lead-card">
+                        <div class="lead-header">
+                            <div class="lead-student">${s.course_title || '—'}</div>
+                            <span class="lead-badge ${s.is_paid ? 'badge-paid' : 'badge-unpaid'}">${s.is_paid ? 'Оплачено' : 'Не оплачено'}</span>
+                        </div>
+                        <div class="lead-body">
+                            <div class="lead-field"><span class="lbl">Преподаватель:</span><span class="val">${s.student_name || '—'}</span></div>
+                            <div class="lead-field"><span class="lbl">Занятий всего:</span><span class="val">${s.lessons_total || '—'}</span></div>
+                            <div class="lead-field"><span class="lbl">Осталось:</span><span class="val">${s.lessons_left || 0}</span></div>
+                            <div class="lead-field"><span class="lbl">Сумма:</span><span class="val" style="color:#8B5CF6;font-weight:700;">${(s.total_price || 0).toLocaleString('ru-RU')} ₽</span></div>
+                        </div>
+                        ${!s.is_paid ? '<div class="lead-actions"><button class="btn-pay" onclick="markPaid(\'' + s.id + '\')"><i class="fas fa-credit-card"></i> Оплатить</button></div>' : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function markPaid(subId) {
+            var resp = await fetch('http://localhost:5001/api/subscriptions/' + subId + '/pay', { method: 'POST' });
+            if (resp.ok) await loadStudentSubscriptions();
+        }
+
+        // ─── STUDENT: Leads ───
 
         async function loadStudentLeads() {
-            var resp = await fetch('http://localhost:5001/api/leads');
-            var all = await resp.json();
-            var myLeads = all.filter(function (l) {
-                return l.student_id === currentUser.id;
-            });
-            renderStudentLeads(myLeads);
+            try {
+                var resp = await fetch('http://localhost:5001/api/leads');
+                var all = await resp.json();
+                var myLeads = all.filter(function (l) { return l.student_id === currentUser.id; });
+                renderStudentLeads(myLeads);
+            } catch (e) {
+                document.getElementById('studentLeadsList').innerHTML =
+                    '<div class="empty"><i class="fas fa-inbox"></i> У вас пока нет заявок</div>';
+            }
         }
 
         function renderStudentLeads(leads) {
@@ -1020,6 +1153,10 @@
             container.innerHTML = leads.map(function (lead) {
                 var statusLabels = { 'new': 'На рассмотрении', 'accepted': 'Принята', 'rejected': 'Отклонена' };
                 var statusBadges = { 'new': 'badge-new', 'accepted': 'badge-accepted', 'rejected': 'badge-rejected' };
+                var payBtn = '';
+                if (lead.status === 'accepted' && !lead.is_paid) {
+                    payBtn = '<div class="lead-actions" style="margin-top:8px;"><button class="btn-pay" onclick="createSubscriptionFromLead(\'' + lead.id + '\')"><i class="fas fa-credit-card"></i> Оплатить</button></div>';
+                }
                 return `
                     <div class="lead-card">
                         <div class="lead-header">
@@ -1032,32 +1169,53 @@
                             <div class="lead-field"><span class="lbl">Сумма:</span><span class="val" style="color:#8B5CF6;font-weight:700;">${(lead.total_price || 0).toLocaleString('ru-RU')} ₽</span></div>
                         </div>
                         ${lead.reject_reason ? '<div class="lead-msg">Причина отказа: ' + lead.reject_reason + '</div>' : ''}
+                        ${payBtn}
                     </div>
                 `;
             }).join('');
         }
 
-        // ─── Teacher Leads ───
+        async function createSubscriptionFromLead(leadId) {
+            var resp = await fetch('http://localhost:5001/api/subscriptions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ lead_id: leadId })
+            });
+            if (resp.ok) {
+                alert('Подписка создана!');
+                await loadStudentLeads();
+                await loadStudentSubscriptions();
+            } else {
+                alert('Ошибка создания подписки');
+            }
+        }
+
+        // ─── TEACHER: Leads ───
 
         async function loadLeads() {
-            var resp = await fetch('http://localhost:5001/api/leads');
-            var leads = await resp.json();
+            try {
+                var resp = await fetch('http://localhost:5001/api/leads');
+                var leads = await resp.json();
 
-            if (userRole === 'admin') {
-                allLeads = leads;
-            } else {
-                var teacherName = document.getElementById('profileName').textContent.trim();
-                allLeads = leads.filter(function (l) {
-                    if (!l.teacher_name || !teacherName) return false;
-                    var parts = teacherName.toLowerCase().split(' ');
-                    return parts.some(function (part) {
-                        return part.length > 2 && l.teacher_name.toLowerCase().includes(part);
+                if (userRole === 'admin') {
+                    allLeads = leads;
+                } else {
+                    var teacherName = document.getElementById('profileName').textContent.trim();
+                    allLeads = leads.filter(function (l) {
+                        if (!l.teacher_name || !teacherName) return false;
+                        var parts = teacherName.toLowerCase().split(' ');
+                        return parts.some(function (part) {
+                            return part.length > 2 && l.teacher_name.toLowerCase().includes(part);
+                        });
                     });
-                });
-            }
+                }
 
-            renderStats();
-            renderLeads(allLeads);
+                renderStats();
+                renderLeads(allLeads);
+            } catch (e) {
+                document.getElementById('leadsList').innerHTML =
+                    '<div class="empty"><i class="fas fa-inbox"></i> Заявок пока нет</div>';
+            }
         }
 
         function renderStats() {
@@ -1087,6 +1245,7 @@
                 var statusBadges = { 'new': 'badge-new', 'accepted': 'badge-accepted', 'rejected': 'badge-rejected' };
                 var aiIcon = lead.with_ai ? ' <i class="fas fa-robot" style="color:#8B5CF6;font-size:0.75rem;" title="С AI"></i>' : '';
                 var actionsHtml = '';
+                var deleteBtn = '';
 
                 if (lead.status === 'new') {
                     actionsHtml = `
@@ -1103,13 +1262,21 @@
                     actionsHtml = '<span style="font-size:0.8rem;color:#22C55E;font-weight:600;"><i class="fas fa-check-circle"></i> Принят</span>';
                 }
 
+                // Кнопка удаления если заявка оплачена
+                if (lead.is_paid) {
+                    deleteBtn = '<button class="btn-reject" onclick="deleteLeadTeacher(\'' + lead.id + '\')" style="border-color:rgba(239,68,68,0.3);color:#EF4444;" title="Удалить"><i class="fas fa-trash"></i></button>';
+                }
+
                 return `
                     <div class="lead-card ${isNew ? 'unread' : ''}">
                         <div class="lead-header">
                             <div class="lead-student">
                                 <i class="fas fa-user-graduate"></i> ${lead.client_name || '—'} ${aiIcon}
                             </div>
-                            <span class="lead-badge ${statusBadges[lead.status] || ''}">${statusLabels[lead.status] || lead.status}</span>
+                            <div style="display:flex;gap:8px;align-items:center;">
+                                <span class="lead-badge ${statusBadges[lead.status] || ''}">${statusLabels[lead.status] || lead.status}</span>
+                                ${deleteBtn}
+                            </div>
                         </div>
                         <div class="lead-body">
                             <div class="lead-field"><span class="lbl">Телефон:</span><span class="val">${lead.phone || '—'}</span></div>
@@ -1124,6 +1291,12 @@
                     </div>
                 `;
             }).join('');
+        }
+
+        async function deleteLeadTeacher(id) {
+            if (!confirm('Заявка оплачена. Точно удалить?')) return;
+            var resp = await fetch('http://localhost:5001/api/leads/' + id, { method: 'DELETE' });
+            if (resp.ok) await loadLeads();
         }
 
         async function acceptLead(id) {
@@ -1156,7 +1329,62 @@
             if (resp.ok) { activeRejectId = null; await loadLeads(); }
         }
 
-        // ─── Admin functions ───
+        // ─── TEACHER: Students ───
+
+        async function loadTeacherStudents() {
+            try {
+                var url = 'http://localhost:5001/api/subscriptions?teacher_id=' + currentUser.id;
+                var resp = await fetch(url);
+                var subs = await resp.json();
+                renderTeacherStudents(subs || []);
+            } catch (e) {
+                console.error('Students load error:', e);
+                document.getElementById('teacherStudentsList').innerHTML = '<div class="empty"><i class="fas fa-users"></i> Ошибка загрузки учеников</div>';
+            }
+        }
+        function renderTeacherStudents(subs) {
+            var container = document.getElementById('teacherStudentsList'); // всегда этот контейнер
+
+            if (!subs.length) {
+                container.innerHTML = '<div class="empty"><i class="fas fa-users"></i> Нет учеников</div>';
+                document.getElementById('tStudTotal').textContent = '0';
+                document.getElementById('tStudActive').textContent = '0';
+                document.getElementById('tStudIncome').textContent = '0 ₽';
+                document.getElementById('tStudDebt').textContent = '0 ₽';
+                return;
+            }
+
+            var total = subs.length;
+            var active = subs.filter(function (s) { return s.lessons_left > 0; }).length;
+            var paidIncome = subs.filter(function (s) { return s.is_paid; }).reduce(function (sum, s) { return sum + (s.total_price || 0); }, 0);
+            var debt = subs.filter(function (s) { return !s.is_paid; }).reduce(function (sum, s) { return sum + (s.total_price || 0); }, 0);
+
+            document.getElementById('tStudTotal').textContent = total;
+            document.getElementById('tStudActive').textContent = active;
+            document.getElementById('tStudIncome').textContent = paidIncome.toLocaleString('ru-RU') + ' ₽';
+            document.getElementById('tStudDebt').textContent = debt.toLocaleString('ru-RU') + ' ₽';
+
+            container.innerHTML = subs.map(function (s) {
+                return `
+            <div class="lead-card">
+                <div class="lead-header">
+                    <div class="lead-student">
+                        <i class="fas fa-user-graduate"></i> ${s.student_name || '—'}
+                    </div>
+                    <span class="lead-badge ${s.is_paid ? 'badge-paid' : 'badge-unpaid'}">${s.is_paid ? 'Оплачено' : 'Не оплачено'}</span>
+                </div>
+                <div class="lead-body">
+                    <div class="lead-field"><span class="lbl">Курс:</span><span class="val">${s.course_title || '—'}</span></div>
+                    <div class="lead-field"><span class="lbl">Всего занятий:</span><span class="val">${s.lessons_total || '—'}</span></div>
+                    <div class="lead-field"><span class="lbl">Осталось:</span><span class="val">${s.lessons_left || 0}</span></div>
+                    <div class="lead-field"><span class="lbl">Сумма:</span><span class="val" style="color:#8B5CF6;font-weight:700;">${(s.total_price || 0).toLocaleString('ru-RU')} ₽</span></div>
+                </div>
+            </div>
+        `;
+            }).join('');
+        }
+
+        // ─── ADMIN ───
 
         async function loadAdminData() {
             var resp = await fetch('http://localhost:5001/api/leads');
@@ -1187,6 +1415,9 @@
                 return !l.teacher_name || l.teacher_name === 'Назначается' || l.teacher_name.trim() === '';
             });
             renderUnassigned(unassigned, teachers);
+            var allSubsResp = await fetch('http://localhost:5001/api/subscriptions');
+            var allSubs = await allSubsResp.json();
+            renderAllStudents(allSubs || []);
         }
 
         function renderTeachers(teachers, leads, stats) {
@@ -1253,7 +1484,7 @@
                             <div class="lead-student">${lead.client_name || '—'}</div>
                             <div style="display:flex;gap:8px;align-items:center;">
                                 <span class="lead-badge ${statusBadges[lead.status] || ''}">${statusLabels[lead.status] || lead.status}</span>
-                                <button class="btn-reject" onclick="deleteLeadAdmin('${lead.id}')" style="border-color:rgba(239,68,68,0.3);color:#EF4444;" title="Удалить"><i class="fas fa-trash"></i></button>
+                                ${lead.is_paid ? '<button class="btn-reject" onclick="deleteLeadAdmin(\'' + lead.id + '\')" style="border-color:rgba(239,68,68,0.3);color:#EF4444;" title="Удалить"><i class="fas fa-trash"></i></button>' : ''}
                             </div>
                         </div>
                         <div class="lead-body">
@@ -1323,13 +1554,37 @@
             }
         }
 
+        function renderAllStudents(subs) {
+            var container = document.getElementById('adminStudentsList');
+            if (!subs.length) {
+                container.innerHTML = '<div class="empty"><i class="fas fa-users"></i> Нет студентов</div>';
+                return;
+            }
+            container.innerHTML = subs.map(function (s) {
+                return `
+            <div class="lead-card">
+                <div class="lead-header">
+                    <div class="lead-student">
+                        <i class="fas fa-user-graduate"></i> ${s.student_name || '—'}
+                    </div>
+                    <span class="lead-badge ${s.is_paid ? 'badge-paid' : 'badge-unpaid'}">${s.is_paid ? 'Оплачено' : 'Не оплачено'}</span>
+                </div>
+                <div class="lead-body">
+                    <div class="lead-field"><span class="lbl">Курс:</span><span class="val">${s.course_title || '—'}</span></div>
+                    <div class="lead-field"><span class="lbl">Всего занятий:</span><span class="val">${s.lessons_total || '—'}</span></div>
+                    <div class="lead-field"><span class="lbl">Осталось:</span><span class="val">${s.lessons_left || 0}</span></div>
+                    <div class="lead-field"><span class="lbl">Сумма:</span><span class="val" style="color:#8B5CF6;font-weight:700;">${(s.total_price || 0).toLocaleString('ru-RU')} ₽</span></div>
+                </div>
+            </div>
+        `;
+            }).join('');
+        }
+
         // ─── Filters ───
 
         document.addEventListener('click', function (e) {
             if (!e.target.classList.contains('filter-btn')) return;
-
             var section = e.target.dataset.section;
-
             if (section === 'admin') {
                 var container = e.target.parentElement;
                 container.querySelectorAll('.filter-btn').forEach(function (b) { b.classList.remove('active'); });

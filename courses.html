@@ -399,7 +399,7 @@
             display: flex;
             gap: 8px;
             flex-wrap: wrap;
-            margin-bottom: 32px;
+            margin-bottom: 16px;
         }
 
         .filter-btn {
@@ -427,6 +427,12 @@
             background: #8B5CF6;
             color: #fff;
             border-color: #8B5CF6;
+        }
+
+        .filter-btn.alt-active {
+            background: #E11D8D;
+            color: #fff;
+            border-color: #E11D8D;
         }
 
         .courses-grid {
@@ -485,6 +491,12 @@
             line-height: 1;
         }
 
+        .badges-row {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
         .course-item-badge {
             font-size: 0.62rem;
             font-weight: 700;
@@ -492,8 +504,6 @@
             letter-spacing: 1px;
             padding: 3px 10px;
             border-radius: 50px;
-            display: inline-block;
-            width: fit-content;
         }
 
         .badge-ege {
@@ -510,6 +520,16 @@
         .badge-oth {
             background: rgba(139, 92, 246, 0.06);
             color: #7C3AED;
+        }
+
+        .badge-group {
+            background: rgba(245, 158, 11, 0.1);
+            color: #F59E0B;
+        }
+
+        .badge-individual {
+            background: rgba(34, 197, 94, 0.08);
+            color: #22C55E;
         }
 
         .course-item h3 {
@@ -852,6 +872,15 @@
             font-size: 0.82rem;
             color: #22C55E;
             font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .modal-ai-price {
+            display: none;
+            text-align: center;
+            font-size: 0.82rem;
+            color: #8B5CF6;
+            font-weight: 600;
             margin-bottom: 16px;
         }
 
@@ -934,7 +963,7 @@
 
             .filters {
                 gap: 6px;
-                margin-bottom: 24px;
+                margin-bottom: 20px;
             }
 
             .filter-btn {
@@ -1046,12 +1075,18 @@
             <p class="page-subtitle">Выберите направление и начните подготовку с преподавателями из топовых вузов</p>
         </div>
 
-        <div class="filters">
+        <div class="filters" id="filtersRow1">
             <button class="filter-btn active" data-filter="all">Все</button>
             <button class="filter-btn" data-filter="ege">ЕГЭ</button>
             <button class="filter-btn" data-filter="oge">ОГЭ</button>
             <button class="filter-btn" data-filter="uni">Университет</button>
             <button class="filter-btn" data-filter="oth">Универсальные</button>
+        </div>
+
+        <div class="filters" id="filtersRow2">
+            <button class="filter-btn active" data-filter="all">Любой формат</button>
+            <button class="filter-btn" data-filter="individual">Индивидуально</button>
+            <button class="filter-btn" data-filter="group">Групповые</button>
         </div>
 
         <div class="courses-grid" id="coursesGrid">
@@ -1113,6 +1148,7 @@
 
             <div class="modal-price" id="modalPrice">— ₽</div>
             <div class="modal-discount" id="modalDiscount"></div>
+            <div class="modal-ai-price" id="modalAiPrice"></div>
 
             <div class="modal-message" style="margin-bottom:16px;">
                 <span class="modal-label">Твои данные</span>
@@ -1167,6 +1203,8 @@
 
         var currentCourse = null;
         var selectedLessons = 1;
+        var activeFilter = 'all';
+        var activeFormatFilter = 'all';
 
         // ─── Load courses from DB ───
 
@@ -1174,7 +1212,6 @@
             try {
                 var resp = await fetch('http://localhost:5001/api/courses');
                 var courses = await resp.json();
-
                 if (!courses || !courses.length) {
                     document.getElementById('coursesGrid').innerHTML =
                         '<div style="text-align:center;padding:40px;color:#9CA3AF;grid-column:1/-1;">Курсы не найдены</div>';
@@ -1194,29 +1231,47 @@
             grid.innerHTML = courses.map(function (c) {
                 var prices = typeof c.prices === 'string' ? JSON.parse(c.prices) : c.prices;
                 var minPrice = Math.min.apply(null, Object.values(prices));
+                var format = c.format || 'individual';
+                var formatLabel = format === 'group' ? 'Группа' : 'Индивидуально';
+                var formatBadge = format === 'group' ? 'badge-group' : 'badge-individual';
 
                 return `
-            <div class="course-item ${c.category}" data-category="${c.category}"
-                onclick='openModal(${JSON.stringify({
+                    <div class="course-item ${c.category}" data-category="${c.category}" data-format="${format}"
+                        onclick='openModal(${JSON.stringify({
                     title: c.title,
                     badge: c.badge,
                     category: c.category,
+                    format: format,
                     desc: c.description || '',
                     teacher: c.teacher_name,
                     prices: prices,
                     aiSurcharge: c.ai_surcharge || 0
                 }).replace(/'/g, "&#39;")})'>
-                <div class="course-item-icon">${c.icon || '📚'}</div>
-                <span class="course-item-badge ${categoryLabels[c.category] || 'badge-oth'}">${c.badge}</span>
-                <h3>${c.title}</h3>
-                <p>${c.description || ''}</p>
-                <div class="course-item-meta">
-                    <div class="meta-row"><span class="meta-label">Преподаватель</span><span class="meta-value">${c.teacher_name}</span></div>
-                    <div class="meta-row"><span class="meta-label">Стоимость</span><span class="meta-value price">от ${minPrice.toLocaleString('ru-RU')} ₽</span></div>
-                </div>
-            </div>
-        `;
+                        <div class="course-item-icon">${c.icon || '📚'}</div>
+                        <div class="badges-row">
+                            <span class="course-item-badge ${categoryLabels[c.category] || 'badge-oth'}">${c.badge}</span>
+                            <span class="course-item-badge ${formatBadge}">${formatLabel}</span>
+                        </div>
+                        <h3>${c.title}</h3>
+                        <p>${c.description || ''}</p>
+                        <div class="course-item-meta">
+                            <div class="meta-row"><span class="meta-label">Преподаватель</span><span class="meta-value">${c.teacher_name}</span></div>
+                            <div class="meta-row"><span class="meta-label">Стоимость</span><span class="meta-value price">от ${minPrice.toLocaleString('ru-RU')} ₽</span></div>
+                        </div>
+                    </div>
+                `;
             }).join('');
+
+            applyFilters();
+        }
+
+        function applyFilters() {
+            var courses = document.querySelectorAll('.course-item');
+            courses.forEach(function (course) {
+                var matchCategory = activeFilter === 'all' || course.dataset.category === activeFilter;
+                var matchFormat = activeFormatFilter === 'all' || course.dataset.format === activeFormatFilter;
+                course.style.display = (matchCategory && matchFormat) ? 'flex' : 'none';
+            });
         }
 
         // ─── Modal ───
@@ -1252,20 +1307,31 @@
             if (!currentCourse) return;
             var withAI = document.getElementById('aiToggle').checked;
             var basePrice = currentCourse.prices[1];
-            var price = currentCourse.prices[selectedLessons];
-            if (withAI) price += currentCourse.aiSurcharge * selectedLessons;
-            document.getElementById('modalPrice').textContent = price.toLocaleString('ru-RU') + ' ₽';
+            var lessonsPrice = currentCourse.prices[selectedLessons];
+            var aiPrice = withAI ? currentCourse.aiSurcharge : 0;
+            var totalPrice = lessonsPrice + aiPrice;
+
+            document.getElementById('modalPrice').textContent = totalPrice.toLocaleString('ru-RU') + ' ₽';
 
             var fullPrice = basePrice * selectedLessons;
-            var discount = fullPrice - price;
+            var discount = fullPrice - lessonsPrice;
             var discountPercent = Math.round((discount / fullPrice) * 100);
 
             var discEl = document.getElementById('modalDiscount');
+            var aiEl = document.getElementById('modalAiPrice');
+
             if (discount > 0 && selectedLessons > 1) {
                 discEl.style.display = 'block';
-                discEl.textContent = 'Экономия ' + discount.toLocaleString('ru-RU') + ' ₽ (' + discountPercent + '%)';
+                discEl.textContent = 'Экономия на занятиях: ' + discount.toLocaleString('ru-RU') + ' ₽ (' + discountPercent + '%)';
             } else {
                 discEl.style.display = 'none';
+            }
+
+            if (withAI) {
+                aiEl.style.display = 'block';
+                aiEl.textContent = 'Rubi AI: +' + currentCourse.aiSurcharge.toLocaleString('ru-RU') + ' ₽';
+            } else {
+                aiEl.style.display = 'none';
             }
         }
 
@@ -1316,8 +1382,9 @@
             var phone = document.getElementById('studentPhone').value.trim();
             var message = document.getElementById('studentMessage').value.trim();
             var withAI = document.getElementById('aiToggle').checked;
-            var price = currentCourse.prices[selectedLessons];
-            if (withAI) price += currentCourse.aiSurcharge * selectedLessons;
+            var lessonsPrice = currentCourse.prices[selectedLessons];
+            var aiPrice = withAI ? currentCourse.aiSurcharge : 0;
+            var price = lessonsPrice + aiPrice;
 
             if (!name) { alert('Введи имя'); return; }
             if (!phone || phone.replace(/\D/g, '').length < 11) { alert('Введи корректный телефон (11 цифр)'); return; }
@@ -1447,20 +1514,27 @@
             }
             updateNavBar();
 
-            var filterBtns = document.querySelectorAll('.filter-btn');
-            filterBtns.forEach(function (btn) {
-                btn.addEventListener('click', function () {
-                    filterBtns.forEach(function (b) { b.classList.remove('active'); });
-                    btn.classList.add('active');
-                    var filter = btn.getAttribute('data-filter');
-                    document.querySelectorAll('.course-item').forEach(function (course) {
-                        course.style.display = (filter === 'all' || course.getAttribute('data-category') === filter) ? 'flex' : 'none';
-                    });
-                });
+            // Filters — row 1 (category)
+            document.getElementById('filtersRow1').addEventListener('click', function (e) {
+                if (!e.target.classList.contains('filter-btn')) return;
+                var btns = document.querySelectorAll('#filtersRow1 .filter-btn');
+                btns.forEach(function (b) { b.classList.remove('active'); });
+                e.target.classList.add('active');
+                activeFilter = e.target.dataset.filter;
+                applyFilters();
+            });
+
+            // Filters — row 2 (format)
+            document.getElementById('filtersRow2').addEventListener('click', function (e) {
+                if (!e.target.classList.contains('filter-btn')) return;
+                var btns = document.querySelectorAll('#filtersRow2 .filter-btn');
+                btns.forEach(function (b) { b.classList.remove('active'); });
+                e.target.classList.add('active');
+                activeFormatFilter = e.target.dataset.filter;
+                applyFilters();
             });
         })();
 
-        // ─── Init ───
         loadCourses();
     </script>
 

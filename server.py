@@ -82,7 +82,7 @@ def build_system_prompt():
         p = c.get("prices", {})
         c_text += (
             f"• {c['badge']} — {c['title']} | "
-            f"препод: {c['teacher']} | "
+            f"препод: {c['teacher_name']} | "
             f"цены: 1={p.get('1', '?')}₽, 5={p.get('5', '?')}₽, "
             f"10={p.get('10', '?')}₽, 20={p.get('20', '?')}₽ | "
             f"AI: +{c.get('ai_surcharge', '?')}₽\n"
@@ -169,14 +169,6 @@ def extract_lead_via_ai(full_chat):
     except Exception as e:
         print(f"❌ AI extraction failed: {e}")
         return None
-
-
-def supabase_headers():
-    return {
-        "apikey": SUPABASE_KEY,
-        "Authorization": f"Bearer {SUPABASE_KEY}",
-        "Content-Type": "application/json",
-    }
 
 
 def save_lead(lead):
@@ -382,6 +374,7 @@ def delete_lead(lead_id):
         print("❌ DELETE error:", e)
         return jsonify({"status": "error"}), 500
 
+
 @app.route("/api/courses", methods=["GET"])
 def get_courses():
     try:
@@ -397,6 +390,148 @@ def get_courses():
     except Exception as e:
         print(f"❌ Courses error: {e}")
         return jsonify([])
+
+
+# ─── Subscriptions ───
+
+@app.route("/api/subscriptions", methods=["GET"])
+def get_subscriptions():
+    try:
+        student_id = request.args.get("student_id")
+        teacher_id = request.args.get("teacher_id")
+
+        url = f"{SUPABASE_URL}/rest/v1/subscriptions?select=*&order=created_at.desc"
+
+        if student_id:
+            url += f"&student_id=eq.{student_id}"
+        if teacher_id:
+            url += f"&teacher_id=eq.{teacher_id}"
+
+        r = requests.get(
+            url,
+            headers={"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}"},
+        )
+
+        if r.status_code == 200:
+            subs = r.json()
+            for s in subs:
+                if s.get("student_id"):
+                    ur = requests.get(
+                        f"{SUPABASE_URL}/rest/v1/users?id=eq.{s['student_id']}&select=first_name,last_name,email",
+                        headers={"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}"},
+                    )
+                    if ur.status_code == 200 and ur.json():
+                        u = ur.json()[0]
+                        s["student_name"] = (u.get("first_name", "") + " " + u.get("last_name", "")).strip()
+                        s["student_email"] = u.get("email", "")
+            return jsonify(subs)
+        return jsonify([])
+    except Exception as e:
+        print(f"❌ Subscriptions error: {e}")
+        return jsonify([])
+
+
+@app.route("/api/subscriptions", methods=["POST"])
+def create_subscription():
+    data = request.get_json()
+    print(f"📥 Create sub request: {json.dumps(data, ensure_ascii=False)}")
+    try:
+        lead_id = data.get("lead_id")
+
+        if lead_id:
+            r = requests.get(
+                f"{SUPABASE_URL}/rest/v1/leads?id=eq.{lead_id}&select=*",
+                headers={"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}"},
+            )
+            print(f"📋 Lead lookup: {r.status_code} {r.text[:200]}")
+
+            if r.status_code == 200 and r.json():
+                lead = r.json()[0]
+
+                teacher_id = None
+                if lead.get("teacher_name"):
+                    teacher_name = lead["teacher_name"]
+                    parts = teacher_name.split()
+                    if len(parts) >= 2:
+                        lookup_url = (
+                            f"{SUPABASE_URL}/rest/v1/users"
+                            f"?select=id"
+                            f"&first_name=ilike.*{parts[0]}*"
+                            f"&last_name=ilike.*{parts[1]}*"
+                        )
+                    else:
+                        lookup_url = (
+                            f"{SUPABASE_URL}/rest/v1/users"
+                            f"?select=id"
+                            f"&or=(first_name.ilike.*{teacher_name}*,last_name.ilike.*{teacher_name}*)"
+                        )
+                    tr = requests.get(lookup_url, headers={"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}"})
+                    print(f"👤 Teacher lookup: {tr.status_code} {tr.text[:200]}")
+                    if tr.status_code == 200 and tr.json():
+                        teacher_id = tr.json()[0]["id"]
+
+                body = {
+                    "lead_id": lead_id,
+                    "student_id": lead.get("student_id"),
+                    "teacher_id": teacher_id,
+                    "course_title": lead.get("course_title", ""),
+                    "lessons_total": lead.get("lessons", 1),
+                    "lessons_left": lead.get("lessons", 1),
+                    "with_ai": lead.get("with_ai", False),
+                    "total_price": lead.get("total_price"),
+                    "is_paid": True,
+                }
+                print(f"📦 Sub body: {json.dumps(body, ensure_ascii=False, default=str)}")
+            else:
+                return jsonify({"status": "error", "detail": "Lead not found"}), 404
+        else:
+            body = {
+                "student_id": data.get("student_id"),
+                "teacher_id": data.get("teacher_id"),
+                "course_title": data.get("course_title", ""),
+                "lessons_total": data.get("lessons_total", 1),
+                "lessons_left": data.get("lessons_left", data.get("lessons_total", 1)),
+                "with_ai": data.get("with_ai", False),
+                "total_price": data.get("total_price"),
+                "is_paid": data.get("is_paid", True),
+            }
+
+        r = requests.post(
+            f"{SUPABASE_URL}/rest/v1/subscriptions",
+            headers={
+                "apikey": SUPABASE_KEY,
+                "Authorization": f"Bearer {SUPABASE_KEY}",
+                "Content-Type": "application/json",
+            },
+            json=body,
+        )
+        print(f"📤 Create subscription: {r.status_code} {r.text[:300]}")
+        if r.status_code == 201:
+            return jsonify({"status": "ok"})
+        return jsonify({"status": "error", "detail": r.text[:200]}), 500
+    except Exception as e:
+        print(f"❌ Create subscription error: {e}")
+        return jsonify({"status": "error"}), 500
+
+
+@app.route("/api/subscriptions/<sub_id>/pay", methods=["POST"])
+def mark_subscription_paid(sub_id):
+    try:
+        r = requests.patch(
+            f"{SUPABASE_URL}/rest/v1/subscriptions?id=eq.{sub_id}",
+            headers={
+                "apikey": SUPABASE_KEY,
+                "Authorization": f"Bearer {SUPABASE_KEY}",
+                "Content-Type": "application/json",
+            },
+            json={"is_paid": True},
+        )
+        print(f"💰 Mark paid {sub_id}: {r.status_code}")
+        return jsonify({"status": "ok" if r.status_code in (200, 204) else "error"})
+    except Exception as e:
+        print(f"❌ Pay error: {e}")
+        return jsonify({"status": "error"}), 500
+
 
 @app.route("/api/health", methods=["GET"])
 def health():
