@@ -47,7 +47,6 @@ def parse_teachers_from_html():
 
 
 def get_courses_from_db():
-    """Get courses from Supabase."""
     try:
         r = requests.get(
             f"{SUPABASE_URL}/rest/v1/courses?select=*&order=created_at.asc",
@@ -415,6 +414,7 @@ def get_subscriptions():
         if r.status_code == 200:
             subs = r.json()
             for s in subs:
+                # Имя студента
                 if s.get("student_id"):
                     ur = requests.get(
                         f"{SUPABASE_URL}/rest/v1/users?id=eq.{s['student_id']}&select=first_name,last_name,email",
@@ -424,6 +424,15 @@ def get_subscriptions():
                         u = ur.json()[0]
                         s["student_name"] = (u.get("first_name", "") + " " + u.get("last_name", "")).strip()
                         s["student_email"] = u.get("email", "")
+                # Имя учителя
+                if s.get("teacher_id"):
+                    tr = requests.get(
+                        f"{SUPABASE_URL}/rest/v1/users?id=eq.{s['teacher_id']}&select=first_name,last_name",
+                        headers={"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}"},
+                    )
+                    if tr.status_code == 200 and tr.json():
+                        t = tr.json()[0]
+                        s["teacher_name"] = (t.get("first_name", "") + " " + t.get("last_name", "")).strip()
             return jsonify(subs)
         return jsonify([])
     except Exception as e:
@@ -448,27 +457,48 @@ def create_subscription():
             if r.status_code == 200 and r.json():
                 lead = r.json()[0]
 
+                # Проверяем — нет ли уже подписки на этот lead
+                check = requests.get(
+                    f"{SUPABASE_URL}/rest/v1/subscriptions?lead_id=eq.{lead_id}&select=id",
+                    headers={"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}"},
+                )
+                if check.status_code == 200 and check.json():
+                    return jsonify({"status": "error", "detail": "Подписка уже существует"}), 409
+
+                # Ищем учителя — пробуем разные комбинации Имя/Фамилия
                 teacher_id = None
                 if lead.get("teacher_name"):
                     teacher_name = lead["teacher_name"]
                     parts = teacher_name.split()
+                    
                     if len(parts) >= 2:
-                        lookup_url = (
-                            f"{SUPABASE_URL}/rest/v1/users"
-                            f"?select=id"
-                            f"&first_name=ilike.*{parts[0]}*"
-                            f"&last_name=ilike.*{parts[1]}*"
-                        )
+                        # Пробуем "Имя Фамилия" и "Фамилия Имя"
+                        combos = [
+                            (parts[0], parts[1]),  # Имя Фамилия
+                            (parts[1], parts[0]),  # Фамилия Имя
+                        ]
+                        for first, last in combos:
+                            lookup_url = (
+                                f"{SUPABASE_URL}/rest/v1/users"
+                                f"?select=id"
+                                f"&first_name=ilike.*{first}*"
+                                f"&last_name=ilike.*{last}*"
+                            )
+                            tr = requests.get(lookup_url, headers={"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}"})
+                            print(f"👤 Teacher lookup ({first} {last}): {tr.status_code} {tr.text[:200]}")
+                            if tr.status_code == 200 and tr.json():
+                                teacher_id = tr.json()[0]["id"]
+                                break
                     else:
                         lookup_url = (
                             f"{SUPABASE_URL}/rest/v1/users"
                             f"?select=id"
                             f"&or=(first_name.ilike.*{teacher_name}*,last_name.ilike.*{teacher_name}*)"
                         )
-                    tr = requests.get(lookup_url, headers={"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}"})
-                    print(f"👤 Teacher lookup: {tr.status_code} {tr.text[:200]}")
-                    if tr.status_code == 200 and tr.json():
-                        teacher_id = tr.json()[0]["id"]
+                        tr = requests.get(lookup_url, headers={"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}"})
+                        print(f"👤 Teacher lookup (single): {tr.status_code} {tr.text[:200]}")
+                        if tr.status_code == 200 and tr.json():
+                            teacher_id = tr.json()[0]["id"]
 
                 body = {
                     "lead_id": lead_id,
@@ -512,8 +542,7 @@ def create_subscription():
     except Exception as e:
         print(f"❌ Create subscription error: {e}")
         return jsonify({"status": "error"}), 500
-
-
+    
 @app.route("/api/subscriptions/<sub_id>/pay", methods=["POST"])
 def mark_subscription_paid(sub_id):
     try:

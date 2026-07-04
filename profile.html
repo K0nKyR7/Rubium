@@ -1114,7 +1114,7 @@
                             <span class="lead-badge ${s.is_paid ? 'badge-paid' : 'badge-unpaid'}">${s.is_paid ? 'Оплачено' : 'Не оплачено'}</span>
                         </div>
                         <div class="lead-body">
-                            <div class="lead-field"><span class="lbl">Преподаватель:</span><span class="val">${s.student_name || '—'}</span></div>
+                            <div class="lead-field"><span class="lbl">Преподаватель:</span><span class="val">${s.teacher_name || '—'}</span></div>
                             <div class="lead-field"><span class="lbl">Занятий всего:</span><span class="val">${s.lessons_total || '—'}</span></div>
                             <div class="lead-field"><span class="lbl">Осталось:</span><span class="val">${s.lessons_left || 0}</span></div>
                             <div class="lead-field"><span class="lbl">Сумма:</span><span class="val" style="color:#8B5CF6;font-weight:700;">${(s.total_price || 0).toLocaleString('ru-RU')} ₽</span></div>
@@ -1137,14 +1137,19 @@
                 var resp = await fetch('http://localhost:5001/api/leads');
                 var all = await resp.json();
                 var myLeads = all.filter(function (l) { return l.student_id === currentUser.id; });
-                renderStudentLeads(myLeads);
+
+                var subResp = await fetch('http://localhost:5001/api/subscriptions?student_id=' + currentUser.id);
+                var mySubs = await subResp.json();
+                var paidLeadIds = mySubs.map(function (s) { return s.lead_id; });
+
+                renderStudentLeads(myLeads, paidLeadIds);
             } catch (e) {
                 document.getElementById('studentLeadsList').innerHTML =
                     '<div class="empty"><i class="fas fa-inbox"></i> У вас пока нет заявок</div>';
             }
         }
 
-        function renderStudentLeads(leads) {
+        function renderStudentLeads(leads, paidLeadIds) {
             var container = document.getElementById('studentLeadsList');
             if (!leads.length) {
                 container.innerHTML = '<div class="empty"><i class="fas fa-inbox"></i> У вас пока нет заявок</div>';
@@ -1153,8 +1158,9 @@
             container.innerHTML = leads.map(function (lead) {
                 var statusLabels = { 'new': 'На рассмотрении', 'accepted': 'Принята', 'rejected': 'Отклонена' };
                 var statusBadges = { 'new': 'badge-new', 'accepted': 'badge-accepted', 'rejected': 'badge-rejected' };
+                var alreadyPaid = paidLeadIds.indexOf(lead.id) !== -1;
                 var payBtn = '';
-                if (lead.status === 'accepted' && !lead.is_paid) {
+                if (lead.status === 'accepted' && !alreadyPaid) {
                     payBtn = '<div class="lead-actions" style="margin-top:8px;"><button class="btn-pay" onclick="createSubscriptionFromLead(\'' + lead.id + '\')"><i class="fas fa-credit-card"></i> Оплатить</button></div>';
                 }
                 return `
@@ -1186,7 +1192,8 @@
                 await loadStudentLeads();
                 await loadStudentSubscriptions();
             } else {
-                alert('Ошибка создания подписки');
+                var err = await resp.json();
+                alert(err.detail || 'Ошибка создания подписки');
             }
         }
 
@@ -1262,7 +1269,6 @@
                     actionsHtml = '<span style="font-size:0.8rem;color:#22C55E;font-weight:600;"><i class="fas fa-check-circle"></i> Принят</span>';
                 }
 
-                // Кнопка удаления если заявка оплачена
                 if (lead.is_paid) {
                     deleteBtn = '<button class="btn-reject" onclick="deleteLeadTeacher(\'' + lead.id + '\')" style="border-color:rgba(239,68,68,0.3);color:#EF4444;" title="Удалить"><i class="fas fa-trash"></i></button>';
                 }
@@ -1338,12 +1344,13 @@
                 var subs = await resp.json();
                 renderTeacherStudents(subs || []);
             } catch (e) {
-                console.error('Students load error:', e);
-                document.getElementById('teacherStudentsList').innerHTML = '<div class="empty"><i class="fas fa-users"></i> Ошибка загрузки учеников</div>';
+                document.getElementById('teacherStudentsList').innerHTML =
+                    '<div class="empty"><i class="fas fa-users"></i> Ошибка загрузки учеников</div>';
             }
         }
+
         function renderTeacherStudents(subs) {
-            var container = document.getElementById('teacherStudentsList'); // всегда этот контейнер
+            var container = document.getElementById('teacherStudentsList');
 
             if (!subs.length) {
                 container.innerHTML = '<div class="empty"><i class="fas fa-users"></i> Нет учеников</div>';
@@ -1366,21 +1373,21 @@
 
             container.innerHTML = subs.map(function (s) {
                 return `
-            <div class="lead-card">
-                <div class="lead-header">
-                    <div class="lead-student">
-                        <i class="fas fa-user-graduate"></i> ${s.student_name || '—'}
+                    <div class="lead-card">
+                        <div class="lead-header">
+                            <div class="lead-student">
+                                <i class="fas fa-user-graduate"></i> ${s.student_name || '—'}
+                            </div>
+                            <span class="lead-badge ${s.is_paid ? 'badge-paid' : 'badge-unpaid'}">${s.is_paid ? 'Оплачено' : 'Не оплачено'}</span>
+                        </div>
+                        <div class="lead-body">
+                            <div class="lead-field"><span class="lbl">Курс:</span><span class="val">${s.course_title || '—'}</span></div>
+                            <div class="lead-field"><span class="lbl">Всего занятий:</span><span class="val">${s.lessons_total || '—'}</span></div>
+                            <div class="lead-field"><span class="lbl">Осталось:</span><span class="val">${s.lessons_left || 0}</span></div>
+                            <div class="lead-field"><span class="lbl">Сумма:</span><span class="val" style="color:#8B5CF6;font-weight:700;">${(s.total_price || 0).toLocaleString('ru-RU')} ₽</span></div>
+                        </div>
                     </div>
-                    <span class="lead-badge ${s.is_paid ? 'badge-paid' : 'badge-unpaid'}">${s.is_paid ? 'Оплачено' : 'Не оплачено'}</span>
-                </div>
-                <div class="lead-body">
-                    <div class="lead-field"><span class="lbl">Курс:</span><span class="val">${s.course_title || '—'}</span></div>
-                    <div class="lead-field"><span class="lbl">Всего занятий:</span><span class="val">${s.lessons_total || '—'}</span></div>
-                    <div class="lead-field"><span class="lbl">Осталось:</span><span class="val">${s.lessons_left || 0}</span></div>
-                    <div class="lead-field"><span class="lbl">Сумма:</span><span class="val" style="color:#8B5CF6;font-weight:700;">${(s.total_price || 0).toLocaleString('ru-RU')} ₽</span></div>
-                </div>
-            </div>
-        `;
+                `;
             }).join('');
         }
 
@@ -1415,6 +1422,7 @@
                 return !l.teacher_name || l.teacher_name === 'Назначается' || l.teacher_name.trim() === '';
             });
             renderUnassigned(unassigned, teachers);
+
             var allSubsResp = await fetch('http://localhost:5001/api/subscriptions');
             var allSubs = await allSubsResp.json();
             renderAllStudents(allSubs || []);
@@ -1562,21 +1570,21 @@
             }
             container.innerHTML = subs.map(function (s) {
                 return `
-            <div class="lead-card">
-                <div class="lead-header">
-                    <div class="lead-student">
-                        <i class="fas fa-user-graduate"></i> ${s.student_name || '—'}
+                    <div class="lead-card">
+                        <div class="lead-header">
+                            <div class="lead-student">
+                                <i class="fas fa-user-graduate"></i> ${s.student_name || '—'}
+                            </div>
+                            <span class="lead-badge ${s.is_paid ? 'badge-paid' : 'badge-unpaid'}">${s.is_paid ? 'Оплачено' : 'Не оплачено'}</span>
+                        </div>
+                        <div class="lead-body">
+                            <div class="lead-field"><span class="lbl">Курс:</span><span class="val">${s.course_title || '—'}</span></div>
+                            <div class="lead-field"><span class="lbl">Учитель:</span><span class="val">${s.teacher_name || '—'}</span></div>
+                            <div class="lead-field"><span class="lbl">Занятий:</span><span class="val">${s.lessons_left || 0} / ${s.lessons_total || '—'}</span></div>
+                            <div class="lead-field"><span class="lbl">Сумма:</span><span class="val" style="color:#8B5CF6;font-weight:700;">${(s.total_price || 0).toLocaleString('ru-RU')} ₽</span></div>
+                        </div>
                     </div>
-                    <span class="lead-badge ${s.is_paid ? 'badge-paid' : 'badge-unpaid'}">${s.is_paid ? 'Оплачено' : 'Не оплачено'}</span>
-                </div>
-                <div class="lead-body">
-                    <div class="lead-field"><span class="lbl">Курс:</span><span class="val">${s.course_title || '—'}</span></div>
-                    <div class="lead-field"><span class="lbl">Всего занятий:</span><span class="val">${s.lessons_total || '—'}</span></div>
-                    <div class="lead-field"><span class="lbl">Осталось:</span><span class="val">${s.lessons_left || 0}</span></div>
-                    <div class="lead-field"><span class="lbl">Сумма:</span><span class="val" style="color:#8B5CF6;font-weight:700;">${(s.total_price || 0).toLocaleString('ru-RU')} ₽</span></div>
-                </div>
-            </div>
-        `;
+                `;
             }).join('');
         }
 
