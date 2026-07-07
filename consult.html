@@ -4,10 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="data/logo.png">
     <title>Rubi AI — консультация | Stud&School</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
     <style>
         *,
         *::before,
@@ -384,6 +387,74 @@
             margin-top: 8px;
         }
 
+        .login-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(250, 248, 252, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            gap: 20px;
+            text-align: center;
+            padding: 32px 24px;
+        }
+
+        .login-overlay .lock-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8B5CF6, #E11D8D);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: #fff;
+            margin-bottom: 4px;
+            box-shadow: 0 8px 32px rgba(139, 92, 246, 0.2);
+        }
+
+        .login-overlay h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1F2937;
+            letter-spacing: -0.5px;
+        }
+
+        .login-overlay p {
+            font-size: 0.88rem;
+            color: #6B7280;
+            max-width: 300px;
+            line-height: 1.5;
+        }
+
+        .btn-login-redirect {
+            padding: 14px 32px;
+            border-radius: 50px;
+            border: none;
+            background: #8B5CF6;
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.92rem;
+            cursor: pointer;
+            font-family: inherit;
+            letter-spacing: -0.3px;
+            box-shadow: 0 6px 24px rgba(139, 92, 246, 0.2);
+            transition: all 0.28s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-login-redirect:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(139, 92, 246, 0.3);
+            background: #7C3AED;
+        }
+
         @media (max-width: 600px) {
             .header {
                 padding: 10px 16px;
@@ -413,6 +484,20 @@
                 height: 34px;
                 font-size: 0.9rem;
             }
+
+            .login-overlay .lock-icon {
+                width: 56px;
+                height: 56px;
+                font-size: 1.4rem;
+            }
+
+            .login-overlay h3 {
+                font-size: 1.05rem;
+            }
+
+            .login-overlay p {
+                font-size: 0.82rem;
+            }
         }
     </style>
 </head>
@@ -431,15 +516,15 @@
     </header>
 
     <div class="chat">
-        <div class="chat-messages" id="chatMessages">
-            <div class="message bot">
-                <div class="avatar"><i class="fas fa-robot"></i></div>
-                <div class="bubble">
-                    Привет! Я Rubi 👋<br>
-                    Расскажи, какой предмет тебя интересует и к какому экзамену готовишься. Я подберу лучший курс под
-                    твою задачу.
-                </div>
-            </div>
+        <div class="chat-messages" id="chatMessages"></div>
+
+        <div class="login-overlay" id="loginOverlay">
+            <div class="lock-icon"><i class="fas fa-lock"></i></div>
+            <h3>Доступ к Rubi AI</h3>
+            <p>Войди в аккаунт чтобы общаться с AI-консультантом и подбирать курсы персонально под тебя</p>
+            <button class="btn-login-redirect" onclick="window.location.href='login.html'">
+                <i class="fas fa-sign-in-alt"></i> Войти в аккаунт
+            </button>
         </div>
 
         <div class="chat-input-area">
@@ -458,17 +543,20 @@
         var chatMessages = document.getElementById('chatMessages');
         var chatInput = document.getElementById('chatInput');
         var sendBtn = document.getElementById('sendBtn');
+        var loginOverlay = document.getElementById('loginOverlay');
         var isProcessing = false;
+        var currentUser = null;
+        var sessionToken = null;
 
         function addMessage(text, type) {
             var msg = document.createElement('div');
             msg.className = 'message ' + type;
 
             if (type === 'bot') {
-                msg.innerHTML = '<div class="avatar"><i class="fas fa-robot"></i></div><div class="bubble">' + text + '</div>';
+                msg.innerHTML = '<div class="avatar"><i class="fas fa-robot"></i></div><div class="bubble">' + text.replace(/\n/g, '<br>') + '</div>';
             } else {
-                var initial = localStorage.getItem('user_name') ? localStorage.getItem('user_name').charAt(0).toUpperCase() : '?';
-                msg.innerHTML = '<div class="avatar">' + initial + '</div><div class="bubble">' + text + '</div>';
+                var initial = currentUser ? (currentUser.user_metadata?.first_name || currentUser.email || '?').charAt(0).toUpperCase() : '?';
+                msg.innerHTML = '<div class="avatar">' + initial + '</div><div class="bubble">' + text.replace(/\n/g, '<br>') + '</div>';
             }
 
             chatMessages.appendChild(msg);
@@ -495,8 +583,46 @@
             if (indicator) indicator.remove();
         }
 
+        async function initAuth() {
+            var { data: { session } } = await supabase.auth.getSession();
+            if (session && session.user) {
+                currentUser = session.user;
+                sessionToken = session.access_token;
+                loginOverlay.style.display = 'none';
+                chatInput.disabled = false;
+                sendBtn.disabled = false;
+
+                try {
+                    var response = await fetch('http://localhost:5001/api/consult', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + sessionToken
+                        },
+                        body: JSON.stringify({
+                            query: '',
+                            session_id: currentUser.id
+                        })
+                    });
+                    if (response.ok) {
+                        var data = await response.json();
+                        addMessage(data.response, 'bot');
+                    }
+                } catch (e) {
+                    addMessage('Привет! Я Rubi 👋\nРасскажи, какой предмет тебя интересует и к какому экзамену готовишься.', 'bot');
+                }
+            } else {
+                currentUser = null;
+                sessionToken = null;
+                loginOverlay.style.display = 'flex';
+                chatInput.disabled = true;
+                sendBtn.disabled = true;
+                addMessage('Привет! Я Rubi 👋\nВойди в аккаунт чтобы я помог тебе подобрать курс.', 'bot');
+            }
+        }
+
         async function sendMessage() {
-            if (isProcessing) return;
+            if (isProcessing || !sessionToken) return;
 
             var text = chatInput.value.trim();
             if (!text) return;
@@ -507,20 +633,25 @@
             sendBtn.disabled = true;
             addTypingIndicator();
 
-            await new Promise(function (resolve) { setTimeout(resolve, 700 + Math.random() * 500); });
-
             try {
                 var response = await fetch('http://localhost:5001/api/consult', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + sessionToken
+                    },
                     body: JSON.stringify({
                         query: text,
-                        session_id: 'user_session_1',
-                        student_id: localStorage.getItem('supabase_user_id') || null
+                        session_id: currentUser ? currentUser.id : 'default'
                     })
                 });
 
                 removeTypingIndicator();
+
+                if (response.status === 401) {
+                    initAuth();
+                    return;
+                }
 
                 if (!response.ok) throw new Error('Server error');
 
@@ -537,6 +668,7 @@
         }
 
         chatInput.focus();
+        initAuth();
     </script>
 
 </body>

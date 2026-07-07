@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="data/logo.png">
     <title>Курсы — Stud&School</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
@@ -1389,16 +1390,21 @@
             if (!name) { alert('Введи имя'); return; }
             if (!phone || phone.replace(/\D/g, '').length < 11) { alert('Введи корректный телефон (11 цифр)'); return; }
 
-            var userId = null;
-            try {
-                var { data: { user } } = await supabase.auth.getUser();
-                if (user) userId = user.id;
-            } catch (e) { }
+            // Проверка авторизации
+            var { data: { session } } = await supabase.auth.getSession();
+            if (!session || !session.user) {
+                alert('Войди в аккаунт чтобы отправить заявку');
+                window.location.href = 'login.html';
+                return;
+            }
 
             try {
                 var response = await fetch('http://localhost:5001/api/leads', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + session.access_token
+                    },
                     body: JSON.stringify({
                         client_name: name,
                         phone: phone.replace(/\D/g, ''),
@@ -1408,7 +1414,6 @@
                         with_ai: withAI,
                         total_price: price,
                         student_message: message,
-                        student_id: userId,
                         chat_history: 'Заявка с сайта',
                         tg_username: document.getElementById('studentTG').value.trim(),
                         vk_username: document.getElementById('studentVK').value.trim()
@@ -1418,6 +1423,9 @@
                 if (response.ok) {
                     alert('Заявка отправлена! Преподаватель свяжется с тобой.');
                     closeModal();
+                } else if (response.status === 401) {
+                    alert('Сессия истекла. Войди заново.');
+                    window.location.href = 'login.html';
                 } else {
                     alert('Ошибка отправки. Попробуй ещё раз.');
                 }

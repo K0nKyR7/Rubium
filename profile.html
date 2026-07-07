@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Профиль — Stud&School</title>
+    <link rel="icon" type="image/png" href="data/logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -418,6 +419,13 @@
             display: flex;
             align-items: center;
             gap: 8px;
+        }
+
+        .lead-date {
+            font-size: 0.7rem;
+            color: #9CA3AF;
+            margin-left: 8px;
+            white-space: nowrap;
         }
 
         .lead-badge {
@@ -988,6 +996,13 @@
         var activeRejectId = null;
         var editField = '';
 
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            var d = new Date(dateStr);
+            return d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' }) +
+                ' ' + d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+        }
+
         async function init() {
             var { data: { user }, error } = await supabase.auth.getUser();
             if (error || !user) { window.location.replace('login.html'); return; }
@@ -1015,6 +1030,9 @@
             if (userRole === 'admin') await loadAdminData();
 
             switchTab(userRole === 'admin' ? 'teacherTab' : (userRole === 'teacher' ? 'teacherTab' : 'studentTab'));
+
+            // Автоочистка старых принятых заявок
+            fetch('http://localhost:5001/api/leads/cleanup', { method: 'POST' }).catch(function () { });
         }
 
         function setupTabs() {
@@ -1167,7 +1185,10 @@
                 return `
                     <div class="lead-card">
                         <div class="lead-header">
-                            <div class="lead-student">${lead.course_title || '—'}</div>
+                            <div class="lead-student">
+                                ${lead.course_title || '—'}
+                                <span class="lead-date">${formatDate(lead.created_at)}</span>
+                            </div>
                             <span class="lead-badge ${statusBadges[lead.status] || ''}">${statusLabels[lead.status] || lead.status}</span>
                         </div>
                         <div class="lead-body">
@@ -1279,6 +1300,7 @@
                         <div class="lead-header">
                             <div class="lead-student">
                                 <i class="fas fa-user-graduate"></i> ${lead.client_name || '—'} ${aiIcon}
+                                <span class="lead-date">${formatDate(lead.created_at)}</span>
                             </div>
                             <div style="display:flex;gap:8px;align-items:center;">
                                 <span class="lead-badge ${statusBadges[lead.status] || ''}">${statusLabels[lead.status] || lead.status}</span>
@@ -1378,6 +1400,7 @@
                         <div class="lead-header">
                             <div class="lead-student">
                                 <i class="fas fa-user-graduate"></i> ${s.student_name || '—'}
+                                <span class="lead-date">${formatDate(s.created_at)}</span>
                             </div>
                             <span class="lead-badge ${s.is_paid ? 'badge-paid' : 'badge-unpaid'}">${s.is_paid ? 'Оплачено' : 'Не оплачено'}</span>
                         </div>
@@ -1490,7 +1513,10 @@
                 return `
                     <div class="lead-card" style="margin-bottom:10px;">
                         <div class="lead-header">
-                            <div class="lead-student">${lead.client_name || '—'}</div>
+                            <div class="lead-student">
+                                ${lead.client_name || '—'}
+                                <span class="lead-date">${formatDate(lead.created_at)}</span>
+                            </div>
                             <div style="display:flex;gap:8px;align-items:center;">
                                 <span class="lead-badge ${statusBadges[lead.status] || ''}">${statusLabels[lead.status] || lead.status}</span>
                                 ${lead.is_paid ? '<button class="btn-reject" onclick="deleteLeadAdmin(\'' + lead.id + '\')" style="border-color:rgba(239,68,68,0.3);color:#EF4444;" title="Удалить"><i class="fas fa-trash"></i></button>' : ''}
@@ -1532,6 +1558,7 @@
                         <div class="unassigned-info">
                             <strong>${lead.client_name || '—'}</strong> — ${lead.course_title || '—'}
                             <br><span style="font-size:0.72rem;color:#9CA3AF;">${lead.phone || ''}</span>
+                            <span class="lead-date" style="display:block;">${formatDate(lead.created_at)}</span>
                         </div>
                         <div style="display:flex;gap:8px;align-items:center;">
                             <select class="assign-select" id="assignSelect-${lead.id}">
@@ -1575,6 +1602,7 @@
                         <div class="lead-header">
                             <div class="lead-student">
                                 <i class="fas fa-user-graduate"></i> ${s.student_name || '—'}
+                                <span class="lead-date">${formatDate(s.created_at)}</span>
                             </div>
                             <span class="lead-badge ${s.is_paid ? 'badge-paid' : 'badge-unpaid'}">${s.is_paid ? 'Оплачено' : 'Не оплачено'}</span>
                         </div>
