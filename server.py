@@ -503,14 +503,14 @@ def create_subscription():
         if lead_id:
             r = requests.get(
                 f"{SUPABASE_URL}/rest/v1/leads?id=eq.{lead_id}&select=*",
-                headers=supabase_headers()
+                headers=supabase_headers(use_service_role=True)
             )
             if r.status_code == 200 and r.json():
                 lead = r.json()[0]
 
                 check = requests.get(
                     f"{SUPABASE_URL}/rest/v1/subscriptions?lead_id=eq.{lead_id}&select=id",
-                    headers=supabase_headers()
+                    headers=supabase_headers(use_service_role=True)
                 )
                 if check.status_code == 200 and check.json():
                     return jsonify({"status": "error", "detail": "Подписка уже существует"}), 409
@@ -553,7 +553,6 @@ def create_subscription():
     except Exception as e:
         print(f"❌ Create subscription error: {e}")
         return jsonify({"status": "error"}), 500
-
 
 @app.route("/api/subscriptions/<sub_id>/pay", methods=["POST"])
 def mark_subscription_paid(sub_id):
