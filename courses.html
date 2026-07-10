@@ -45,7 +45,7 @@
         .course-item-meta{display:flex;flex-direction:column;gap:6px;margin-top:auto;padding-top:10px;border-top:1px solid rgba(139,92,246,0.06)}
         .meta-row{display:flex;align-items:center;justify-content:space-between;font-size:0.8rem}
         .meta-label{color:#9CA3AF}.meta-value{font-weight:600}.meta-value.price{color:#8B5CF6;font-weight:700}
-        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.3);backdrop-filter:blur(6px);z-index:200;opacity:0;pointer-events:none;transition:opacity 0.3s}
+        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.3);backdrop-filter:blur(6px);z-index:200;opacity:0;pointer-events:none;transition:opacity 0.4s ease}
         .modal-overlay.open{opacity:1;pointer-events:auto}
         .modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) translateY(20px);background:#fff;border-radius:24px;width:90%;max-width:520px;max-height:90vh;overflow-y:auto;z-index:201;padding:32px 28px;box-shadow:0 30px 60px rgba(0,0,0,0.15);opacity:0;pointer-events:none;transition:all 0.35s}
         .modal.open{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) translateY(0)}
@@ -56,27 +56,34 @@
         .modal-badge.uni,.modal-badge.oth{background:rgba(139,92,246,0.06);color:#7C3AED}
         .modal-title{font-size:1.5rem;font-weight:800;margin-bottom:8px;letter-spacing:-0.5px}
         .modal-desc{font-size:0.88rem;color:#6B7280;line-height:1.5;margin-bottom:18px}
-        .modal-teacher{display:flex;align-items:center;gap:8px;padding:12px 16px;background:rgba(139,92,246,0.04);border-radius:14px;margin-bottom:20px;font-size:0.85rem;font-weight:600;color:#8B5CF6;cursor:pointer}
-        .modal-teacher:hover{background:rgba(139,92,246,0.08)}
-        .teacher-info{background:rgba(139,92,246,0.03);border-radius:16px;padding:18px;margin-bottom:20px;display:none}
+        .modal-teacher{display:flex;align-items:center;gap:8px;padding:12px 16px;background:rgba(139,92,246,0.04);border-radius:14px;margin-bottom:20px;font-size:0.85rem;font-weight:600;color:#8B5CF6;cursor:pointer;transition:all 0.3s ease}
+        .modal-teacher:hover{background:rgba(139,92,246,0.08);transform:translateY(-1px)}
+        .teacher-info{overflow:hidden;transition:max-height 1.2s cubic-bezier(0.4, 0, 0.2, 1),opacity 1.2s ease,margin-bottom 1.2s ease}
+        .teacher-info-inner{background:rgba(139,92,246,0.03);border-radius:16px;padding:18px}
         .teacher-info-header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-        .teacher-avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#8B5CF6,#E11D8D);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.2rem;flex-shrink:0}
+        .teacher-avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#8B5CF6,#E11D8D);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.2rem;flex-shrink:0;overflow:hidden}
+        .teacher-avatar img{width:100%;height:100%;object-fit:cover}
         .teacher-details{display:flex;gap:16px;margin-bottom:10px;flex-wrap:wrap;font-size:0.78rem;color:#6B7280}
         .teacher-desc{font-size:0.82rem;color:#4B5563;line-height:1.5}
         .modal-label{display:block;font-size:0.7rem;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
         .lesson-options{display:flex;gap:8px;margin-bottom:18px}
         .lesson-btn{flex:1;padding:10px;border-radius:12px;border:1.5px solid rgba(139,92,246,0.15);background:transparent;font-family:inherit;font-size:0.85rem;font-weight:600;cursor:pointer;color:#6B7280}
         .lesson-btn.active{background:#8B5CF6;color:#fff;border-color:#8B5CF6}
-        .modal-ai{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+        .modal-plus{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+        .modal-plus-left{display:flex;align-items:center;gap:6px;position:relative}
+        .btn-what{width:20px;height:20px;border-radius:50%;border:1.5px solid rgba(139,92,246,0.3);background:transparent;color:#8B5CF6;font-size:0.65rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center}
+        .btn-what:hover{background:rgba(139,92,246,0.08);border-color:#8B5CF6}
+        .plus-tooltip{position:absolute;top:calc(100% + 12px);left:110%;transform:translateX(-50%);background:rgba(31,41,55,0.9);color:#fff;padding:14px 18px;border-radius:14px;font-size:0.73rem;font-weight:400;text-transform:none;letter-spacing:0;line-height:1.6;white-space:nowrap;z-index:210;pointer-events:none;opacity:0;transition:opacity 0.5s ease,transform 0.5s ease}
+        .btn-what:hover .plus-tooltip,.btn-what:focus .plus-tooltip{opacity:1;transform:translateX(-50%) translateY(0)}
         .toggle-switch{position:relative;width:52px;height:28px}
         .toggle-switch input{display:none}
         .toggle-slider{position:absolute;inset:0;background:#E5E7EB;border-radius:28px;cursor:pointer;transition:all 0.3s}
         .toggle-slider::before{content:'';position:absolute;width:22px;height:22px;border-radius:50%;background:#fff;top:3px;left:3px;transition:all 0.3s}
-        .toggle-switch input:checked+.toggle-slider{background:#8B5CF6}
+        .toggle-switch input:checked+.toggle-slider{background:linear-gradient(135deg,#8B5CF6,#E11D8D)}
         .toggle-switch input:checked+.toggle-slider::before{transform:translateX(24px)}
         .modal-price{text-align:center;font-size:2rem;font-weight:900;color:#8B5CF6;margin-bottom:8px}
-        .modal-discount{display:none;text-align:center;font-size:0.82rem;color:#22C55E;font-weight:600;margin-bottom:4px}
-        .modal-ai-price{display:none;text-align:center;font-size:0.82rem;color:#8B5CF6;font-weight:600;margin-bottom:16px}
+        .modal-discount{display:none;text-align:center;font-size:0.82rem;color:#22C55E;font-weight:600;margin-bottom:14px}
+        .modal-plus-price{display:none;text-align:center;font-size:0.82rem;color:#8B5CF6;font-weight:600;margin-bottom:16px}
         .btn-enroll{width:100%;padding:15px;border:none;border-radius:50px;font-family:inherit;font-size:0.95rem;font-weight:700;cursor:pointer;background:#8B5CF6;color:#fff;box-shadow:0 6px 20px rgba(139,92,246,0.18)}
         .btn-enroll:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(139,92,246,0.3)}
         .form-input{width:100%;padding:12px 16px;border:1.5px solid rgba(139,92,246,0.15);border-radius:14px;font-family:inherit;font-size:0.85rem;margin-bottom:10px;background:rgba(255,255,255,0.5);outline:none}
@@ -103,7 +110,6 @@
         <div class="page-label">Обучение</div>
         <h1 class="page-title">Наши курсы</h1>
         <p class="page-subtitle">Выберите направление и начните подготовку с преподавателями из топовых вузов</p>
-
         <div class="filters" id="filtersRow1">
             <button class="filter-btn active" data-filter="all">Все</button>
             <button class="filter-btn" data-filter="ege">ЕГЭ</button>
@@ -131,13 +137,15 @@
             <i class="fas fa-user-graduate"></i> <span id="modalTeacherName"></span>
             <span style="margin-left:auto;font-size:0.7rem;color:#8B5CF6;">Подробнее <i class="fas fa-chevron-down" id="teacherArrow"></i></span>
         </div>
-        <div class="teacher-info" id="teacherInfo">
-            <div class="teacher-info-header">
-                <div class="teacher-avatar" id="teacherAvatar">👤</div>
-                <div><strong id="teacherFullName"></strong><span style="display:block;font-size:0.78rem;color:#6B7280;" id="teacherSubj"></span></div>
+        <div class="teacher-info" id="teacherInfo" style="max-height:0;opacity:0;margin-bottom:0">
+            <div class="teacher-info-inner">
+                <div class="teacher-info-header">
+                    <div class="teacher-avatar" id="teacherAvatar">👤</div>
+                    <div><strong id="teacherFullName"></strong><span style="display:block;font-size:0.78rem;color:#6B7280;" id="teacherSubj"></span></div>
+                </div>
+                <div class="teacher-details"><span id="teacherUni"></span><span id="teacherExp"></span></div>
+                <p class="teacher-desc" id="teacherDesc"></p>
             </div>
-            <div class="teacher-details"><span id="teacherUni"></span><span id="teacherExp"></span></div>
-            <p class="teacher-desc" id="teacherDesc"></p>
         </div>
         <div class="modal-label">Количество занятий</div>
         <div class="lesson-options">
@@ -146,15 +154,17 @@
             <button class="lesson-btn" data-lessons="10">10</button>
             <button class="lesson-btn" data-lessons="20">20</button>
         </div>
-        <div class="modal-ai">
-            <span class="modal-label">Rubi AI ассистент</span>
-            <label class="toggle-switch"><input type="checkbox" id="aiToggle" onchange="updatePrice()"><span class="toggle-slider"></span></label>
+        <div class="modal-plus">
+            <div class="modal-plus-left">
+                <span class="modal-label" style="margin-bottom:0;">Подписка+</span>
+                <button class="btn-what">?<span class="plus-tooltip">Подписка+ дает доступ к игровому модулю,<br> персональным подборкам заданий,<br> рейтингам платформы,<br> а также к кастомизации профиля</span></button>
+            </div>
+            <label class="toggle-switch"><input type="checkbox" id="plusToggle" onchange="updatePrice()"><span class="toggle-slider"></span></label>
         </div>
         <div class="modal-price" id="modalPrice">— ₽</div>
         <div class="modal-discount" id="modalDiscount"></div>
-        <div class="modal-ai-price" id="modalAiPrice"></div>
-        <div class="modal-label">Твои данные</div>
-        <input type="text" id="studentName" class="form-input" placeholder="Твоё имя">
+        <div class="modal-plus-price" id="modalPlusPrice"></div>
+        <div class="modal-label">Контакты для связи</div>
         <input type="tel" id="studentPhone" class="form-input" placeholder="Телефон (11 цифр)">
         <input type="text" id="studentTG" class="form-input" placeholder="Telegram (username)">
         <input type="text" id="studentVK" class="form-input" placeholder="ВКонтакте (ссылка)">
@@ -175,8 +185,8 @@
         var selectedLessons = 1;
         var activeFilter = 'all';
         var activeFormatFilter = 'all';
+        var currentUserName = '';
 
-        // ─── Toast notifications ───
         function showToast(text, type) {
             var t = document.createElement('div');
             t.className = 'toast ' + (type || 'success');
@@ -186,25 +196,24 @@
             setTimeout(function() { t.remove(); }, 3000);
         }
 
-        // ─── Load teachers from API ───
         async function loadTeachers() {
             try {
                 var resp = await fetch('http://localhost:5001/api/teachers');
                 var list = await resp.json();
                 list.forEach(function(t) {
-                    var fullName = (t.first_name + ' ' + t.last_name).trim();
+                    var fullName = (t.last_name + ' ' + t.first_name).trim();
                     teachersCache[fullName] = {
                         name: fullName,
-                        subjects: t.role === 'admin' ? 'Администратор' : 'Преподаватель',
-                        university: t.email || '',
-                        exp: '',
-                        desc: ''
+                        photo_url: t.photo_url || '',
+                        subjects: t.subjects || 'Преподаватель',
+                        university: t.university || '',
+                        experience: t.experience || '',
+                        desc: t.description || ''
                     };
                 });
-            } catch(e) { console.log('Teachers load error'); }
+            } catch(e) { console.log('Teachers load error:', e); }
         }
 
-        // ─── Load courses ───
         async function loadCourses() {
             try {
                 var resp = await fetch('http://localhost:5001/api/courses');
@@ -225,9 +234,10 @@
                 var p = typeof c.prices === 'string' ? JSON.parse(c.prices) : c.prices;
                 var minPrice = Math.min.apply(null, Object.values(p));
                 var fmt = c.format || 'individual';
+                var gs = c.gamification_surcharge || c.ai_surcharge || 0;
                 return `
                 <div class="course-item ${c.category}" data-category="${c.category}" data-format="${fmt}"
-                    onclick='openModal(${JSON.stringify({title:c.title,badge:c.badge,category:c.category,format:fmt,desc:c.description||'',teacher:c.teacher_name,prices:p,aiSurcharge:c.ai_surcharge||0}).replace(/'/g,"&#39;")})'>
+                    onclick='openModal(${JSON.stringify({title:c.title,badge:c.badge,category:c.category,format:fmt,desc:c.description||'',teacher:c.teacher_name,prices:p,plusSurcharge:gs}).replace(/'/g,"&#39;")})'>
                     <div class="course-item-icon">${c.icon||'📚'}</div>
                     <div style="display:flex;gap:6px;"><span class="badge ${cats[c.category]||'badge-oth'}">${c.badge}</span><span class="badge ${fmt==='group'?'badge-group':'badge-individual'}">${fmt==='group'?'Группа':'Индивидуально'}</span></div>
                     <h3>${c.title}</h3>
@@ -250,7 +260,8 @@
         }
 
         function openModal(c) {
-            currentCourse = c; selectedLessons = 1;
+            currentCourse = c;
+            selectedLessons = 1;
             document.getElementById('modalBadge').textContent = c.badge;
             document.getElementById('modalBadge').className = 'modal-badge ' + c.category;
             document.getElementById('modalTitle').textContent = c.title;
@@ -258,11 +269,17 @@
             document.getElementById('modalTeacherName').textContent = c.teacher;
             updateTeacherInfo(c.teacher);
             document.querySelectorAll('.lesson-btn').forEach(function(b,i){b.classList.toggle('active',i===0)});
-            document.getElementById('aiToggle').checked = false;
+            document.getElementById('plusToggle').checked = false;
             updatePrice();
             document.getElementById('modalOverlay').classList.add('open');
             document.getElementById('courseModal').classList.add('open');
             document.body.style.overflow = 'hidden';
+            // Сброс инфо препода
+            var info = document.getElementById('teacherInfo');
+            info.style.maxHeight = '0';
+            info.style.opacity = '0';
+            info.style.marginBottom = '0';
+            document.getElementById('teacherArrow').className = 'fas fa-chevron-down';
         }
 
         function closeModal() {
@@ -274,47 +291,59 @@
 
         function updatePrice() {
             if(!currentCourse) return;
-            var withAI = document.getElementById('aiToggle').checked;
+            var withPlus = document.getElementById('plusToggle').checked;
             var lessonsPrice = currentCourse.prices[selectedLessons];
-            var aiPrice = withAI ? currentCourse.aiSurcharge : 0;
-            var total = lessonsPrice + aiPrice;
+            var plusPrice = withPlus ? (currentCourse.plusSurcharge || 0) : 0;
+            var total = lessonsPrice + plusPrice;
             document.getElementById('modalPrice').textContent = total.toLocaleString('ru-RU') + ' ₽';
             var disc = currentCourse.prices[1] * selectedLessons - lessonsPrice;
             var discEl = document.getElementById('modalDiscount');
-            var aiEl = document.getElementById('modalAiPrice');
+            var plusEl = document.getElementById('modalPlusPrice');
             if(disc > 0 && selectedLessons > 1) {
                 discEl.style.display = 'block';
                 discEl.textContent = 'Экономия: ' + disc.toLocaleString('ru-RU') + ' ₽ (' + Math.round(disc/(currentCourse.prices[1]*selectedLessons)*100) + '%)';
             } else { discEl.style.display = 'none'; }
-            if(withAI) { aiEl.style.display = 'block'; aiEl.textContent = 'Rubi AI: +' + currentCourse.aiSurcharge.toLocaleString('ru-RU') + ' ₽'; }
-            else { aiEl.style.display = 'none'; }
+            if(withPlus) { plusEl.style.display = 'block'; plusEl.textContent = 'Подписка+: +' + (currentCourse.plusSurcharge || 0).toLocaleString('ru-RU') + ' ₽'; }
+            else { plusEl.style.display = 'none'; }
         }
 
         function toggleTeacherInfo() {
             var info = document.getElementById('teacherInfo');
             var arrow = document.getElementById('teacherArrow');
-            var isOpen = info.style.display === 'block';
-            info.style.display = isOpen ? 'none' : 'block';
-            arrow.className = 'fas fa-chevron-' + (isOpen ? 'down' : 'up');
+            var isOpen = info.style.maxHeight !== '0px' && info.style.maxHeight !== '';
+
+            if (isOpen) {
+                info.style.maxHeight = '0';
+                info.style.opacity = '0';
+                info.style.marginBottom = '0';
+                arrow.className = 'fas fa-chevron-down';
+            } else {
+                info.style.maxHeight = '600px';
+                info.style.opacity = '1';
+                info.style.marginBottom = '20px';
+                arrow.className = 'fas fa-chevron-up';
+            }
         }
 
         function updateTeacherInfo(name) {
             var t = teachersCache[name];
+            var avatar = document.getElementById('teacherAvatar');
+
+            if (t && t.photo_url) {
+                avatar.innerHTML = '<img src="' + t.photo_url + '">';
+            } else {
+                avatar.innerHTML = '👤';
+            }
+
             document.getElementById('teacherFullName').textContent = t ? t.name : (name || 'Назначается');
             document.getElementById('teacherSubj').textContent = t ? t.subjects : '';
-            document.getElementById('teacherUni').textContent = t ? '🏫 ' + t.university : '';
-            document.getElementById('teacherExp').textContent = t && t.exp ? '⏳ ' + t.exp : '';
+            document.getElementById('teacherUni').textContent = t && t.university ? '🏫 ' + t.university : '';
+            document.getElementById('teacherExp').textContent = t && t.experience ? '⏳ ' + t.experience : '';
             document.getElementById('teacherDesc').textContent = t ? t.desc : '';
-            document.getElementById('teacherInfo').style.display = 'none';
-            document.getElementById('teacherArrow').className = 'fas fa-chevron-down';
         }
 
         async function submitApplication() {
             if(!currentCourse) return;
-            var name = document.getElementById('studentName').value.trim();
-            var phone = document.getElementById('studentPhone').value.trim();
-            if(!name) { showToast('Введи имя', 'error'); return; }
-            if(!phone || phone.replace(/\D/g,'').length < 11) { showToast('Введи корректный телефон (11 цифр)', 'error'); return; }
 
             var { data: { session } } = await supabase.auth.getSession();
             if(!session || !session.user) {
@@ -322,15 +351,24 @@
                 setTimeout(function(){ window.location.href = 'login.html'; }, 1500);
                 return;
             }
+
+            var userName = session.user.user_metadata?.first_name || session.user.email?.split('@')[0] || '';
+            var phone = document.getElementById('studentPhone').value.trim();
+            if(!phone || phone.replace(/\D/g,'').length < 11) { showToast('Введи корректный телефон (11 цифр)', 'error'); return; }
+
             try {
+                var withPlus = document.getElementById('plusToggle').checked;
                 var resp = await fetch('http://localhost:5001/api/leads', {
                     method: 'POST',
                     headers: {'Content-Type':'application/json','Authorization':'Bearer '+session.access_token},
                     body: JSON.stringify({
-                        client_name: name, phone: phone.replace(/\D/g,''),
-                        course_title: currentCourse.title, teacher_name: currentCourse.teacher,
-                        lessons: selectedLessons, with_ai: document.getElementById('aiToggle').checked,
-                        total_price: currentCourse.prices[selectedLessons] + (document.getElementById('aiToggle').checked ? currentCourse.aiSurcharge : 0),
+                        client_name: userName,
+                        phone: phone.replace(/\D/g,''),
+                        course_title: currentCourse.title,
+                        teacher_name: currentCourse.teacher,
+                        lessons: selectedLessons,
+                        with_gamification: withPlus,
+                        total_price: currentCourse.prices[selectedLessons] + (withPlus ? (currentCourse.plusSurcharge || 0) : 0),
                         student_message: document.getElementById('studentMessage').value.trim(),
                         chat_history: 'Заявка с сайта',
                         tg_username: document.getElementById('studentTG').value.trim(),
@@ -343,7 +381,6 @@
             } catch(e) { showToast('Ошибка соединения с сервером.', 'error'); }
         }
 
-        // ─── Event listeners ───
         document.addEventListener('click', function(e) {
             if(e.target.classList.contains('lesson-btn')) {
                 document.querySelectorAll('.lesson-btn').forEach(function(b){b.classList.remove('active')});
@@ -352,20 +389,20 @@
                 updatePrice();
             }
         });
-        document.addEventListener('keydown', function(e) { if(e.key==='Escape') closeModal(); });
 
-        // ─── Header auth ───
+        document.addEventListener('keydown', function(e) {
+            if(e.key === 'Escape') closeModal();
+        });
+
         (async function() {
             var { data: { session } } = await supabase.auth.getSession();
             var ha = document.getElementById('headerActions');
             if(session && session.user) {
-                var fn = session.user.user_metadata?.first_name || session.user.email?.split('@')[0] || 'Профиль';
-                ha.innerHTML = '<a href="profile.html" style="display:flex;align-items:center;gap:8px;padding:9px 18px;background:rgba(139,92,246,0.05);border:1px solid rgba(139,92,246,0.14);border-radius:50px;color:#8B5CF6;text-decoration:none;font-size:0.82rem;font-weight:600;"><i class="fas fa-user"></i> '+fn+'</a>';
+                currentUserName = session.user.user_metadata?.first_name || session.user.email?.split('@')[0] || 'Профиль';
+                ha.innerHTML = '<a href="profile.html" style="display:flex;align-items:center;gap:8px;padding:9px 18px;background:rgba(139,92,246,0.05);border:1px solid rgba(139,92,246,0.14);border-radius:50px;color:#8B5CF6;text-decoration:none;font-size:0.82rem;font-weight:600;"><i class="fas fa-user"></i> '+currentUserName+'</a>';
             } else {
                 ha.innerHTML = '<a href="login.html" style="padding:9px 20px;border-radius:50px;border:1.5px solid #E11D8D;color:#E11D8D;font-weight:600;font-size:0.82rem;text-decoration:none;"><i class="fas fa-sign-in-alt"></i> Войти</a>';
             }
-
-            // Filters
             document.getElementById('filtersRow1').addEventListener('click', function(e) {
                 if(!e.target.classList.contains('filter-btn')) return;
                 this.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active')});

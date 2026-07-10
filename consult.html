@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="data/logo.png">
-    <title>Rubi AI — консультация | Stud&School</title>
+    <title>Консультант | Stud&School</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -509,7 +509,7 @@
             <a href="index.html" class="btn-back"><i class="fas fa-arrow-left"></i></a>
             <div class="rubi-avatar"><i class="fas fa-robot"></i></div>
             <div>
-                <div class="rubi-name">Rubi AI</div>
+                <div class="rubi-name">Консультант</div>
                 <div class="rubi-status">онлайн</div>
             </div>
         </div>
@@ -520,8 +520,8 @@
 
         <div class="login-overlay" id="loginOverlay">
             <div class="lock-icon"><i class="fas fa-lock"></i></div>
-            <h3>Доступ к Rubi AI</h3>
-            <p>Войди в аккаунт чтобы общаться с AI-консультантом и подбирать курсы персонально под тебя</p>
+            <h3>Доступ к Консультанту</h3>
+            <p>Войди в аккаунт чтобы общаться с Консультантом и подбирать курсы персонально под тебя</p>
             <button class="btn-login-redirect" onclick="window.location.href='login.html'">
                 <i class="fas fa-sign-in-alt"></i> Войти в аккаунт
             </button>
@@ -535,7 +535,7 @@
                     <i class="fas fa-paper-plane"></i>
                 </button>
             </div>
-            <div class="input-hint">Rubi помогает подобрать курс. Личные данные защищены.</div>
+            <div class="input-hint">Не делись личными данными без необходимости(паспортные данные, данные о банковских картах и т.д.)</div>
         </div>
     </div>
 
@@ -609,7 +609,7 @@
                         addMessage(data.response, 'bot');
                     }
                 } catch (e) {
-                    addMessage('Привет! Я Rubi 👋\nРасскажи, какой предмет тебя интересует и к какому экзамену готовишься.', 'bot');
+                    addMessage('Расскажи, какой предмет тебя интересует и к какому экзамену готовишься.', 'bot');
                 }
             } else {
                 currentUser = null;
@@ -617,7 +617,7 @@
                 loginOverlay.style.display = 'flex';
                 chatInput.disabled = true;
                 sendBtn.disabled = true;
-                addMessage('Привет! Я Rubi 👋\nВойди в аккаунт чтобы я помог тебе подобрать курс.', 'bot');
+                addMessage('Привет! Я Консультант 👋\nВойди в аккаунт чтобы я помог тебе подобрать курс.', 'bot');
             }
         }
 
