@@ -656,7 +656,159 @@ def delete_job_lead(lead_id):
     except Exception as e:
         print(f"❌ DELETE job lead error: {e}")
         return jsonify({"status": "error"}), 500
+    
+@app.route("/api/tasks", methods=["POST"])
+def create_task():
+    data = request.get_json()
+    print(f"📥 Task data: {data}")
+    try:
+        r = requests.post(
+            f"{SUPABASE_URL}/rest/v1/tasks",
+            headers=supabase_headers(use_service_role=True),
+            json=data,
+        )
+        print(f"📨 Supabase: {r.status_code} {r.text[:300]}")
+        if r.status_code == 201:
+            return jsonify({"status": "ok"})
+        return jsonify({"status": "error", "detail": r.text[:200]}), 500
+    except Exception as e:
+        print(f"❌ Task error: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({"status": "error"}), 500
 
+
+@app.route("/api/tasks", methods=["GET"])
+def get_tasks():
+    try:
+        task_type = request.args.get("type", "")
+        url = f"{SUPABASE_URL}/rest/v1/tasks?select=*&order=created_at.desc"
+        if task_type:
+            url += f"&task_type=eq.{task_type}"
+        r = requests.get(url, headers=supabase_headers())
+        return jsonify(r.json() if r.status_code == 200 else [])
+    except Exception:
+        return jsonify([])
+    
+@app.route("/api/tasks/next-id", methods=["GET"])
+def get_next_task_id():
+    try:
+        r = requests.get(
+            f"{SUPABASE_URL}/rest/v1/tasks?select=id&order=created_at.desc&limit=1",
+            headers=supabase_headers(),
+        )
+        if r.status_code == 200 and r.json():
+            last_id = len(r.json()) + 1
+        else:
+            last_id = 1
+        r2 = requests.get(
+            f"{SUPABASE_URL}/rest/v1/tasks?select=id",
+            headers=supabase_headers(),
+        )
+        next_id = len(r2.json()) + 1 if r2.status_code == 200 else 1
+        return jsonify({"next_id": next_id})
+    except Exception as e:
+        print(f"❌ Next ID error: {e}")
+        return jsonify({"next_id": 1})
+    
+@app.route("/api/fipi-hint", methods=["POST"])
+def fipi_hint():
+    data = request.get_json()
+    user_query = data.get("query", "").strip()
+    display_id = data.get("display_id")
+    history = data.get("history", [])
+
+    if not user_query:
+        return jsonify({"response": "Напиши вопрос или номер задачи."})
+
+    # Ищем задачу по display_id с нормализацией (1 = 01 = 001 = 000001 = #000001)
+    task_context = ""
+    task_found = False
+    if display_id:
+        clean_id = display_id.lstrip('#')
+        try:
+            numeric_id = int(clean_id)
+        except ValueError:
+            numeric_id = None
+
+        if numeric_id is not None:
+            try:
+                r = requests.get(
+                    f"{SUPABASE_URL}/rest/v1/tasks?select=content,answer,topic,subject,exam_type,task_number,display_id&limit=500",
+                    headers=supabase_headers(),
+                )
+                if r.status_code == 200:
+                    for task in r.json():
+                        task_display = task.get('display_id', '')
+                        task_clean = task_display.lstrip('#')
+                        try:
+                            if int(task_clean) == numeric_id:
+                                task_context = f"""
+ЗАДАЧА {task_display}:
+Предмет: {task.get('subject', '')}
+Тема: {task.get('topic', '')}
+Экзамен: {task.get('exam_type', '')}
+Номер: {task.get('task_number', '')}
+Условие: {task.get('content', '')[:2000]}
+Ответ: {task.get('answer', '')}
+"""
+                                task_found = True
+                                break
+                        except ValueError:
+                            pass
+            except Exception as e:
+                print(f"❌ Task lookup error: {e}")
+
+    system_prompt = f"""Ты — AI-помощник для банка задач ФИПИ Stud&School. Твоя цель — давать небольшие подсказки, но НЕ полные решения.
+
+ПРАВИЛА:
+1. Если задача найдена в контексте — СРАЗУ дай подсказку по ней. НЕ проси повторить условие.
+2. Даёшь только намёки: «попробуй применить эту теорему», «посмотри на график внимательнее».
+3. НЕ решаешь задачу полностью. НЕ говоришь готовый ответ первым.
+4. Объясняешь простым языком, коротко.
+5. Если ученик называет ответ — СРАВНИ с правильным. Неверно — «Нет, подумай ещё» и дай намёк. Верно — «Да, верно» и замолчи.
+6. НИКОГДА не подтверждай неправильный ответ.
+7. Ответ может быть в разном формате. Сравнивай смысл: «4 точки» = «4».
+8. Если ученик просит решить — «Я даю подсказки. Полное решение — на курсах с Rubi AI.»
+9. Если много вопросов подряд — предложи курс.
+10. НЕ используешь маркдаун. Коротко: 1-3 предложения.
+11. ПОМНИ историю диалога. Не переспрашивай.
+12. НЕ ВИДИШЬ изображения. Если задача с графиком — попроси описать.
+13. НЕ придумывай данные с картинок.
+14. НЕ здоровайся. Первое сообщение уже есть. Сразу к делу.
+15. Если задача не найдена — «Не нашёл такую задачу. Проверь номер или напиши условие.»
+
+{task_context if task_found else 'ЗАДАЧА НЕ НАЙДЕНА. Попроси ученика написать условие или проверить номер.'}"""
+
+    messages = [{"role": "system", "content": system_prompt}]
+    if history:
+        messages.extend(history)
+    else:
+        messages.append({"role": "user", "content": user_query})
+
+    try:
+        resp = requests.post(
+            DEEPSEEK_API_URL,
+            headers={
+                "Authorization": f"Bearer {DEEPSEEK_API_KEY}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "model": "deepseek-chat",
+                "messages": messages,
+                "temperature": 0.85,
+                "max_tokens": 300,
+            },
+            timeout=15,
+        )
+        resp.raise_for_status()
+        reply = resp.json()["choices"][0]["message"]["content"]
+        return jsonify({"response": reply})
+
+    except Exception as e:
+        print(f"❌ FIPI hint error: {e}")
+        return jsonify({"response": "Что-то пошло не так. Попробуй ещё раз."})
+    
 if __name__ == "__main__":
     print(f"🚀 Starting with {len(get_courses_from_db())} courses and {len(get_teachers_from_db())} teachers")
     app.run(host="0.0.0.0", port=5001, debug=True)

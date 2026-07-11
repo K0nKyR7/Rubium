@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="data/logo.png">
+    <title>Создать задачу — Stud&School</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Inter',sans-serif;background:#FAF8FC;color:#1F2937;height:100vh;overflow:hidden}
+        .header{display:flex;align-items:center;justify-content:space-between;padding:10px 24px;border-bottom:1px solid rgba(139,92,246,0.08);background:rgba(250,248,252,0.8);backdrop-filter:blur(24px);flex-shrink:0}
+        .logo{font-size:1.15rem;font-weight:800;color:#8B5CF6;display:flex;align-items:center;gap:8px;text-decoration:none;letter-spacing:-0.3px}
+        .logo img{width:30px;height:30px}
+        .btn-back{padding:7px 14px;border-radius:50px;border:1px solid rgba(139,92,246,0.15);background:transparent;color:#8B5CF6;font-weight:600;font-size:0.78rem;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:5px;transition:all 0.2s}
+        .btn-back:hover{background:rgba(139,92,246,0.05)}
+        .workspace{display:flex;height:calc(100vh - 53px)}
+        .editor-panel{flex:1;display:flex;flex-direction:column;border-right:1px solid rgba(139,92,246,0.06);min-width:440px;background:rgba(255,255,255,0.25)}
+        .editor-toolbar{display:flex;gap:6px;padding:10px 16px;border-bottom:1px solid rgba(139,92,246,0.05);background:rgba(255,255,255,0.3);flex-wrap:wrap;align-items:center}
+        .tb-btn{height:34px;padding:0 14px;border-radius:50px;border:1px solid rgba(139,92,246,0.12);background:#fff;color:#6B7280;font-weight:600;font-size:0.78rem;cursor:pointer;font-family:inherit;transition:all 0.2s;display:flex;align-items:center;gap:6px;white-space:nowrap}
+        .tb-btn:hover{background:rgba(139,92,246,0.04);color:#8B5CF6;border-color:rgba(139,92,246,0.25)}
+        .tb-btn.active{background:#8B5CF6;color:#fff;border-color:#8B5CF6}
+        .tb-divider{width:1px;height:20px;background:rgba(139,92,246,0.1);margin:0 4px}
+        .editor-area{flex:1;padding:14px 16px;display:flex;flex-direction:column;gap:10px;overflow-y:auto}
+        .editor-area textarea{flex:1;border:1.5px solid rgba(139,92,246,0.08);border-radius:16px;padding:16px 18px;font-family:'Inter',sans-serif;font-size:0.88rem;line-height:1.65;resize:none;outline:none;background:#fff;color:#1F2937;transition:border-color 0.2s;min-height:200px}
+        .editor-area textarea:focus{border-color:rgba(139,92,246,0.3);box-shadow:0 0 0 3px rgba(139,92,246,0.03)}
+        .editor-area textarea::placeholder{color:#B0B7C3}
+        .editor-area textarea.small{min-height:60px;flex:none}
+        .meta-card{background:#fff;border-radius:14px;padding:14px 16px;border:1px solid rgba(139,92,246,0.06);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+        .meta-card select,.meta-card input{padding:9px 14px;border-radius:50px;border:1px solid rgba(139,92,246,0.1);background:rgba(250,248,252,0.5);font-family:inherit;font-size:0.8rem;outline:none;color:#1F2937;cursor:pointer;transition:all 0.2s}
+        .meta-card select:focus,.meta-card input:focus{border-color:rgba(139,92,246,0.25);background:#fff}
+        .meta-card select{appearance:none;padding-right:30px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M5 7L1 3h8z' fill='%239CA3AF'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+        .publish-card{background:#fff;border-radius:14px;padding:14px 16px;border:1px solid rgba(139,92,246,0.06)}
+        .publish-card h4{font-size:0.7rem;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px}
+        .publish-targets{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+        .pub-opt{flex:1;min-width:90px;padding:12px 10px;border-radius:12px;border:1.5px solid rgba(139,92,246,0.1);background:rgba(250,248,252,0.4);cursor:pointer;text-align:center;transition:all 0.25s;font-family:inherit}
+        .pub-opt:hover{border-color:rgba(139,92,246,0.25);background:rgba(139,92,246,0.02)}
+        .pub-opt.selected{border-color:#8B5CF6;background:rgba(139,92,246,0.04);box-shadow:0 0 0 3px rgba(139,92,246,0.05)}
+        .pub-opt i{display:block;font-size:1.2rem;color:#8B5CF6;margin-bottom:4px}
+        .pub-opt .pub-label{font-size:0.75rem;font-weight:700;color:#1F2937;margin-bottom:2px}
+        .pub-opt .pub-desc{font-size:0.65rem;color:#9CA3AF;line-height:1.3}
+        .pub-extra{display:none;gap:8px;align-items:center}
+        .pub-extra.show{display:flex}
+        .pub-extra select,.pub-extra input{padding:8px 12px;border-radius:50px;border:1px solid rgba(139,92,246,0.1);background:#fff;font-family:inherit;font-size:0.78rem;outline:none;color:#1F2937;flex:1}
+        .btn-publish{padding:10px 22px;border-radius:50px;border:none;background:#8B5CF6;color:#fff;font-weight:700;font-size:0.82rem;cursor:pointer;font-family:inherit;box-shadow:0 4px 14px rgba(139,92,246,0.15);transition:all 0.25s;display:flex;align-items:center;gap:6px;width:100%;justify-content:center;margin-top:8px}
+        .btn-publish:hover{background:#7C3AED;transform:translateY(-1px);box-shadow:0 8px 22px rgba(139,92,246,0.22)}
+        .btn-publish:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+        .preview-panel{flex:1;padding:20px 24px;overflow-y:auto;background:rgba(255,255,255,0.2)}
+        .preview-card{background:#fff;border-radius:18px;padding:28px 30px;box-shadow:0 2px 16px rgba(0,0,0,0.03);border:1px solid rgba(139,92,246,0.05);line-height:1.7}
+        .preview-card h1,.preview-card h2,.preview-card h3{color:#1F2937;margin:14px 0 8px;letter-spacing:-0.5px}
+        .preview-card p{color:#4B5563;margin-bottom:10px;font-size:0.92rem}
+        .preview-card code{background:rgba(139,92,246,0.05);padding:2px 7px;border-radius:5px;font-size:0.85em;color:#7C3AED}
+        .preview-card pre{background:#1e1e1e;color:#d4d4d4;padding:16px 18px;border-radius:14px;overflow-x:auto;font-size:0.85rem;line-height:1.55;margin:12px 0}
+        .preview-card pre code{background:transparent;color:inherit;padding:0}
+        .preview-card img{max-width:100%;border-radius:12px;margin:12px 0}
+        .preview-card .katex{font-size:1.05em}
+        .preview-card .attached-file{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;background:rgba(139,92,246,0.04);border-radius:10px;font-size:0.82rem;color:#8B5CF6;font-weight:600;margin:6px 4px;text-decoration:none}
+        .preview-card .attached-file:hover{background:rgba(139,92,246,0.08)}
+        .preview-placeholder{text-align:center;color:#B0B7C3;padding:80px 20px;font-size:0.9rem}
+        .preview-placeholder i{display:block;font-size:2rem;margin-bottom:10px;opacity:0.2}
+        .formula-panel{display:none;background:#fff;border:1px solid rgba(139,92,246,0.08);border-radius:16px;padding:14px;margin-bottom:8px;box-shadow:0 4px 20px rgba(0,0,0,0.04)}
+        .formula-panel.open{display:block}
+        .sym-row{display:flex;gap:4px;margin-bottom:5px;flex-wrap:wrap;align-items:center}
+        .sym-label{font-size:0.65rem;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:1px;margin-right:6px;white-space:nowrap;min-width:50px}
+        .sym-btn{width:auto;min-width:36px;height:32px;padding:0 8px;border-radius:8px;border:1px solid rgba(139,92,246,0.1);background:#fff;color:#4B5563;font-size:0.82rem;cursor:pointer;font-family:inherit;transition:all 0.15s;display:flex;align-items:center;justify-content:center;white-space:nowrap}
+        .sym-btn:hover{background:rgba(139,92,246,0.06);color:#8B5CF6;border-color:rgba(139,92,246,0.25)}
+        .file-attach-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:4px}
+        .file-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(139,92,246,0.05);border-radius:50px;font-size:0.75rem;color:#8B5CF6;font-weight:600;border:1px solid rgba(139,92,246,0.1)}
+        .file-chip .remove-file{cursor:pointer;color:#EF4444;font-size:0.7rem;margin-left:2px}
+        .task-number-hint{font-size:0.7rem;color:#8B5CF6;white-space:nowrap;font-weight:600;padding-left:4px}
+        .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#fff;border-radius:14px;padding:14px 24px;box-shadow:0 8px 32px rgba(0,0,0,0.12);z-index:300;font-weight:600;font-size:0.88rem;display:flex;align-items:center;gap:10px;animation:toastIn 0.3s}
+        @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+        .toast.success{color:#22C55E;border:1px solid rgba(34,197,94,0.2)}.toast.error{color:#EF4444;border:1px solid rgba(239,68,68,0.2)}
+        @media(max-width:768px){.workspace{flex-direction:column}.editor-panel{min-width:100%;height:55%}.preview-panel{height:45%}}
+    </style>
+</head>
+<body>
+    <header class="header">
+        <a href="index.html" class="logo"><img src="data/logo.png">Stud&School</a>
+        <a href="profile.html" class="btn-back"><i class="fas fa-arrow-left"></i> Назад</a>
+    </header>
+
+    <div class="workspace">
+        <div class="editor-panel">
+            <div class="editor-toolbar">
+                <button class="tb-btn" id="btnFormula" onclick="toggleFormulaPanel()"><i class="fas fa-function"></i> Формула</button>
+                <button class="tb-btn" onclick="insertCode()"><i class="fas fa-code"></i> Код</button>
+                <button class="tb-btn" onclick="document.getElementById('imageInput').click()"><i class="fas fa-image"></i> Картинка</button>
+                <button class="tb-btn" onclick="document.getElementById('fileInput').click()"><i class="fas fa-paperclip"></i> Файл</button>
+                <input type="file" id="imageInput" accept="image/*" style="display:none" onchange="uploadImage(event)">
+                <input type="file" id="fileInput" accept=".xlsx,.docx,.txt,.pdf,.csv,.pptx" style="display:none" onchange="attachFile(event)">
+                <span class="tb-divider"></span>
+                <span style="font-size:0.7rem;color:#9CA3AF;font-weight:500">Редактор задачи</span>
+            </div>
+            <div class="editor-area">
+                <div class="formula-panel" id="formulaPanel">
+                    <div class="sym-row">
+                        <span class="sym-label">Степени</span>
+                        <button class="sym-btn" onclick="insertSymbol('x^{}')">x{}</button>
+                        <button class="sym-btn" onclick="insertSymbol('x^{2}')">x²</button>
+                        <button class="sym-btn" onclick="insertSymbol('x^{3}')">x³</button>
+                        <button class="sym-btn" onclick="insertSymbol('x^{n}')">xⁿ</button>
+                        <button class="sym-btn" onclick="insertSymbol('^{\\circ}')">°</button>
+                    </div>
+                    <div class="sym-row">
+                        <span class="sym-label">Корни</span>
+                        <button class="sym-btn" onclick="insertSymbol('\\sqrt{}')">√</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\sqrt[3]{}')">∛</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\sqrt[n]{}')">ⁿ√</button>
+                    </div>
+                    <div class="sym-row">
+                        <span class="sym-label">Дроби</span>
+                        <button class="sym-btn" onclick="insertSymbol('\\frac{}{}')">a/b</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\tfrac{}{}')">a/b(м)</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\dfrac{}{}')">a/b(к)</button>
+                    </div>
+                    <div class="sym-row">
+                        <span class="sym-label">Индексы</span>
+                        <button class="sym-btn" onclick="insertSymbol('_{}')">aₓ</button>
+                        <button class="sym-btn" onclick="insertSymbol('_{1}')">a₁</button>
+                        <button class="sym-btn" onclick="insertSymbol('_{n}')">aₙ</button>
+                    </div>
+                    <div class="sym-row">
+                        <span class="sym-label">Знаки</span>
+                        <button class="sym-btn" onclick="insertSymbol('\\pm')">±</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\mp')">∓</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\times')">×</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\div')">÷</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\cdot')">·</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\le')">≤</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\ge')">≥</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\ne')">≠</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\approx')">≈</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\equiv')">≡</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\propto')">∝</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\infty')">∞</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\parallel')">∥</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\perp')">⊥</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\angle')">∠</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\triangle')">△</button>
+                    </div>
+                    <div class="sym-row">
+                        <span class="sym-label">Греческий</span>
+                        <button class="sym-btn" onclick="insertSymbol('\\alpha')">α</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\beta')">β</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\gamma')">γ</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\delta')">δ</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\epsilon')">ε</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\theta')">θ</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\lambda')">λ</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\mu')">μ</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\pi')">π</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\sigma')">σ</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\phi')">φ</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\omega')">ω</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\Delta')">Δ</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\Omega')">Ω</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\Sigma')">Σ</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\Pi')">Π</button>
+                    </div>
+                    <div class="sym-row">
+                        <span class="sym-label">Функции</span>
+                        <button class="sym-btn" onclick="insertSymbol('\\sin')">sin</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\cos')">cos</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\tan')">tan</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\cot')">cot</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\arcsin')">arcsin</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\arccos')">arccos</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\arctan')">arctan</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\log')">log</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\ln')">ln</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\lg')">lg</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\lim')">lim</button>
+                    </div>
+                    <div class="sym-row">
+                        <span class="sym-label">Суммы</span>
+                        <button class="sym-btn" onclick="insertSymbol('\\int')">∫</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\iint')">∬</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\iiint')">∭</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\oint')">∮</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\sum')">∑</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\prod')">∏</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\coprod')">∐</button>
+                    </div>
+                    <div class="sym-row">
+                        <span class="sym-label">Скобки</span>
+                        <button class="sym-btn" onclick="insertSymbol('\\left( \\right)')">()</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\left[ \\right]')">[]</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\left\\{ \\right\\}')">{}</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\left| \\right|')">||</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\lfloor \\rfloor')">⌊⌋</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\lceil \\rceil')">⌈⌉</button>
+                    </div>
+                    <div class="sym-row">
+                        <span class="sym-label">Прочее</span>
+                        <button class="sym-btn" onclick="insertSymbol('\\vec{}')">v→</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\bar{}')">ā</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\hat{}')">â</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\widehat{}')">wide</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\overline{}')">over</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\underline{}')">under</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\text{}')">text</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\mathbb{}')">ℕ</button>
+                        <button class="sym-btn" onclick="insertSymbol('\\mathcal{}')">ℒ</button>
+                    </div>
+                </div>
+                <textarea id="taskContent" placeholder="Напиши текст задачи...
+• Обычный текст — просто печатай
+• Формулы — кнопка Формула вверху
+• Код — кнопка Код
+• Картинки — кнопка Картинка
+• Файлы — кнопка Файл" oninput="updatePreview()"></textarea>
+                <div class="meta-card">
+                    <select id="taskSubject">
+                        <option value="">Предмет</option>
+                        <option value="math">Математика</option>
+                        <option value="physics">Физика</option>
+                        <option value="informatics">Информатика</option>
+                        <option value="russian">Русский язык</option>
+                        <option value="history">История</option>
+                        <option value="social">Обществознание</option>
+                    </select>
+                    <select id="taskExam" onchange="updateTaskNumberHint()">
+                        <option value="">Экзамен</option>
+                        <option value="ege">ЕГЭ</option>
+                        <option value="oge">ОГЭ</option>
+                    </select>
+                    <input type="number" id="taskNumber" placeholder="Номер задачи" min="1" max="30" style="width:110px" onchange="updateTaskNumberHint()">
+                    <span class="task-number-hint" id="taskNumberHint"></span>
+                </div>
+                <div class="meta-card" style="margin-top:-6px">
+                    <select id="taskLevel">
+                        <option value="base">Базовый</option>
+                        <option value="medium">Средний</option>
+                        <option value="hard">Сложный</option>
+                    </select>
+                    <input type="text" id="taskTopic" placeholder="Тема" style="flex:1">
+                    <input type="text" id="taskSource" placeholder="Источник (ФИПИ 2025, вар. 3)" style="flex:1">
+                </div>
+                <textarea id="taskAnswer" class="small" placeholder="Ответ" oninput="updatePreview()"></textarea>
+                <textarea id="taskSolution" class="small" placeholder="Решение (необязательно)" oninput="updatePreview()"></textarea>
+                <div class="file-attach-row" id="attachedFiles"></div>
+                <div class="publish-card">
+                    <h4>Куда отправить</h4>
+                    <div class="publish-targets" id="publishTargets">
+                        <div class="pub-opt selected" data-target="fipi" onclick="selectTarget('fipi')">
+                            <i class="fas fa-globe"></i>
+                            <div class="pub-label">В банк FIPI</div>
+                            <div class="pub-desc">Доступно всем</div>
+                        </div>
+                        <div class="pub-opt" data-target="special" onclick="selectTarget('special')">
+                            <i class="fas fa-book"></i>
+                            <div class="pub-label">В банк школы</div>
+                            <div class="pub-desc">Закрытый банк для наших учеников</div>
+                        </div>
+                    </div>
+                    <div class="pub-extra" id="pubExtra">
+                        <select id="pubTargetSelect"><option value="">Выбери...</option></select>
+                    </div>
+                    <button class="btn-publish" onclick="publishTask()"><i class="fas fa-paper-plane"></i> Опубликовать</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="preview-panel" id="previewPanel">
+            <div class="preview-placeholder"><i class="fas fa-eye"></i>Превью появится здесь</div>
+        </div>
+    </div>
+
+    <script>
+        var supabase = window.supabase.createClient(
+            'https://nrmihghshpteellhmzuh.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ybWloZ2hzaHB0ZWVsbGhtenVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5NDI4NDMsImV4cCI6MjA5NzUxODg0M30.X77HE62ZqYPVv7uOpjHNWgn7H4wIL_FoJLcs-CV1itQ'
+        );
+        var currentUser = null, formulaOpen = false, selectedTarget = 'fipi', attachedFiles = [];
+
+        async function init(){
+            var {data:{user}} = await supabase.auth.getUser();
+            if(!user || !user.user_metadata?.role || (user.user_metadata.role !== 'teacher' && user.user_metadata.role !== 'admin')){
+                window.location.replace('profile.html'); return;
+            }
+            currentUser = user;
+        }
+
+        function toggleFormulaPanel(){
+            formulaOpen = !formulaOpen;
+            var panel = document.getElementById('formulaPanel');
+            var btn = document.getElementById('btnFormula');
+            if(formulaOpen){ panel.classList.add('open'); btn.classList.add('active'); }
+            else{ panel.classList.remove('open'); btn.classList.remove('active'); }
+        }
+
+        function insertSymbol(sym){
+            var ta = document.getElementById('taskContent');
+            var start = ta.selectionStart, end = ta.selectionEnd;
+            var s = sym;
+            if(start !== end && sym.includes('{}')){
+                s = sym.replace('{}', '{' + ta.value.substring(start, end) + '}');
+            }
+            ta.value = ta.value.substring(0, start) + s + ta.value.substring(end);
+            ta.focus();
+            updatePreview();
+        }
+
+        function insertCode(){
+            var ta = document.getElementById('taskContent');
+            var start = ta.selectionStart;
+            ta.value = ta.value.substring(0, start) + '\n```\n\n```\n' + ta.value.substring(start);
+            ta.focus();
+            updatePreview();
+        }
+
+        function updateTaskNumberHint(){
+            var num = document.getElementById('taskNumber').value;
+            var exam = document.getElementById('taskExam').value;
+            var hint = document.getElementById('taskNumberHint');
+            if(num && exam){
+                var labels = {'ege':'ЕГЭ','oge':'ОГЭ'};
+                hint.textContent = '📌 ' + labels[exam] + ', задание №' + num;
+            } else {
+                hint.textContent = '';
+            }
+        }
+
+        async function uploadImage(e){
+            var file = e.target.files[0];
+            if(!file) return;
+            try {
+                var name = 'tasks/images/' + Date.now() + '_' + file.name;
+                var {error} = await supabase.storage.from('tasks-images').upload(name, file);
+                if(error){ toast('Ошибка загрузки','error'); return; }
+                var url = supabase.storage.from('tasks-images').getPublicUrl(name).data.publicUrl;
+                var ta = document.getElementById('taskContent');
+                ta.value += '\n![' + file.name + '](' + url + ')\n';
+                updatePreview();
+            } catch(err){ toast('Ошибка загрузки','error'); }
+            e.target.value = '';
+        }
+
+        async function attachFile(e){
+            var file = e.target.files[0];
+            if(!file) return;
+            try {
+                var name = 'tasks/files/' + Date.now() + '_' + file.name;
+                var {error} = await supabase.storage.from('tasks-images').upload(name, file);
+                if(error){ toast('Ошибка загрузки','error'); return; }
+                var url = supabase.storage.from('tasks-images').getPublicUrl(name).data.publicUrl;
+                attachedFiles.push({name: file.name, url: url});
+                renderAttachedFiles();
+            } catch(err){ toast('Ошибка загрузки','error'); }
+            e.target.value = '';
+        }
+
+        function renderAttachedFiles(){
+            var el = document.getElementById('attachedFiles');
+            el.innerHTML = attachedFiles.map(function(f, i){
+                return '<div class="file-chip"><i class="fas fa-file"></i> ' + f.name + '<span class="remove-file" onclick="removeFile('+i+')"><i class="fas fa-times"></i></span></div>';
+            }).join('');
+            updatePreview();
+        }
+
+        function removeFile(i){
+            attachedFiles.splice(i, 1);
+            renderAttachedFiles();
+        }
+
+        function selectTarget(target){
+            selectedTarget = target;
+            document.querySelectorAll('.pub-opt').forEach(function(el){ el.classList.remove('selected'); });
+            document.querySelector('[data-target="'+target+'"]').classList.add('selected');
+            var extra = document.getElementById('pubExtra');
+            var sel = document.getElementById('pubTargetSelect');
+            extra.classList.remove('show');
+            sel.innerHTML = '';
+        }
+
+        function updatePreview(){
+            var md = document.getElementById('taskContent').value;
+            var panel = document.getElementById('previewPanel');
+            if(!md.trim() && !attachedFiles.length){
+                panel.innerHTML = '<div class="preview-placeholder"><i class="fas fa-eye"></i>Превью появится здесь</div>';
+                return;
+            }
+            var html = marked.parse(md) || '';
+            if(attachedFiles.length){
+                html += '<div style="margin-top:14px">' + attachedFiles.map(function(f){
+                    return '<a href="'+f.url+'" target="_blank" class="attached-file"><i class="fas fa-download"></i> ' + f.name + '</a>';
+                }).join(' ') + '</div>';
+            }
+            panel.innerHTML = '<div class="preview-card">' + html + '</div>';
+            try { renderMathInElement(panel, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]}); } catch(e){}
+            document.querySelectorAll('.preview-card pre code').forEach(function(block) { hljs.highlightElement(block); });
+        }
+
+        async function getNextDisplayId() {
+            try {
+                var r = await fetch('http://localhost:5001/api/tasks/next-id');
+                var data = await r.json();
+                return '#' + String(data.next_id).padStart(6, '0');
+            } catch(e) {
+                return '#000001';
+            }
+        }
+
+        async function publishTask(){
+            var content = document.getElementById('taskContent').value.trim();
+            if(!content){ toast('Введи текст задачи','error'); return; }
+
+            var displayId = await getNextDisplayId();
+            var body = {
+                display_id: displayId,
+                content: content,
+                answer: document.getElementById('taskAnswer').value.trim() || null,
+                solution: document.getElementById('taskSolution').value.trim() || null,
+                subject: document.getElementById('taskSubject').value || null,
+                exam_type: document.getElementById('taskExam').value || null,
+                task_number: document.getElementById('taskNumber').value || null,
+                level: document.getElementById('taskLevel').value,
+                topic: document.getElementById('taskTopic').value.trim() || null,
+                source: document.getElementById('taskSource').value.trim() || null,
+                task_type: selectedTarget,
+                target_type: selectedTarget === 'fipi' ? 'all' : selectedTarget,
+                created_by: currentUser.id
+            };
+
+            var btn = document.querySelector('.btn-publish');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Публикуем...';
+
+            var r = await fetch('http://localhost:5001/api/tasks', {
+                method: 'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify(body)
+            });
+            if(r.ok){
+                toast('Задача '+displayId+' опубликована!','success');
+                document.getElementById('taskContent').value = '';
+                document.getElementById('taskAnswer').value = '';
+                document.getElementById('taskSolution').value = '';
+                attachedFiles = [];
+                renderAttachedFiles();
+                updatePreview();
+            } else {
+                toast('Ошибка','error');
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-paper-plane"></i> Опубликовать';
+        }
+
+        function toast(msg,type){
+            var t=document.createElement('div');t.className='toast '+(type||'success');
+            t.innerHTML='<i class="fas fa-'+(type==='error'?'exclamation-circle':'check-circle')+'"></i> '+msg;
+            document.body.appendChild(t);
+            setTimeout(function(){t.remove()},3000);
+        }
+
+        init();
+    </script>
+</body>
+</html>

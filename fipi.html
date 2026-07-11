@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="data/logo.png">
+    <title>Банк задач — Stud&School</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Inter',sans-serif;background:#FAF8FC;color:#1F2937;min-height:100vh}
+        .header{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid rgba(139,92,246,0.08);background:rgba(250,248,252,0.8);backdrop-filter:blur(24px);position:sticky;top:0;z-index:100}
+        .logo{font-size:1.2rem;font-weight:800;color:#8B5CF6;display:flex;align-items:center;gap:8px;text-decoration:none}
+        .logo img{width:32px;height:32px}
+        .btn-back{padding:7px 14px;border-radius:50px;border:1px solid rgba(139,92,246,0.15);background:transparent;color:#8B5CF6;font-weight:600;font-size:0.78rem;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:5px}
+        .main{max-width:1000px;margin:0 auto;padding:32px 20px 100px}
+        .page-title{font-size:1.6rem;font-weight:900;letter-spacing:-1px;margin-bottom:4px}
+        .page-subtitle{font-size:0.85rem;color:#6B7280;margin-bottom:24px}
+        .filters-bar{background:#fff;border-radius:16px;padding:14px 18px;border:1px solid rgba(139,92,246,0.06);display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:20px}
+        .filters-bar select,.filters-bar input{padding:8px 14px;border-radius:50px;border:1px solid rgba(139,92,246,0.12);background:rgba(250,248,252,0.5);font-family:inherit;font-size:0.8rem;outline:none;color:#1F2937;cursor:pointer}
+        .filters-bar select:focus,.filters-bar input:focus{border-color:rgba(139,92,246,0.3)}
+        .filters-bar select{appearance:none;padding-right:28px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M5 7L1 3h8z' fill='%239CA3AF'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
+        .task-count{font-size:0.75rem;color:#9CA3AF;font-weight:600;margin-left:auto}
+        .task-list{display:flex;flex-direction:column;gap:12px}
+        .task-card{background:#fff;border-radius:16px;padding:20px 22px;border:1px solid rgba(139,92,246,0.06);box-shadow:0 2px 12px rgba(0,0,0,0.02);transition:all 0.2s}
+        .task-card:hover{border-color:rgba(139,92,246,0.15);box-shadow:0 4px 20px rgba(139,92,246,0.05)}
+        .task-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px}
+        .task-badges{display:flex;gap:6px;flex-wrap:wrap}
+        .task-badge{padding:4px 10px;border-radius:50px;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
+        .badge-ege{background:rgba(139,92,246,0.08);color:#8B5CF6}
+        .badge-oge{background:rgba(225,29,141,0.07);color:#E11D8D}
+        .badge-uni{background:rgba(34,197,94,0.08);color:#16A34A}
+        .badge-oth{background:rgba(139,92,246,0.06);color:#7C3AED}
+        .badge-level{background:rgba(245,158,11,0.08);color:#F59E0B}
+        .badge-source{background:rgba(107,114,128,0.06);color:#6B7280;text-transform:none;letter-spacing:0;font-weight:500}
+        .task-number-badge{background:rgba(107,114,128,0.08);color:#6B7280;font-weight:700;font-size:0.7rem;padding:4px 10px;border-radius:50px}
+        .task-meta-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+        .task-content{font-size:0.9rem;line-height:1.65;color:#4B5563}
+        .task-content .katex{font-size:1.05em}
+        .task-content img{max-width:100%;border-radius:10px;margin:8px 0}
+        .task-content pre{background:#1e1e1e;color:#d4d4d4;padding:14px;border-radius:12px;overflow-x:auto;font-size:0.82rem;margin:8px 0}
+        .task-content pre code{background:transparent;color:inherit}
+        .task-answer-area{margin-top:12px;padding-top:12px;border-top:1px solid rgba(139,92,246,0.06)}
+        .task-answer-toggle{padding:7px 16px;border-radius:50px;border:1px solid rgba(139,92,246,0.15);background:transparent;color:#8B5CF6;font-weight:600;font-size:0.78rem;cursor:pointer;font-family:inherit;transition:all 0.2s}
+        .task-answer-toggle:hover{background:rgba(139,92,246,0.04)}
+        .task-answer{display:none;margin-top:8px;padding:10px 14px;background:rgba(34,197,94,0.04);border-radius:10px;font-size:0.85rem;color:#16A34A;font-weight:600}
+        .task-answer.show{display:block}
+        .empty-state{text-align:center;padding:60px 20px;color:#B0B7C3}
+        .empty-state i{display:block;font-size:2.5rem;margin-bottom:12px;opacity:0.2}
+        .ai-float-btn{position:fixed;bottom:24px;right:24px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#8B5CF6,#E11D8D);color:#fff;border:none;font-size:1.4rem;cursor:pointer;box-shadow:0 8px 28px rgba(139,92,246,0.3);z-index:150;transition:all 0.3s;display:flex;align-items:center;justify-content:center}
+        .ai-float-btn:hover{transform:scale(1.08);box-shadow:0 12px 36px rgba(139,92,246,0.4)}
+        .ai-chat-panel{position:fixed;bottom:96px;right:24px;width:380px;height:520px;background:#fff;border-radius:20px;box-shadow:0 16px 48px rgba(0,0,0,0.12);border:1px solid rgba(139,92,246,0.1);z-index:149;display:none;flex-direction:column;overflow:hidden}
+        .ai-chat-panel.open{display:flex}
+        .ai-chat-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid rgba(139,92,246,0.06);background:rgba(250,248,252,0.8)}
+        .ai-chat-header .ai-name{font-weight:700;font-size:0.9rem;display:flex;align-items:center;gap:8px}
+        .ai-chat-header .ai-name i{color:#8B5CF6}
+        .ai-chat-close{width:32px;height:32px;border-radius:50%;border:none;background:rgba(0,0,0,0.04);cursor:pointer;font-size:0.8rem;color:#6B7280}
+        .ai-chat-messages{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:8px}
+        .ai-msg{display:flex;gap:8px;font-size:0.82rem;line-height:1.5}
+        .ai-msg.bot .ai-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#8B5CF6,#E11D8D);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.7rem;flex-shrink:0}
+        .ai-msg.bot .ai-bubble{background:#f5f3f7;color:#4B5563;padding:10px 14px;border-radius:14px;border-top-left-radius:4px;max-width:85%}
+        .ai-msg.user{flex-direction:row-reverse}
+        .ai-msg.user .ai-bubble{background:#8B5CF6;color:#fff;padding:10px 14px;border-radius:14px;border-top-right-radius:4px;max-width:85%}
+        .ai-typing{display:flex;gap:4px;padding:8px 14px}
+        .ai-typing span{width:6px;height:6px;border-radius:50%;background:#B0B7C3;animation:bounce 1.2s infinite}
+        .ai-typing span:nth-child(2){animation-delay:0.15s}
+        .ai-typing span:nth-child(3){animation-delay:0.3s}
+        @keyframes bounce{0%,60%,100%{transform:translateY(0);opacity:0.3}30%{transform:translateY(-8px);opacity:1}}
+        .ai-chat-input-area{padding:10px 14px;border-top:1px solid rgba(139,92,246,0.06);display:flex;gap:8px}
+        .ai-chat-input{flex:1;padding:10px 14px;border-radius:50px;border:1px solid rgba(139,92,246,0.12);font-family:inherit;font-size:0.82rem;outline:none;background:rgba(250,248,252,0.5)}
+        .ai-chat-input:focus{border-color:rgba(139,92,246,0.3)}
+        .ai-chat-send{width:38px;height:38px;border-radius:50%;border:none;background:#8B5CF6;color:#fff;cursor:pointer;font-size:0.85rem;flex-shrink:0}
+        .ai-hint{font-size:0.68rem;color:#B0B7C3;text-align:center;padding:6px;border-top:1px solid rgba(139,92,246,0.04)}
+        @media(max-width:500px){.ai-chat-panel{right:8px;bottom:80px;width:calc(100vw - 16px);height:420px}.ai-float-btn{right:12px;bottom:16px}}
+    </style>
+</head>
+<body>
+    <header class="header">
+        <a href="index.html" class="logo"><img src="data/logo.png">Stud&School</a>
+        <a href="index.html" class="btn-back"><i class="fas fa-arrow-left"></i> На главную</a>
+    </header>
+
+    <div class="main">
+        <h1 class="page-title">Банк задач</h1>
+        <p class="page-subtitle">Тренируйся на реальных заданиях из банка ФИПИ с ИИ-помошником.</p>
+
+        <div style="background:#fff;border-radius:14px;padding:12px 18px;border:1px solid rgba(139,92,246,0.08);margin-bottom:16px;display:flex;align-items:center;gap:10px">
+            <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#8B5CF6,#E11D8D);display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:#fff;flex-shrink:0"><i class="fas fa-robot"></i></div>
+            <div>
+                <div style="font-weight:700;font-size:0.85rem;color:#1F2937">Нужна подсказка?</div>
+                <div style="font-size:0.75rem;color:#6B7280">Нажми кнопку в углу и напиши номер задачи (например <b>#000001</b>) — AI поможет разобраться</div>
+            </div>
+        </div>
+
+        <div class="filters-bar">
+            <select id="filterSubject" onchange="applyFilters()">
+                <option value="">Все предметы</option>
+                <option value="math">Математика</option>
+                <option value="physics">Физика</option>
+                <option value="informatics">Информатика</option>
+                <option value="russian">Русский язык</option>
+                <option value="history">История</option>
+                <option value="social">Обществознание</option>
+            </select>
+            <select id="filterExam" onchange="applyFilters()">
+                <option value="">Все экзамены</option>
+                <option value="ege">ЕГЭ</option>
+                <option value="oge">ОГЭ</option>
+                <option value="uni">Университет</option>
+                <option value="oth">Универсальные</option>
+            </select>
+            <select id="filterLevel" onchange="applyFilters()">
+                <option value="">Любой уровень</option>
+                <option value="base">Базовый</option>
+                <option value="medium">Средний</option>
+                <option value="hard">Сложный</option>
+            </select>
+            <input type="text" id="filterDisplayId" placeholder="#номер" oninput="applyFilters()" style="width:100px">
+            <span class="task-count" id="taskCount">0 задач</span>
+        </div>
+
+        <div class="task-list" id="taskList">
+            <div class="empty-state"><i class="fas fa-inbox"></i>Загружаем задачи...</div>
+        </div>
+    </div>
+
+    <button class="ai-float-btn" id="aiFloatBtn" onclick="toggleAiChat()" title="Помощник"><i class="fas fa-robot"></i></button>
+
+    <div class="ai-chat-panel" id="aiChatPanel">
+        <div class="ai-chat-header">
+            <div class="ai-name"><i class="fas fa-robot"></i> Помощник</div>
+            <button class="ai-chat-close" onclick="toggleAiChat()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="ai-chat-messages" id="aiMessages">
+            <div class="ai-msg bot">
+                <div class="ai-avatar"><i class="fas fa-robot"></i></div>
+                <div class="ai-bubble">Привет! Я помогу с задачей. Напиши #номер задачи (например #000001) или просто задай вопрос.</div>
+            </div>
+        </div>
+        <div class="ai-hint">Подсказки бесплатные. Полное решение — на курсах с Rubi AI.</div>
+        <div class="ai-chat-input-area">
+            <input type="text" class="ai-chat-input" id="aiInput" placeholder="Напиши сообщение..." onkeydown="if(event.key==='Enter')sendAiMessage()">
+            <button class="ai-chat-send" onclick="sendAiMessage()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <script>
+        var allTasks = [];
+        var aiOpen = false;
+        var aiWaiting = false;
+        var aiHistory = [];
+
+        async function loadTasks(){
+            try {
+                var r = await fetch('http://localhost:5001/api/tasks?type=fipi');
+                allTasks = await r.json();
+                applyFilters();
+            } catch(e) {
+                document.getElementById('taskList').innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i>Ошибка загрузки</div>';
+            }
+        }
+
+        function applyFilters(){
+            var subject = document.getElementById('filterSubject').value;
+            var exam = document.getElementById('filterExam').value;
+            var level = document.getElementById('filterLevel').value;
+            var displayId = document.getElementById('filterDisplayId').value.trim();
+
+            var filtered = allTasks.filter(function(t){
+                if(subject && t.subject !== subject) return false;
+                if(exam && t.exam_type !== exam) return false;
+                if(level && t.level !== level) return false;
+                if(displayId && t.display_id && !t.display_id.includes(displayId)) return false;
+                return true;
+            });
+
+            document.getElementById('taskCount').textContent = filtered.length + ' задач';
+            renderTasks(filtered);
+        }
+
+        function renderTasks(tasks){
+            var container = document.getElementById('taskList');
+            if(!tasks.length){
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-search"></i>Ничего не найдено</div>';
+                return;
+            }
+
+            container.innerHTML = tasks.map(function(t){
+                var badges = [];
+                if(t.exam_type === 'ege') badges.push('<span class="task-badge badge-ege">ЕГЭ</span>');
+                else if(t.exam_type === 'oge') badges.push('<span class="task-badge badge-oge">ОГЭ</span>');
+                else if(t.exam_type === 'uni') badges.push('<span class="task-badge badge-uni">Университет</span>');
+                else if(t.exam_type === 'oth') badges.push('<span class="task-badge badge-oth">Универсальный</span>');
+
+                if(t.level === 'base') badges.push('<span class="task-badge badge-level">Базовый</span>');
+                else if(t.level === 'medium') badges.push('<span class="task-badge badge-level">Средний</span>');
+                else if(t.level === 'hard') badges.push('<span class="task-badge badge-level">Сложный</span>');
+
+                if(t.task_number) badges.push('<span class="task-number-badge">№'+t.task_number+'</span>');
+                if(t.display_id) badges.push('<span class="task-number-badge">'+t.display_id+'</span>');
+
+                var metaRow = '';
+                var metaItems = [];
+                if(t.topic) metaItems.push('<span class="task-badge badge-source"><i class="fas fa-tag"></i> '+t.topic+'</span>');
+                if(t.subject) {
+                    var subjLabels = {math:'Математика',physics:'Физика',informatics:'Информатика',russian:'Русский язык',history:'История',social:'Обществознание'};
+                    metaItems.push('<span class="task-badge badge-source"><i class="fas fa-book"></i> '+(subjLabels[t.subject]||t.subject)+'</span>');
+                }
+                if(t.source) metaItems.push('<span class="task-badge badge-source"><i class="fas fa-link"></i> '+t.source+'</span>');
+                if(metaItems.length) metaRow = '<div class="task-meta-row">'+metaItems.join(' ')+'</div>';
+
+                var html = marked.parse(t.content || '');
+                var answerHtml = '';
+                if(t.answer){
+                    answerHtml = '<div class="task-answer-area"><button class="task-answer-toggle" onclick="toggleAnswer(this)"><i class="fas fa-eye"></i> Показать ответ</button><div class="task-answer">' + marked.parse(t.answer) + '</div></div>';
+                }
+
+                return '<div class="task-card" id="task-'+t.id+'"><div class="task-card-header"><div class="task-badges">'+badges.join(' ')+'</div></div>'+metaRow+'<div class="task-content">'+html+'</div>'+answerHtml+'</div>';
+            }).join('');
+
+            try { renderMathInElement(container, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]}); } catch(e){}
+            container.querySelectorAll('pre code').forEach(function(block) { hljs.highlightElement(block); });
+        }
+
+        function toggleAnswer(btn){
+            var answer = btn.nextElementSibling;
+            var isOpen = answer.classList.contains('show');
+            if(isOpen){
+                answer.classList.remove('show');
+                btn.innerHTML = '<i class="fas fa-eye"></i> Показать ответ';
+            } else {
+                answer.classList.add('show');
+                btn.innerHTML = '<i class="fas fa-eye-slash"></i> Скрыть ответ';
+                try { renderMathInElement(answer, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]}); } catch(e){}
+            }
+        }
+
+        // ─── AI Chat ───
+        function toggleAiChat(){
+            aiOpen = !aiOpen;
+            var panel = document.getElementById('aiChatPanel');
+            if(aiOpen){ panel.classList.add('open'); document.getElementById('aiInput').focus(); }
+            else{ panel.classList.remove('open'); }
+        }
+
+        function addAiMessage(text, type){
+            var container = document.getElementById('aiMessages');
+            var msg = document.createElement('div');
+            msg.className = 'ai-msg ' + type;
+            if(type === 'bot'){
+                msg.innerHTML = '<div class="ai-avatar"><i class="fas fa-robot"></i></div><div class="ai-bubble">'+text.replace(/\n/g,'<br>')+'</div>';
+            } else {
+                msg.innerHTML = '<div class="ai-bubble">'+text.replace(/\n/g,'<br>')+'</div>';
+            }
+            container.appendChild(msg);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function addAiTyping(){
+            var indicator = document.createElement('div');
+            indicator.className = 'ai-msg bot';
+            indicator.id = 'aiTyping';
+            indicator.innerHTML = '<div class="ai-avatar"><i class="fas fa-robot"></i></div><div class="ai-bubble"><div class="ai-typing"><span></span><span></span><span></span></div></div>';
+            document.getElementById('aiMessages').appendChild(indicator);
+            document.getElementById('aiMessages').scrollTop = document.getElementById('aiMessages').scrollHeight;
+        }
+
+        function removeAiTyping(){
+            var el = document.getElementById('aiTyping');
+            if(el) el.remove();
+        }
+
+        async function sendAiMessage(){
+            if(aiWaiting) return;
+            var input = document.getElementById('aiInput');
+            var text = input.value.trim();
+            if(!text) return;
+
+            input.value = '';
+            addAiMessage(text, 'user');
+            aiHistory.push({role: 'user', content: text});
+            aiWaiting = true;
+            addAiTyping();
+
+            try {
+                var displayId = null;
+                var match = text.match(/#?(\d{1,6})/);
+                if(match) displayId = match[1];
+
+                var r = await fetch('http://localhost:5001/api/fipi-hint', {
+                    method: 'POST',
+                    headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify({
+                        query: text,
+                        display_id: displayId,
+                        history: aiHistory.slice(-30)
+                    })
+                });
+                var data = await r.json();
+                removeAiTyping();
+                addAiMessage(data.response, 'bot');
+                aiHistory.push({role: 'assistant', content: data.response});
+            } catch(e) {
+                removeAiTyping();
+                addAiMessage('Что-то пошло не так. Попробуй ещё раз.', 'bot');
+            }
+            aiWaiting = false;
+        }
+
+        loadTasks();
+    </script>
+</body>
+</html>
