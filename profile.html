@@ -146,6 +146,7 @@
             </div>
             <div class="info-card"><h3>Преподаватели</h3><div id="teachersList"><div class="empty"><i class="fas fa-chalkboard-teacher"></i> Загружаем...</div></div></div>
             <div class="info-card"><h3>Все студенты</h3><div id="adminStudentsList"><div class="empty"><i class="fas fa-users"></i> Загружаем...</div></div></div>
+            <div class="info-card"><h3>Заявки на работу</h3><div id="jobLeadsList"><div class="empty"><i class="fas fa-briefcase"></i> Загружаем...</div></div></div>
             <div class="info-card">
                 <h3>Все заявки школы</h3>
                 <div class="filters-row">
@@ -168,12 +169,23 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal">
+            <h3 id="confirmText">Удалить?</h3>
+            <div class="modal-btns">
+                <button class="btn-cancel" onclick="closeConfirm()">Отмена</button>
+                <button class="btn-done" id="confirmDeleteBtn" style="background:#EF4444;">Удалить</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         var supabase = window.supabase.createClient(
             'https://nrmihghshpteellhmzuh.supabase.co',
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ybWloZ2hzaHB0ZWVsbGhtenVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5NDI4NDMsImV4cCI6MjA5NzUxODg0M30.X77HE62ZqYPVv7uOpjHNWgn7H4wIL_FoJLcs-CV1itQ'
         );
         var currentUser=null,userRole='student',allLeads=[],allSchoolLeads=[],activeRejectId=null,editField='',sessionToken=null;
+        var _confirmAction = null;
 
         function toast(msg,type){var t=document.createElement('div');t.className='toast '+(type||'success');t.innerHTML='<i class="fas fa-'+(type==='error'?'exclamation-circle':'check-circle')+'"></i> '+msg;document.body.appendChild(t);setTimeout(function(){t.style.opacity='0';t.style.transition='opacity 0.3s'},2500);setTimeout(function(){t.remove()},3000)}
         function formatDate(d){if(!d)return'';var dt=new Date(d);return dt.toLocaleDateString('ru-RU',{day:'numeric',month:'short'})+' '+dt.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}
@@ -188,7 +200,7 @@
             setupTabs();loadProfileCard(profile);
             if(userRole==='student'){await loadStudentLeads();await loadStudentSubscriptions()}
             if(userRole==='teacher'||userRole==='admin'){await loadLeads();await loadTeacherStudents()}
-            if(userRole==='admin')await loadAdminData();
+            if(userRole==='admin'){await loadAdminData();await loadJobLeads()}
             switchTab(userRole==='admin'?'teacherTab':(userRole==='teacher'?'teacherTab':'studentTab'));
             fetch('http://localhost:5001/api/leads/cleanup',{method:'POST'}).catch(function(){});
         }
@@ -217,6 +229,39 @@
 
         async function loadStudentSubscriptions(){
             try{var r=await fetch('http://localhost:5001/api/subscriptions?student_id='+currentUser.id);renderStudentSubscriptions(await r.json())}catch(e){document.getElementById('studentSubscriptionsList').innerHTML='<div class="empty"><i class="fas fa-graduation-cap"></i> Нет активных подписок</div>'}
+        }
+
+        async function loadJobLeads() {
+            try {
+                var r = await fetch('http://localhost:5001/api/job-leads');
+                var leads = await r.json();
+                renderJobLeads(leads);
+            } catch(e) {
+                document.getElementById('jobLeadsList').innerHTML = '<div class="empty"><i class="fas fa-briefcase"></i> Заявок пока нет</div>';
+            }
+        }
+
+        function renderJobLeads(leads) {
+            var c = document.getElementById('jobLeadsList');
+            if (!leads.length) { c.innerHTML = '<div class="empty"><i class="fas fa-briefcase"></i> Заявок пока нет</div>'; return; }
+            c.innerHTML = leads.map(function(l) {
+                return '<div class="lead-card"><div class="lead-header"><div class="lead-student"><i class="fas fa-user"></i> '+l.name+' <span class="lead-date">'+formatDate(l.created_at)+'</span></div><button class="btn-reject" onclick="deleteJobLead(\''+l.id+'\')" style="border-color:rgba(239,68,68,0.3);color:#EF4444;padding:6px 12px;" title="Удалить">Удалить <i class="fas fa-trash"></i></button></div><div class="lead-body"><div class="lead-field"><span class="lbl">Телефон:</span><span class="val">'+(l.phone||'—')+'</span></div><div class="lead-field"><span class="lbl">Должность:</span><span class="val">'+(l.position||'—')+'</span></div><div class="lead-field"><span class="lbl">Email:</span><span class="val">'+(l.email||'—')+'</span></div><div class="lead-field"><span class="lbl">TG:</span><span class="val">'+(l.tg ? '@'+l.tg : '—')+'</span></div><div class="lead-field"><span class="lbl">VK:</span><span class="val">'+(l.vk||'—')+'</span></div></div>'+(l.about_yourself ? '<div class="lead-msg">'+l.about_yourself+'</div>' : '')+'</div>';
+            }).join('');
+        }
+
+        function deleteJobLead(id) {
+            if (confirm('Удалить заявку навсегда?')) {
+                fetch('http://localhost:5001/api/job-leads/' + id, { method: 'DELETE' })
+                .then(function(r) { if (r.ok) loadJobLeads(); });
+            }
+        }
+
+        async function deleteLead(id){
+            openConfirm('Удалить заявку навсегда?', function() {
+                fetch('http://localhost:5001/api/leads/' + id, { method: 'DELETE' }).then(function(r) {
+                    if (r.ok) { loadLeads(); if (userRole === 'admin') loadAdminData(); }
+                });
+            });
         }
 
         function renderStudentSubscriptions(subs){
@@ -264,7 +309,6 @@
                 return'<div class="lead-card'+(l.status==='new'?' unread':'')+'"><div class="lead-header"><div class="lead-student"><i class="fas fa-user-graduate"></i> '+(l.client_name||'—')+ai+'<span class="lead-date">'+formatDate(l.created_at)+'</span></div><div style="display:flex;gap:8px;align-items:center"><span class="lead-badge '+(sb[l.status]||'')+'">'+(sl[l.status]||l.status)+'</span>'+del+'</div></div><div class="lead-body"><div class="lead-field"><span class="lbl">Телефон:</span><span class="val">'+(l.phone||'—')+'</span></div><div class="lead-field"><span class="lbl">Курс:</span><span class="val">'+(l.course_title||'—')+'</span></div><div class="lead-field"><span class="lbl">Занятий:</span><span class="val">'+(l.lessons||'—')+'</span></div><div class="lead-field"><span class="lbl">Сумма:</span><span class="val" style="color:#8B5CF6;font-weight:700">'+((l.total_price||0)).toLocaleString('ru-RU')+' ₽</span></div>'+(l.tg_username?'<div class="lead-field"><span class="lbl">TG:</span><span class="val">@'+l.tg_username+'</span></div>':'')+(l.vk_username?'<div class="lead-field"><span class="lbl">VK:</span><span class="val">'+l.vk_username+'</span></div>':'')+'</div>'+(l.student_message?'<div class="lead-msg">'+l.student_message+'</div>':'')+'<div class="lead-actions">'+act+'</div></div>'}).join('')
         }
 
-        async function deleteLead(id){if(!confirm('Точно удалить?'))return;var r=await fetch('http://localhost:5001/api/leads/'+id,{method:'DELETE'});if(r.ok){await loadLeads();if(userRole==='admin')await loadAdminData()}}
         async function acceptLead(id){var r=await fetch('http://localhost:5001/api/leads/'+id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:'accepted'})});if(r.ok)await loadLeads()}
         function showReject(id){if(activeRejectId&&activeRejectId!==id)document.getElementById('rejectRow'+activeRejectId).style.display='none';var row=document.getElementById('rejectRow'+id);row.style.display=row.style.display==='flex'?'none':'flex';activeRejectId=id;if(row.style.display==='flex')document.getElementById('rejectReason'+id).focus()}
         async function confirmReject(id){var reason=document.getElementById('rejectReason'+id).value.trim();if(!reason)return;var r=await fetch('http://localhost:5001/api/leads/'+id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:'rejected',reject_reason:reason})});if(r.ok){activeRejectId=null;await loadLeads()}}

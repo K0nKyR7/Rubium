@@ -600,7 +600,62 @@ def health():
         "courses": len(courses),
         "teachers": len(teachers),
     })
+    
+@app.route("/api/job-leads", methods=["POST"])
+def create_job_lead():
+    data = request.get_json()
+    print(f"📥 Job lead data: {data}")
+    try:
+        body = {
+            "name": data.get("name", ""),
+            "phone": data.get("phone", ""),
+            "email": data.get("email"),
+            "tg": data.get("tg"),
+            "vk": data.get("vk"),
+            "position": data.get("position", ""),
+            "about_yourself": data.get("about_yourself"),
+            "status": "new",
+        }
+        print(f"📤 Sending to Supabase: {body}")
+        r = requests.post(
+            f"{SUPABASE_URL}/rest/v1/job_leads",
+            headers=supabase_headers(use_service_role=True),
+            json=body,
+        )
+        print(f"📨 Supabase response: {r.status_code} {r.text[:500]}")
+        if r.status_code == 201:
+            return jsonify({"status": "ok"})
+        return jsonify({"status": "error", "detail": r.text[:200]}), 500
+    except Exception as e:
+        print(f"❌ Job lead error: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({"status": "error"}), 500
 
+@app.route("/api/job-leads", methods=["GET"])
+def get_job_leads():
+    try:
+        r = requests.get(
+            f"{SUPABASE_URL}/rest/v1/job_leads?select=*&order=created_at.desc",
+            headers=supabase_headers(use_service_role=True),
+        )
+        return jsonify(r.json() if r.status_code == 200 else [])
+    except Exception:
+        return jsonify([])
+
+@app.route("/api/job-leads/<lead_id>", methods=["DELETE"])
+def delete_job_lead(lead_id):
+    print(f"🗑 DELETE job lead: {lead_id}")
+    try:
+        r = requests.delete(
+            f"{SUPABASE_URL}/rest/v1/job_leads?id=eq.{lead_id}",
+            headers=supabase_headers(use_service_role=True),
+        )
+        print(f"📨 Supabase response: {r.status_code} {r.text[:300]}")
+        return jsonify({"status": "ok" if r.status_code in (200, 204) else "error"})
+    except Exception as e:
+        print(f"❌ DELETE job lead error: {e}")
+        return jsonify({"status": "error"}), 500
 
 if __name__ == "__main__":
     print(f"🚀 Starting with {len(get_courses_from_db())} courses and {len(get_teachers_from_db())} teachers")
