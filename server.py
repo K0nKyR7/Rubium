@@ -694,18 +694,14 @@ def get_tasks():
 def get_next_task_id():
     try:
         r = requests.get(
-            f"{SUPABASE_URL}/rest/v1/tasks?select=id&order=created_at.desc&limit=1",
+            f"{SUPABASE_URL}/rest/v1/tasks?select=id&order=id.desc&limit=1",
             headers=supabase_headers(),
         )
         if r.status_code == 200 and r.json():
-            last_id = len(r.json()) + 1
+            last = r.json()[0]
+            next_id = last["id"] + 1
         else:
-            last_id = 1
-        r2 = requests.get(
-            f"{SUPABASE_URL}/rest/v1/tasks?select=id",
-            headers=supabase_headers(),
-        )
-        next_id = len(r2.json()) + 1 if r2.status_code == 200 else 1
+            next_id = 1
         return jsonify({"next_id": next_id})
     except Exception as e:
         print(f"❌ Next ID error: {e}")
@@ -808,6 +804,18 @@ def fipi_hint():
     except Exception as e:
         print(f"❌ FIPI hint error: {e}")
         return jsonify({"response": "Что-то пошло не так. Попробуй ещё раз."})
+    
+@app.route("/api/reviews", methods=["GET"])
+def get_reviews():
+    try:
+        r = requests.get(
+            f"{SUPABASE_URL}/rest/v1/reviews?select=*&order=created_at.desc",
+            headers=supabase_headers(),
+        )
+        return jsonify(r.json() if r.status_code == 200 else [])
+    except Exception as e:
+        print(f"❌ Reviews error: {e}")
+        return jsonify([])
     
 if __name__ == "__main__":
     print(f"🚀 Starting with {len(get_courses_from_db())} courses and {len(get_teachers_from_db())} teachers")

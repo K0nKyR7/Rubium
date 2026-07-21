@@ -5,96 +5,109 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="data/logo.png">
     <title>Курсы — Stud&School</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Unbounded:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        *{margin:0;padding:0;box-sizing:border-box}
         html{scroll-behavior:smooth}
-        body{font-family:'Inter',sans-serif;background:#FAF8FC;color:#1F2937;min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+        body{font-family:'Inter',sans-serif;background:#FAF8FC;color:#1F2937;min-height:100vh;overflow-x:hidden}
         body::before,body::after{content:'';position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(140px);opacity:0.04}
-        body::before{width:620px;height:620px;background:#8B5CF6;top:-180px;right:-180px}
-        body::after{width:460px;height:460px;background:#E11D8D;bottom:-130px;left:-130px}
-        .header{display:flex;align-items:center;justify-content:space-between;padding:12px 32px;border-bottom:1px solid rgba(139,92,246,0.08);position:sticky;top:0;z-index:100;background:rgba(250,248,252,0.75);backdrop-filter:blur(24px)}
-        .logo{font-size:1.3rem;font-weight:800;color:#8B5CF6;letter-spacing:-0.5px;display:flex;align-items:center;gap:10px;text-decoration:none}
+        body::before{width:620px;height:620px;background:#8B5CF6;top:-180px;right:-180px;animation:driftA 28s ease-in-out infinite}
+        body::after{width:460px;height:460px;background:#E11D8D;bottom:-130px;left:-130px;animation:driftB 32s ease-in-out infinite}
+        @keyframes driftA{0%,100%{transform:translate(0,0)}33%{transform:translate(-40px,30px)}66%{transform:translate(20px,-15px)}}
+        @keyframes driftB{0%,100%{transform:translate(0,0)}33%{transform:translate(30px,-25px)}66%{transform:translate(-15px,30px)}}
+
+        .header{display:flex;align-items:center;justify-content:space-between;padding:14px 32px;border-bottom:1px solid rgba(139,92,246,0.06);position:sticky;top:0;z-index:100;background:rgba(250,248,252,0.75);backdrop-filter:blur(24px)}
+        .logo{font-size:1.3rem;font-weight:800;color:#8B5CF6;display:flex;align-items:center;gap:10px;text-decoration:none;letter-spacing:-0.5px}
         .logo img{width:38px;height:38px;object-fit:contain}
-        .header-right{display:flex;align-items:center;gap:14px}
-        .header-actions{display:flex;align-items:center;gap:10px}
-        .btn-back{padding:9px 18px;border-radius:50px;border:1px solid rgba(139,92,246,0.2);background:transparent;color:#8B5CF6;font-weight:600;font-size:0.82rem;cursor:pointer;transition:all 0.28s;font-family:inherit;text-decoration:none;display:flex;align-items:center;gap:6px}
-        .btn-back:hover{background:rgba(139,92,246,0.05)}
-        .main{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:48px 40px 80px}
-        .page-label{font-size:0.72rem;font-weight:700;color:#8B5CF6;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px}
-        .page-title{font-size:clamp(2rem,3.5vw,2.8rem);font-weight:900;color:#1F2937;letter-spacing:-1.5px;line-height:1.1;margin-bottom:10px}
-        .page-subtitle{font-size:0.95rem;color:#6B7280;max-width:500px;margin-bottom:40px}
-        .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
-        .filter-btn{padding:8px 18px;border-radius:50px;border:1px solid rgba(139,92,246,0.15);background:transparent;color:#6B7280;font-weight:600;font-size:0.8rem;cursor:pointer;font-family:inherit;transition:all 0.25s}
-        .filter-btn.active{background:#8B5CF6;color:#fff;border-color:#8B5CF6}
+        .header-right{display:flex;align-items:center;gap:12px}
+        .header-actions{display:flex;align-items:center;gap:8px}
+        .btn-back{padding:9px 18px;border-radius:50px;border:1px solid rgba(139,92,246,0.18);background:transparent;color:#8B5CF6;font-weight:600;font-size:0.82rem;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:6px;transition:all 0.28s;font-family:inherit}
+        .btn-back:hover{background:rgba(139,92,246,0.04)}
+
+        .main{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:48px 32px 80px}
+        .hero{text-align:center;margin-bottom:48px}
+        .hero-badge{display:inline-block;padding:8px 20px;border-radius:50px;background:rgba(139,92,246,0.06);border:1px solid rgba(139,92,246,0.12);font-size:0.72rem;font-weight:700;color:#8B5CF6;text-transform:uppercase;letter-spacing:2px;font-family:'JetBrains Mono',monospace;margin-bottom:14px}
+        .hero h1{font-family:'Unbounded',sans-serif;font-size:clamp(2rem,3.5vw,2.8rem);font-weight:900;letter-spacing:-2px;line-height:1.1;margin-bottom:10px}
+        .hero h1 span{background:linear-gradient(135deg,#8B5CF6,#E11D8D);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .hero p{font-size:0.92rem;color:#6B7280;max-width:460px;margin:0 auto;line-height:1.5}
+
+        .filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px;justify-content:center}
+        .filter-btn{padding:8px 18px;border-radius:50px;border:1.5px solid rgba(139,92,246,0.1);background:rgba(255,255,255,0.5);color:#6B7280;font-weight:600;font-size:0.78rem;cursor:pointer;font-family:inherit;transition:all 0.25s;backdrop-filter:blur(8px)}
+        .filter-btn:hover{border-color:rgba(139,92,246,0.25);color:#8B5CF6}
+        .filter-btn.active{background:#8B5CF6;color:#fff;border-color:#8B5CF6;box-shadow:0 4px 14px rgba(139,92,246,0.18)}
+
         .courses-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-        .course-item{background:rgba(255,255,255,0.55);backdrop-filter:blur(14px);border-radius:18px;padding:22px 20px;border:1px solid rgba(139,92,246,0.07);transition:all 0.3s;display:flex;flex-direction:column;gap:10px;cursor:pointer;position:relative;overflow:hidden}
-        .course-item.ege::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:#8B5CF6}
-        .course-item.oge::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:#E11D8D}
-        .course-item.uni::before,.course-item.oth::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#8B5CF6,#E11D8D)}
-        .course-item:hover{transform:translateY(-3px);border-color:rgba(139,92,246,0.15);box-shadow:0 12px 30px rgba(139,92,246,0.06)}
-        .course-item-icon{font-size:1.6rem}
-        .badge{font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:3px 10px;border-radius:50px}
-        .badge-ege{background:rgba(139,92,246,0.08);color:#8B5CF6}.badge-oge{background:rgba(225,29,141,0.07);color:#E11D8D}
-        .badge-uni,.badge-oth{background:rgba(139,92,246,0.06);color:#7C3AED}
-        .badge-group{background:rgba(245,158,11,0.1);color:#F59E0B}.badge-individual{background:rgba(34,197,94,0.08);color:#22C55E}
-        .course-item h3{font-size:1.05rem;font-weight:700;letter-spacing:-0.3px}
-        .course-item p{font-size:0.78rem;color:#9CA3AF;line-height:1.5}
-        .course-item-meta{display:flex;flex-direction:column;gap:6px;margin-top:auto;padding-top:10px;border-top:1px solid rgba(139,92,246,0.06)}
-        .meta-row{display:flex;align-items:center;justify-content:space-between;font-size:0.8rem}
-        .meta-label{color:#9CA3AF}.meta-value{font-weight:600}.meta-value.price{color:#8B5CF6;font-weight:700}
-        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.3);backdrop-filter:blur(6px);z-index:200;opacity:0;pointer-events:none;transition:opacity 0.4s ease}
+        .course-card{position:relative;background:rgba(255,255,255,0.6);backdrop-filter:blur(14px);border-radius:20px;padding:24px 22px;border:1px solid rgba(139,92,246,0.06);transition:all 0.35s cubic-bezier(0.25,0.8,0.25,1.2);display:flex;flex-direction:column;gap:10px;cursor:pointer;overflow:hidden}
+        .course-card:hover{transform:translateY(-5px);border-color:rgba(139,92,246,0.15);box-shadow:0 16px 36px rgba(139,92,246,0.07)}
+        .course-card::after{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(180deg,#8B5CF6,#E11D8D);border-radius:3px 0 0 3px;opacity:0;transition:opacity 0.3s}
+        .course-card:hover::after{opacity:1}
+        .course-card-icon{font-size:1.5rem;line-height:1}
+        .course-badges{display:flex;gap:6px;flex-wrap:wrap}
+        .badge{padding:4px 10px;border-radius:50px;font-size:0.64rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
+        .badge-ege{background:rgba(139,92,246,0.07);color:#8B5CF6;border:1px solid rgba(139,92,246,0.1)}
+        .badge-oge{background:rgba(225,29,141,0.06);color:#E11D8D;border:1px solid rgba(225,29,141,0.1)}
+        .badge-uni{background:rgba(34,197,94,0.06);color:#16A34A;border:1px solid rgba(34,197,94,0.1)}
+        .badge-oth{background:rgba(139,92,246,0.05);color:#7C3AED;border:1px solid rgba(139,92,246,0.08)}
+        .badge-group{background:rgba(245,158,11,0.07);color:#F59E0B;border:1px solid rgba(245,158,11,0.1)}
+        .badge-individual{background:rgba(34,197,94,0.06);color:#22C55E;border:1px solid rgba(34,197,94,0.1)}
+        .course-card h3{font-size:1.05rem;font-weight:700;letter-spacing:-0.3px;line-height:1.2}
+        .course-card p{font-size:0.78rem;color:#9CA3AF;line-height:1.5}
+        .course-card-footer{margin-top:auto;padding-top:12px;border-top:1px solid rgba(139,92,246,0.05);display:flex;flex-direction:column;gap:6px}
+        .course-card-row{display:flex;align-items:center;justify-content:space-between;font-size:0.8rem}
+        .course-card-label{color:#9CA3AF;font-weight:500}
+        .course-card-value{font-weight:600;color:#4B5563}
+        .course-card-price{font-weight:700;color:#8B5CF6;font-size:0.9rem}
+
+        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.2);backdrop-filter:blur(6px);z-index:200;opacity:0;pointer-events:none;transition:opacity 0.35s ease}
         .modal-overlay.open{opacity:1;pointer-events:auto}
-        .modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) translateY(20px);background:#fff;border-radius:24px;width:90%;max-width:520px;max-height:90vh;overflow-y:auto;z-index:201;padding:32px 28px;box-shadow:0 30px 60px rgba(0,0,0,0.15);opacity:0;pointer-events:none;transition:all 0.35s}
+        .modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) translateY(16px);background:#fff;border-radius:24px;width:90%;max-width:480px;max-height:90vh;overflow-y:auto;z-index:201;padding:30px 26px;box-shadow:0 30px 60px rgba(0,0,0,0.12);opacity:0;pointer-events:none;transition:all 0.35s}
         .modal.open{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) translateY(0)}
-        .modal-close{position:absolute;top:16px;right:16px;width:36px;height:36px;border-radius:50%;border:none;background:rgba(139,92,246,0.06);color:#6B7280;cursor:pointer;font-size:0.9rem;display:flex;align-items:center;justify-content:center}
-        .modal-close:hover{background:rgba(139,92,246,0.12);color:#8B5CF6}
-        .modal-badge{display:inline-block;padding:4px 12px;border-radius:50px;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
-        .modal-badge.ege{background:rgba(139,92,246,0.08);color:#8B5CF6}.modal-badge.oge{background:rgba(225,29,141,0.07);color:#E11D8D}
-        .modal-badge.uni,.modal-badge.oth{background:rgba(139,92,246,0.06);color:#7C3AED}
-        .modal-title{font-size:1.5rem;font-weight:800;margin-bottom:8px;letter-spacing:-0.5px}
-        .modal-desc{font-size:0.88rem;color:#6B7280;line-height:1.5;margin-bottom:18px}
-        .modal-teacher{display:flex;align-items:center;gap:8px;padding:12px 16px;background:rgba(139,92,246,0.04);border-radius:14px;margin-bottom:20px;font-size:0.85rem;font-weight:600;color:#8B5CF6;cursor:pointer;transition:all 0.3s ease}
-        .modal-teacher:hover{background:rgba(139,92,246,0.08);transform:translateY(-1px)}
-        .teacher-info{overflow:hidden;transition:max-height 1.2s cubic-bezier(0.4, 0, 0.2, 1),opacity 1.2s ease,margin-bottom 1.2s ease}
-        .teacher-info-inner{background:rgba(139,92,246,0.03);border-radius:16px;padding:18px}
-        .teacher-info-header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-        .teacher-avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#8B5CF6,#E11D8D);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.2rem;flex-shrink:0;overflow:hidden}
+        .modal-close{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;border:none;background:rgba(139,92,246,0.05);color:#6B7280;cursor:pointer;font-size:0.85rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+        .modal-close:hover{background:rgba(139,92,246,0.1);color:#8B5CF6}
+        .modal-badge{display:inline-block;padding:5px 12px;border-radius:50px;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+        .modal-badge.ege{background:rgba(139,92,246,0.07);color:#8B5CF6}
+        .modal-badge.oge{background:rgba(225,29,141,0.06);color:#E11D8D}
+        .modal-badge.uni,.modal-badge.oth{background:rgba(139,92,246,0.05);color:#7C3AED}
+        .modal-title{font-family:'Unbounded',sans-serif;font-size:1.4rem;font-weight:800;margin-bottom:6px;letter-spacing:-0.5px}
+        .modal-desc{font-size:0.85rem;color:#6B7280;line-height:1.5;margin-bottom:16px}
+        .modal-teacher{display:flex;align-items:center;gap:10px;padding:12px 14px;background:rgba(139,92,246,0.03);border-radius:14px;margin-bottom:16px;font-size:0.84rem;font-weight:600;color:#8B5CF6;cursor:pointer;transition:all 0.3s;border:1px solid rgba(139,92,246,0.06)}
+        .modal-teacher:hover{background:rgba(139,92,246,0.06);border-color:rgba(139,92,246,0.14)}
+        .teacher-info{overflow:hidden;transition:max-height 1s cubic-bezier(0.4,0,0.2,1),opacity 1s ease,margin-bottom 1s ease}
+        .teacher-info-inner{background:rgba(139,92,246,0.02);border-radius:14px;padding:16px;border:1px solid rgba(139,92,246,0.04)}
+        .teacher-info-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+        .teacher-avatar{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#8B5CF6,#E11D8D);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1rem;flex-shrink:0;overflow:hidden}
         .teacher-avatar img{width:100%;height:100%;object-fit:cover}
-        .teacher-details{display:flex;gap:16px;margin-bottom:10px;flex-wrap:wrap;font-size:0.78rem;color:#6B7280}
-        .teacher-desc{font-size:0.82rem;color:#4B5563;line-height:1.5}
-        .modal-label{display:block;font-size:0.7rem;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
-        .lesson-options{display:flex;gap:8px;margin-bottom:18px}
-        .lesson-btn{flex:1;padding:10px;border-radius:12px;border:1.5px solid rgba(139,92,246,0.15);background:transparent;font-family:inherit;font-size:0.85rem;font-weight:600;cursor:pointer;color:#6B7280}
-        .lesson-btn.active{background:#8B5CF6;color:#fff;border-color:#8B5CF6}
-        .modal-plus{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
-        .modal-plus-left{display:flex;align-items:center;gap:6px;position:relative}
-        .btn-what{width:20px;height:20px;border-radius:50%;border:1.5px solid rgba(139,92,246,0.3);background:transparent;color:#8B5CF6;font-size:0.65rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center}
-        .btn-what:hover{background:rgba(139,92,246,0.08);border-color:#8B5CF6}
-        .plus-tooltip{position:absolute;top:calc(100% + 12px);left:110%;transform:translateX(-50%);background:rgba(31,41,55,0.9);color:#fff;padding:14px 18px;border-radius:14px;font-size:0.73rem;font-weight:400;text-transform:none;letter-spacing:0;line-height:1.6;white-space:nowrap;z-index:210;pointer-events:none;opacity:0;transition:opacity 0.5s ease,transform 0.5s ease}
-        .btn-what:hover .plus-tooltip,.btn-what:focus .plus-tooltip{opacity:1;transform:translateX(-50%) translateY(0)}
-        .toggle-switch{position:relative;width:52px;height:28px}
-        .toggle-switch input{display:none}
-        .toggle-slider{position:absolute;inset:0;background:#E5E7EB;border-radius:28px;cursor:pointer;transition:all 0.3s}
-        .toggle-slider::before{content:'';position:absolute;width:22px;height:22px;border-radius:50%;background:#fff;top:3px;left:3px;transition:all 0.3s}
-        .toggle-switch input:checked+.toggle-slider{background:linear-gradient(135deg,#8B5CF6,#E11D8D)}
-        .toggle-switch input:checked+.toggle-slider::before{transform:translateX(24px)}
-        .modal-price{text-align:center;font-size:2rem;font-weight:900;color:#8B5CF6;margin-bottom:8px}
-        .modal-discount{display:none;text-align:center;font-size:0.82rem;color:#22C55E;font-weight:600;margin-bottom:14px}
-        .modal-plus-price{display:none;text-align:center;font-size:0.82rem;color:#8B5CF6;font-weight:600;margin-bottom:16px}
-        .btn-enroll{width:100%;padding:15px;border:none;border-radius:50px;font-family:inherit;font-size:0.95rem;font-weight:700;cursor:pointer;background:#8B5CF6;color:#fff;box-shadow:0 6px 20px rgba(139,92,246,0.18)}
-        .btn-enroll:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(139,92,246,0.3)}
-        .form-input{width:100%;padding:12px 16px;border:1.5px solid rgba(139,92,246,0.15);border-radius:14px;font-family:inherit;font-size:0.85rem;margin-bottom:10px;background:rgba(255,255,255,0.5);outline:none}
-        .form-input:focus{border-color:rgba(139,92,246,0.35)}
-        .footer{border-top:1px solid rgba(139,92,246,0.08);padding:32px 40px 24px;text-align:center;font-size:0.75rem;color:#9CA3AF}
-        .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#fff;border-radius:14px;padding:14px 24px;box-shadow:0 8px 32px rgba(0,0,0,0.12);z-index:300;font-weight:600;font-size:0.88rem;display:flex;align-items:center;gap:10px;animation:toastIn 0.3s ease}
+        .teacher-details{display:flex;gap:14px;margin-bottom:8px;flex-wrap:wrap;font-size:0.76rem;color:#6B7280}
+        .teacher-desc{font-size:0.8rem;color:#4B5563;line-height:1.5}
+        .modal-label{display:block;font-size:0.68rem;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;font-family:'JetBrains Mono',monospace}
+        .lesson-options{display:flex;gap:6px;margin-bottom:16px}
+        .lesson-btn{flex:1;padding:10px 8px;border-radius:12px;border:1.5px solid rgba(139,92,246,0.1);background:rgba(255,255,255,0.5);font-family:inherit;font-size:0.85rem;font-weight:600;cursor:pointer;color:#6B7280;transition:all 0.25s}
+        .lesson-btn.active{background:#8B5CF6;color:#fff;border-color:#8B5CF6;box-shadow:0 4px 12px rgba(139,92,246,0.18)}
+        .lesson-btn:hover:not(.active){border-color:rgba(139,92,246,0.25);color:#8B5CF6}
+        .modal-price{text-align:center;font-size:1.8rem;font-weight:900;color:#8B5CF6;margin-bottom:4px;font-family:'Unbounded',sans-serif}
+        .modal-discount{display:none;text-align:center;font-size:0.8rem;color:#22C55E;font-weight:600;margin-bottom:12px}
+        .form-input{width:100%;padding:11px 14px;border:1.5px solid rgba(139,92,246,0.1);border-radius:12px;font-family:inherit;font-size:0.84rem;margin-bottom:8px;background:rgba(255,255,255,0.6);outline:none;transition:border-color 0.2s}
+        .form-input:focus{border-color:rgba(139,92,246,0.3)}
+        textarea.form-input{resize:vertical;min-height:70px}
+        .btn-enroll{width:100%;padding:14px;border:none;border-radius:50px;font-family:inherit;font-size:0.92rem;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#8B5CF6,#7C3AED);color:#fff;box-shadow:0 6px 18px rgba(139,92,246,0.18);transition:all 0.3s;margin-top:4px}
+        .btn-enroll:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(139,92,246,0.28)}
+
+        .footer{border-top:1px solid rgba(139,92,246,0.06);padding:24px 32px;text-align:center;font-size:0.75rem;color:#9CA3AF;position:relative;z-index:1}
+        .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#fff;border-radius:14px;padding:14px 24px;box-shadow:0 8px 32px rgba(0,0,0,0.12);z-index:300;font-weight:600;font-size:0.88rem;display:flex;align-items:center;gap:10px;animation:toastIn 0.3s}
         @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-        .toast.success{color:#22C55E;border:1px solid rgba(34,197,94,0.2)}.toast.error{color:#EF4444;border:1px solid rgba(239,68,68,0.2)}
-        @media (max-width:1100px){.courses-grid{grid-template-columns:repeat(2,1fr)}}
-        @media (max-width:768px){.header{padding:10px 20px}.main{padding:32px 20px}.courses-grid{grid-template-columns:1fr 1fr}}
-        @media (max-width:480px){.header{padding:10px 14px}.main{padding:24px 14px}.courses-grid{grid-template-columns:1fr}.header-actions{display:none}.btn-back span{display:none}}
+        .toast.success{color:#22C55E;border:1px solid rgba(34,197,94,0.2)}
+        .toast.error{color:#EF4444;border:1px solid rgba(239,68,68,0.2)}
+
+        @media(max-width:1100px){.courses-grid{grid-template-columns:repeat(2,1fr)}}
+        @media(max-width:640px){
+            .header{padding:10px 16px}
+            .main{padding:28px 16px 56px}
+            .courses-grid{grid-template-columns:1fr;gap:16px}
+            .modal{width:95%;padding:24px 18px}
+            .btn-back span{display:none}
+        }
     </style>
 </head>
 <body>
@@ -107,9 +120,12 @@
     </header>
 
     <main class="main">
-        <div class="page-label">Обучение</div>
-        <h1 class="page-title">Наши курсы</h1>
-        <p class="page-subtitle">Выберите направление и начните подготовку с преподавателями из топовых вузов</p>
+        <div class="hero">
+            <div class="hero-badge">Обучение</div>
+            <h1>Наши <span>курсы</span></h1>
+            <p>Выберите направление и начните подготовку с преподавателями из топовых вузов</p>
+        </div>
+
         <div class="filters" id="filtersRow1">
             <button class="filter-btn active" data-filter="all">Все</button>
             <button class="filter-btn" data-filter="ege">ЕГЭ</button>
@@ -122,8 +138,9 @@
             <button class="filter-btn" data-filter="individual">Индивидуально</button>
             <button class="filter-btn" data-filter="group">Групповые</button>
         </div>
+
         <div class="courses-grid" id="coursesGrid">
-            <div style="text-align:center;padding:40px;color:#9CA3AF;grid-column:1/-1;"><i class="fas fa-spinner fa-pulse"></i> Загружаем...</div>
+            <div style="text-align:center;padding:60px;color:#9CA3AF;grid-column:1/-1;"><i class="fas fa-spinner fa-pulse"></i> Загружаем...</div>
         </div>
     </main>
 
@@ -141,7 +158,7 @@
             <div class="teacher-info-inner">
                 <div class="teacher-info-header">
                     <div class="teacher-avatar" id="teacherAvatar">👤</div>
-                    <div><strong id="teacherFullName"></strong><span style="display:block;font-size:0.78rem;color:#6B7280;" id="teacherSubj"></span></div>
+                    <div><strong id="teacherFullName"></strong><span style="display:block;font-size:0.76rem;color:#6B7280;" id="teacherSubj"></span></div>
                 </div>
                 <div class="teacher-details"><span id="teacherUni"></span><span id="teacherExp"></span></div>
                 <p class="teacher-desc" id="teacherDesc"></p>
@@ -154,273 +171,138 @@
             <button class="lesson-btn" data-lessons="10">10</button>
             <button class="lesson-btn" data-lessons="20">20</button>
         </div>
-        <div class="modal-plus">
-            <div class="modal-plus-left">
-                <span class="modal-label" style="margin-bottom:0;">Подписка+</span>
-                <button class="btn-what">?<span class="plus-tooltip">Подписка+ дает доступ к игровому модулю,<br> персональным подборкам заданий,<br> рейтингам платформы,<br> а также к кастомизации профиля</span></button>
-            </div>
-            <label class="toggle-switch"><input type="checkbox" id="plusToggle" onchange="updatePrice()"><span class="toggle-slider"></span></label>
-        </div>
         <div class="modal-price" id="modalPrice">— ₽</div>
         <div class="modal-discount" id="modalDiscount"></div>
-        <div class="modal-plus-price" id="modalPlusPrice"></div>
         <div class="modal-label">Контакты для связи</div>
         <input type="tel" id="studentPhone" class="form-input" placeholder="Телефон (11 цифр)">
         <input type="text" id="studentTG" class="form-input" placeholder="Telegram (username)">
         <input type="text" id="studentVK" class="form-input" placeholder="ВКонтакте (ссылка)">
-        <textarea id="studentMessage" class="form-input" placeholder="Расскажи о себе, уровне подготовки, цели..." style="resize:vertical;min-height:80px"></textarea>
+        <textarea id="studentMessage" class="form-input" placeholder="Расскажи о себе, уровне подготовки, цели..."></textarea>
         <button class="btn-enroll" onclick="submitApplication()">Отправить заявку</button>
     </div>
 
     <footer class="footer">© 2026 Stud&School. Все права защищены.</footer>
 
     <script>
-        var supabase = window.supabase.createClient(
-            'https://nrmihghshpteellhmzuh.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ybWloZ2hzaHB0ZWVsbGhtenVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5NDI4NDMsImV4cCI6MjA5NzUxODg0M30.X77HE62ZqYPVv7uOpjHNWgn7H4wIL_FoJLcs-CV1itQ'
-        );
+        var supabase = window.supabase.createClient('https://nrmihghshpteellhmzuh.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ybWloZ2hzaHB0ZWVsbGhtenVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5NDI4NDMsImV4cCI6MjA5NzUxODg0M30.X77HE62ZqYPVv7uOpjHNWgn7H4wIL_FoJLcs-CV1itQ');
+        var teachersCache={},currentCourse=null,selectedLessons=1,activeFilter='all',activeFormatFilter='all';
 
-        var teachersCache = {};
-        var currentCourse = null;
-        var selectedLessons = 1;
-        var activeFilter = 'all';
-        var activeFormatFilter = 'all';
-        var currentUserName = '';
-
-        function showToast(text, type) {
-            var t = document.createElement('div');
-            t.className = 'toast ' + (type || 'success');
-            t.innerHTML = '<i class="fas fa-' + (type === 'error' ? 'exclamation-circle' : 'check-circle') + '"></i> ' + text;
-            document.body.appendChild(t);
-            setTimeout(function() { t.style.opacity = '0'; t.style.transition = 'opacity 0.3s'; }, 2500);
-            setTimeout(function() { t.remove(); }, 3000);
+        function showToast(text,type){
+            var t=document.createElement('div');t.className='toast '+(type||'success');
+            t.innerHTML='<i class="fas fa-'+(type==='error'?'exclamation-circle':'check-circle')+'"></i> '+text;
+            document.body.appendChild(t);setTimeout(function(){t.remove()},3000)
         }
 
-        async function loadTeachers() {
-            try {
-                var resp = await fetch('http://localhost:5001/api/teachers');
-                var list = await resp.json();
-                list.forEach(function(t) {
-                    var fullName = (t.last_name + ' ' + t.first_name).trim();
-                    teachersCache[fullName] = {
-                        name: fullName,
-                        photo_url: t.photo_url || '',
-                        subjects: t.subjects || 'Преподаватель',
-                        university: t.university || '',
-                        experience: t.experience || '',
-                        desc: t.description || ''
-                    };
-                });
-            } catch(e) { console.log('Teachers load error:', e); }
+        async function loadTeachers(){
+            try{var r=await fetch('http://localhost:5001/api/teachers');var list=await r.json();
+                list.forEach(function(t){var fn=(t.last_name+' '+t.first_name).trim();
+                    teachersCache[fn]={name:fn,photo_url:t.photo_url||'',subjects:t.subjects||'',university:t.university||'',experience:t.experience||'',desc:t.description||''}})            
+            }catch(e){}
         }
 
-        async function loadCourses() {
-            try {
-                var resp = await fetch('http://localhost:5001/api/courses');
-                var courses = await resp.json();
-                if (!courses || !courses.length) {
-                    document.getElementById('coursesGrid').innerHTML = '<div style="text-align:center;padding:40px;color:#9CA3AF;grid-column:1/-1;">Курсы не найдены</div>';
-                    return;
+        async function loadCourses(){
+            try{
+                var r=await fetch('http://localhost:5001/api/courses');var courses=await r.json();
+                if(!courses||!courses.length){document.getElementById('coursesGrid').innerHTML='<div style="text-align:center;padding:60px;color:#9CA3AF;grid-column:1/-1;">Курсы не найдены</div>';return}
+                var cats={ege:'badge-ege',oge:'badge-oge',uni:'badge-uni',oth:'badge-oth'},html='';
+                for(var i=0;i<courses.length;i++){
+                    var c=courses[i];var p=typeof c.prices==='string'?JSON.parse(c.prices):(c.prices||{});
+                    var prices=Object.values(p),minPrice=prices.length?Math.min.apply(null,prices):0,fmt=c.format||'individual';
+                    var data=JSON.stringify({title:c.title,badge:c.badge,category:c.category,format:fmt,desc:(c.description||'').replace(/"/g,'&quot;').replace(/\n/g,' '),teacher:c.teacher_name,prices:p});
+                    html+='<div class="course-card" data-category="'+c.category+'" data-format="'+fmt+'" onclick=\'openModal('+data+')\'>';
+                    html+='<div class="course-card-icon">'+(c.icon||'📚')+'</div>';
+                    html+='<div class="course-badges"><span class="badge '+(cats[c.category]||'')+'">'+c.badge+'</span><span class="badge '+(fmt==='group'?'badge-group':'badge-individual')+'">'+(fmt==='group'?'Группа':'Индивидуально')+'</span></div>';
+                    html+='<h3>'+c.title+'</h3><p>'+(c.description||'')+'</p>';
+                    html+='<div class="course-card-footer"><div class="course-card-row"><span class="course-card-label">Преподаватель</span><span class="course-card-value">'+c.teacher_name+'</span></div>';
+                    html+='<div class="course-card-row"><span class="course-card-label">Стоимость</span><span class="course-card-price">от '+minPrice.toLocaleString('ru-RU')+' ₽</span></div></div></div>'
                 }
-                renderCourses(courses);
-            } catch(e) {
-                document.getElementById('coursesGrid').innerHTML = '<div style="text-align:center;padding:40px;color:#9CA3AF;grid-column:1/-1;">Ошибка загрузки</div>';
-            }
+                document.getElementById('coursesGrid').innerHTML=html;applyFilters()
+            }catch(e){document.getElementById('coursesGrid').innerHTML='<div style="text-align:center;padding:60px;color:#9CA3AF;grid-column:1/-1;">Ошибка загрузки</div>'}
         }
 
-        function renderCourses(courses) {
-            var cats = {ege:'badge-ege',oge:'badge-oge',uni:'badge-uni',oth:'badge-oth'};
-            document.getElementById('coursesGrid').innerHTML = courses.map(function(c) {
-                var p = typeof c.prices === 'string' ? JSON.parse(c.prices) : c.prices;
-                var minPrice = Math.min.apply(null, Object.values(p));
-                var fmt = c.format || 'individual';
-                var gs = c.gamification_surcharge || c.ai_surcharge || 0;
-                return `
-                <div class="course-item ${c.category}" data-category="${c.category}" data-format="${fmt}"
-                    onclick='openModal(${JSON.stringify({title:c.title,badge:c.badge,category:c.category,format:fmt,desc:c.description||'',teacher:c.teacher_name,prices:p,plusSurcharge:gs}).replace(/'/g,"&#39;")})'>
-                    <div class="course-item-icon">${c.icon||'📚'}</div>
-                    <div style="display:flex;gap:6px;"><span class="badge ${cats[c.category]||'badge-oth'}">${c.badge}</span><span class="badge ${fmt==='group'?'badge-group':'badge-individual'}">${fmt==='group'?'Группа':'Индивидуально'}</span></div>
-                    <h3>${c.title}</h3>
-                    <p>${c.description||''}</p>
-                    <div class="course-item-meta">
-                        <div class="meta-row"><span class="meta-label">Преподаватель</span><span class="meta-value">${c.teacher_name}</span></div>
-                        <div class="meta-row"><span class="meta-label">Стоимость</span><span class="meta-value price">от ${minPrice.toLocaleString('ru-RU')} ₽</span></div>
-                    </div>
-                </div>`;
-            }).join('');
-            applyFilters();
+        function applyFilters(){
+            document.querySelectorAll('.course-card').forEach(function(el){
+                var mc=activeFilter==='all'||el.dataset.category===activeFilter;
+                var mf=activeFormatFilter==='all'||el.dataset.format===activeFormatFilter;
+                el.style.display=(mc&&mf)?'flex':'none'
+            })
         }
 
-        function applyFilters() {
-            document.querySelectorAll('.course-item').forEach(function(el) {
-                var matchCat = activeFilter === 'all' || el.dataset.category === activeFilter;
-                var matchFmt = activeFormatFilter === 'all' || el.dataset.format === activeFormatFilter;
-                el.style.display = (matchCat && matchFmt) ? 'flex' : 'none';
-            });
-        }
-
-        function openModal(c) {
-            currentCourse = c;
-            selectedLessons = 1;
-            document.getElementById('modalBadge').textContent = c.badge;
-            document.getElementById('modalBadge').className = 'modal-badge ' + c.category;
-            document.getElementById('modalTitle').textContent = c.title;
-            document.getElementById('modalDesc').textContent = c.desc;
-            document.getElementById('modalTeacherName').textContent = c.teacher;
-            updateTeacherInfo(c.teacher);
+        function openModal(c){
+            currentCourse=c;selectedLessons=1;
+            document.getElementById('modalBadge').textContent=c.badge;document.getElementById('modalBadge').className='modal-badge '+c.category;
+            document.getElementById('modalTitle').textContent=c.title;document.getElementById('modalDesc').textContent=c.desc;
+            document.getElementById('modalTeacherName').textContent=c.teacher;updateTeacherInfo(c.teacher);
             document.querySelectorAll('.lesson-btn').forEach(function(b,i){b.classList.toggle('active',i===0)});
-            document.getElementById('plusToggle').checked = false;
             updatePrice();
-            document.getElementById('modalOverlay').classList.add('open');
-            document.getElementById('courseModal').classList.add('open');
-            document.body.style.overflow = 'hidden';
-            // Сброс инфо препода
-            var info = document.getElementById('teacherInfo');
-            info.style.maxHeight = '0';
-            info.style.opacity = '0';
-            info.style.marginBottom = '0';
-            document.getElementById('teacherArrow').className = 'fas fa-chevron-down';
+            document.getElementById('modalOverlay').classList.add('open');document.getElementById('courseModal').classList.add('open');
+            document.body.style.overflow='hidden';
+            var info=document.getElementById('teacherInfo');info.style.maxHeight='0';info.style.opacity='0';info.style.marginBottom='0';
+            document.getElementById('teacherArrow').className='fas fa-chevron-down'
         }
 
-        function closeModal() {
-            document.getElementById('modalOverlay').classList.remove('open');
-            document.getElementById('courseModal').classList.remove('open');
-            document.body.style.overflow = '';
-            currentCourse = null;
+        function closeModal(){
+            document.getElementById('modalOverlay').classList.remove('open');document.getElementById('courseModal').classList.remove('open');
+            document.body.style.overflow='';currentCourse=null
         }
 
-        function updatePrice() {
-            if(!currentCourse) return;
-            var withPlus = document.getElementById('plusToggle').checked;
-            var lessonsPrice = currentCourse.prices[selectedLessons];
-            var plusPrice = withPlus ? (currentCourse.plusSurcharge || 0) : 0;
-            var total = lessonsPrice + plusPrice;
-            document.getElementById('modalPrice').textContent = total.toLocaleString('ru-RU') + ' ₽';
-            var disc = currentCourse.prices[1] * selectedLessons - lessonsPrice;
-            var discEl = document.getElementById('modalDiscount');
-            var plusEl = document.getElementById('modalPlusPrice');
-            if(disc > 0 && selectedLessons > 1) {
-                discEl.style.display = 'block';
-                discEl.textContent = 'Экономия: ' + disc.toLocaleString('ru-RU') + ' ₽ (' + Math.round(disc/(currentCourse.prices[1]*selectedLessons)*100) + '%)';
-            } else { discEl.style.display = 'none'; }
-            if(withPlus) { plusEl.style.display = 'block'; plusEl.textContent = 'Подписка+: +' + (currentCourse.plusSurcharge || 0).toLocaleString('ru-RU') + ' ₽'; }
-            else { plusEl.style.display = 'none'; }
+        function updatePrice(){
+            if(!currentCourse)return;
+            var price=currentCourse.prices[selectedLessons]||0;
+            document.getElementById('modalPrice').textContent=price.toLocaleString('ru-RU')+' ₽';
+            var disc=currentCourse.prices[1]*selectedLessons-price, discEl=document.getElementById('modalDiscount');
+            if(disc>0&&selectedLessons>1){discEl.style.display='block';discEl.textContent='Экономия: '+disc.toLocaleString('ru-RU')+' ₽ ('+Math.round(disc/(currentCourse.prices[1]*selectedLessons)*100)+'%)'}
+            else{discEl.style.display='none'}
         }
 
-        function toggleTeacherInfo() {
-            var info = document.getElementById('teacherInfo');
-            var arrow = document.getElementById('teacherArrow');
-            var isOpen = info.style.maxHeight !== '0px' && info.style.maxHeight !== '';
-
-            if (isOpen) {
-                info.style.maxHeight = '0';
-                info.style.opacity = '0';
-                info.style.marginBottom = '0';
-                arrow.className = 'fas fa-chevron-down';
-            } else {
-                info.style.maxHeight = '600px';
-                info.style.opacity = '1';
-                info.style.marginBottom = '20px';
-                arrow.className = 'fas fa-chevron-up';
-            }
+        function toggleTeacherInfo(){
+            var info=document.getElementById('teacherInfo'),arrow=document.getElementById('teacherArrow');
+            if(info.style.maxHeight!=='0px'&&info.style.maxHeight!==''){info.style.maxHeight='0';info.style.opacity='0';info.style.marginBottom='0';arrow.className='fas fa-chevron-down'}
+            else{info.style.maxHeight='600px';info.style.opacity='1';info.style.marginBottom='16px';arrow.className='fas fa-chevron-up'}
         }
 
-        function updateTeacherInfo(name) {
-            var t = teachersCache[name];
-            var avatar = document.getElementById('teacherAvatar');
-
-            if (t && t.photo_url) {
-                avatar.innerHTML = '<img src="' + t.photo_url + '">';
-            } else {
-                avatar.innerHTML = '👤';
-            }
-
-            document.getElementById('teacherFullName').textContent = t ? t.name : (name || 'Назначается');
-            document.getElementById('teacherSubj').textContent = t ? t.subjects : '';
-            document.getElementById('teacherUni').textContent = t && t.university ? '🏫 ' + t.university : '';
-            document.getElementById('teacherExp').textContent = t && t.experience ? '⏳ ' + t.experience : '';
-            document.getElementById('teacherDesc').textContent = t ? t.desc : '';
+        function updateTeacherInfo(name){
+            var t=teachersCache[name];
+            document.getElementById('teacherAvatar').innerHTML=(t&&t.photo_url)?'<img src="'+t.photo_url+'">':'👤';
+            document.getElementById('teacherFullName').textContent=t?t.name:(name||'Назначается');
+            document.getElementById('teacherSubj').textContent=t?t.subjects:'';
+            document.getElementById('teacherUni').textContent=t&&t.university?'🏫 '+t.university:'';
+            document.getElementById('teacherExp').textContent=t&&t.experience?'⏳ '+t.experience:'';
+            document.getElementById('teacherDesc').textContent=t?t.desc:''
         }
 
-        async function submitApplication() {
-            if(!currentCourse) return;
-
-            var { data: { session } } = await supabase.auth.getSession();
-            if(!session || !session.user) {
-                showToast('Войди в аккаунт чтобы отправить заявку', 'error');
-                setTimeout(function(){ window.location.href = 'login.html'; }, 1500);
-                return;
-            }
-
-            var userName = session.user.user_metadata?.first_name || session.user.email?.split('@')[0] || '';
-            var phone = document.getElementById('studentPhone').value.trim();
-            if(!phone || phone.replace(/\D/g,'').length < 11) { showToast('Введи корректный телефон (11 цифр)', 'error'); return; }
-
-            try {
-                var withPlus = document.getElementById('plusToggle').checked;
-                var resp = await fetch('http://localhost:5001/api/leads', {
-                    method: 'POST',
-                    headers: {'Content-Type':'application/json','Authorization':'Bearer '+session.access_token},
-                    body: JSON.stringify({
-                        client_name: userName,
-                        phone: phone.replace(/\D/g,''),
-                        course_title: currentCourse.title,
-                        teacher_name: currentCourse.teacher,
-                        lessons: selectedLessons,
-                        with_gamification: withPlus,
-                        total_price: currentCourse.prices[selectedLessons] + (withPlus ? (currentCourse.plusSurcharge || 0) : 0),
-                        student_message: document.getElementById('studentMessage').value.trim(),
-                        chat_history: 'Заявка с сайта',
-                        tg_username: document.getElementById('studentTG').value.trim(),
-                        vk_username: document.getElementById('studentVK').value.trim()
-                    })
+        async function submitApplication(){
+            if(!currentCourse)return;
+            var session=(await supabase.auth.getSession()).data.session;
+            if(!session){showToast('Войди в аккаунт','error');setTimeout(function(){window.location.href='login.html'},1500);return}
+            var phone=document.getElementById('studentPhone').value.trim();
+            if(!phone||phone.replace(/\D/g,'').length<11){showToast('Введи телефон','error');return}
+            try{
+                var resp=await fetch('http://localhost:5001/api/leads',{
+                    method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token},
+                    body:JSON.stringify({client_name:session.user.user_metadata?.first_name||session.user.email?.split('@')[0]||'',phone:phone.replace(/\D/g,''),course_title:currentCourse.title,teacher_name:currentCourse.teacher,lessons:selectedLessons,with_gamification:false,total_price:currentCourse.prices[selectedLessons]||0,student_message:document.getElementById('studentMessage').value.trim(),chat_history:'Заявка с сайта',tg_username:document.getElementById('studentTG').value.trim(),vk_username:document.getElementById('studentVK').value.trim()})
                 });
-                if(resp.ok) { showToast('Заявка отправлена! Преподаватель свяжется с тобой.', 'success'); closeModal(); }
-                else if(resp.status === 401) { showToast('Сессия истекла. Войди заново.', 'error'); setTimeout(function(){ window.location.href='login.html'; }, 1500); }
-                else { showToast('Ошибка отправки. Попробуй ещё раз.', 'error'); }
-            } catch(e) { showToast('Ошибка соединения с сервером.', 'error'); }
+                if(resp.ok){showToast('Заявка отправлена!','success');closeModal()}
+                else if(resp.status===401){showToast('Сессия истекла','error');window.location.href='login.html'}
+                else{showToast('Ошибка','error')}
+            }catch(e){showToast('Ошибка соединения','error')}
         }
 
-        document.addEventListener('click', function(e) {
-            if(e.target.classList.contains('lesson-btn')) {
-                document.querySelectorAll('.lesson-btn').forEach(function(b){b.classList.remove('active')});
-                e.target.classList.add('active');
-                selectedLessons = parseInt(e.target.dataset.lessons);
-                updatePrice();
-            }
+        document.addEventListener('click',function(e){
+            if(e.target.classList.contains('lesson-btn')){document.querySelectorAll('.lesson-btn').forEach(function(b){b.classList.remove('active')});e.target.classList.add('active');selectedLessons=parseInt(e.target.dataset.lessons);updatePrice()}
+        });
+        document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()});
+
+        supabase.auth.getSession().then(function(res){
+            var ha=document.getElementById('headerActions');
+            if(res.data.session){var name=res.data.session.user.user_metadata?.first_name||res.data.session.user.email?.split('@')[0]||'Профиль';ha.innerHTML='<a href="profile.html" style="display:flex;align-items:center;gap:8px;padding:9px 18px;background:rgba(139,92,246,0.05);border:1px solid rgba(139,92,246,0.12);border-radius:50px;color:#8B5CF6;text-decoration:none;font-size:0.82rem;font-weight:600;"><i class="fas fa-user"></i> '+name+'</a>'}
+            else{ha.innerHTML='<a href="login.html" style="padding:9px 18px;border-radius:50px;border:1.5px solid #E11D8D;color:#E11D8D;font-weight:600;font-size:0.82rem;text-decoration:none;"><i class="fas fa-sign-in-alt"></i> Войти</a>'}
         });
 
-        document.addEventListener('keydown', function(e) {
-            if(e.key === 'Escape') closeModal();
-        });
+        document.getElementById('filtersRow1').addEventListener('click',function(e){if(!e.target.classList.contains('filter-btn'))return;this.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active')});e.target.classList.add('active');activeFilter=e.target.dataset.filter;applyFilters()});
+        document.getElementById('filtersRow2').addEventListener('click',function(e){if(!e.target.classList.contains('filter-btn'))return;this.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active')});e.target.classList.add('active');activeFormatFilter=e.target.dataset.filter;applyFilters()});
 
-        (async function() {
-            var { data: { session } } = await supabase.auth.getSession();
-            var ha = document.getElementById('headerActions');
-            if(session && session.user) {
-                currentUserName = session.user.user_metadata?.first_name || session.user.email?.split('@')[0] || 'Профиль';
-                ha.innerHTML = '<a href="profile.html" style="display:flex;align-items:center;gap:8px;padding:9px 18px;background:rgba(139,92,246,0.05);border:1px solid rgba(139,92,246,0.14);border-radius:50px;color:#8B5CF6;text-decoration:none;font-size:0.82rem;font-weight:600;"><i class="fas fa-user"></i> '+currentUserName+'</a>';
-            } else {
-                ha.innerHTML = '<a href="login.html" style="padding:9px 20px;border-radius:50px;border:1.5px solid #E11D8D;color:#E11D8D;font-weight:600;font-size:0.82rem;text-decoration:none;"><i class="fas fa-sign-in-alt"></i> Войти</a>';
-            }
-            document.getElementById('filtersRow1').addEventListener('click', function(e) {
-                if(!e.target.classList.contains('filter-btn')) return;
-                this.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active')});
-                e.target.classList.add('active');
-                activeFilter = e.target.dataset.filter;
-                applyFilters();
-            });
-            document.getElementById('filtersRow2').addEventListener('click', function(e) {
-                if(!e.target.classList.contains('filter-btn')) return;
-                this.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active')});
-                e.target.classList.add('active');
-                activeFormatFilter = e.target.dataset.filter;
-                applyFilters();
-            });
-        })();
-
-        loadTeachers();
-        loadCourses();
+        loadTeachers();loadCourses();
     </script>
 </body>
 </html>
