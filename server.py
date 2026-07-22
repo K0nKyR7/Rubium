@@ -817,6 +817,55 @@ def get_reviews():
         print(f"❌ Reviews error: {e}")
         return jsonify([])
     
+@app.route("/api/suggestions", methods=["POST"])
+def create_suggestion():
+    auth_header = request.headers.get("Authorization", "")
+    user_info = get_user_from_token(auth_header)
+    if not user_info:
+        return jsonify({"status": "error", "detail": "Требуется авторизация"}), 401
+    
+    data = request.get_json()
+    body = {
+        "user_id": user_info["id"],
+        "text": data.get("text", "").strip()
+    }
+    if not body["text"]:
+        return jsonify({"status": "error", "detail": "Текст обязателен"}), 400
+    
+    r = requests.post(
+        f"{SUPABASE_URL}/rest/v1/development_suggestions",
+        headers=supabase_headers(use_service_role=True),
+        json=body
+    )
+    return jsonify({"status": "ok" if r.status_code == 201 else "error"})
+
+@app.route("/api/feedback", methods=["POST"])
+def create_feedback():
+    auth_header = request.headers.get("Authorization", "")
+    user_info = get_user_from_token(auth_header)
+    if not user_info:
+        return jsonify({"status": "error", "detail": "Требуется авторизация"}), 401
+    
+    data = request.get_json()
+    rating = data.get("rating")
+    text = data.get("text", "").strip()
+    
+    if not rating or int(rating) < 1 or int(rating) > 5:
+        return jsonify({"status": "error", "detail": "Рейтинг от 1 до 5"}), 400
+    
+    body = {
+        "user_id": user_info["id"],
+        "rating": int(rating),
+        "text": text
+    }
+    
+    r = requests.post(
+        f"{SUPABASE_URL}/rest/v1/feedback",
+        headers=supabase_headers(use_service_role=True),
+        json=body
+    )
+    return jsonify({"status": "ok" if r.status_code == 201 else "error"})
+    
 if __name__ == "__main__":
     print(f"🚀 Starting with {len(get_courses_from_db())} courses and {len(get_teachers_from_db())} teachers")
     app.run(host="0.0.0.0", port=5001, debug=True)

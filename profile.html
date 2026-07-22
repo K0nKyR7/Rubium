@@ -10,88 +10,95 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:'Inter',sans-serif;background:#FAF8FC;color:#1F2937;min-height:100vh;display:flex;flex-direction:column}
+        body{font-family:'Inter',sans-serif;background:#FAF8FC;color:#1F2937;height:100vh;display:flex;flex-direction:column;overflow:hidden}
         body::before,body::after{content:'';position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(140px);opacity:0.04}
         body::before{width:620px;height:620px;background:#8B5CF6;top:-180px;right:-180px;animation:driftA 28s ease-in-out infinite}
         body::after{width:460px;height:460px;background:#E11D8D;bottom:-130px;left:-130px;animation:driftB 32s ease-in-out infinite}
         @keyframes driftA{0%,100%{transform:translate(0,0)}33%{transform:translate(-40px,30px)}66%{transform:translate(20px,-15px)}}
         @keyframes driftB{0%,100%{transform:translate(0,0)}33%{transform:translate(30px,-25px)}66%{transform:translate(-15px,30px)}}
 
-        .header{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid rgba(139,92,246,0.06);position:sticky;top:0;z-index:100;background:rgba(250,248,252,0.75);backdrop-filter:blur(24px);flex-shrink:0}
-        .logo{font-size:1.2rem;font-weight:800;color:#8B5CF6;display:flex;align-items:center;gap:8px;text-decoration:none;letter-spacing:-0.5px}
-        .logo img{width:34px;height:34px;object-fit:contain}
+        .header{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;border-bottom:1px solid rgba(139,92,246,0.06);flex-shrink:0;z-index:100;background:rgba(250,248,252,0.75);backdrop-filter:blur(24px)}
+        .logo{font-size:1.15rem;font-weight:800;color:#8B5CF6;display:flex;align-items:center;gap:8px;text-decoration:none;letter-spacing:-0.5px}
+        .logo img{width:32px;height:32px;object-fit:contain}
         .header-right{display:flex;align-items:center;gap:8px}
-        .btn-header{padding:8px 16px;border-radius:50px;font-weight:600;font-size:0.8rem;cursor:pointer;font-family:inherit;text-decoration:none;display:flex;align-items:center;gap:5px;transition:all 0.28s}
+        .btn-header{padding:7px 14px;border-radius:50px;font-weight:600;font-size:0.78rem;cursor:pointer;font-family:inherit;text-decoration:none;display:flex;align-items:center;gap:5px;transition:all 0.28s}
         .btn-home{border:1px solid rgba(139,92,246,0.18);background:transparent;color:#8B5CF6}.btn-home:hover{background:rgba(139,92,246,0.04)}
         .btn-logout{border:1.5px solid rgba(239,68,68,0.25);background:transparent;color:#EF4444}.btn-logout:hover{background:rgba(239,68,68,0.04)}
 
-        .layout{display:flex;flex:1;position:relative;z-index:1;height:calc(100vh - 56px)}
+        .layout{display:flex;flex:1;position:relative;z-index:1;overflow:hidden}
 
-        .sidebar{width:280px;flex-shrink:0;display:flex;flex-direction:column;gap:14px;padding:20px 16px;background:rgba(255,255,255,0.35);border-right:1px solid rgba(139,92,246,0.06);overflow-y:auto}
-        .profile-card{background:rgba(255,255,255,0.6);backdrop-filter:blur(12px);border-radius:18px;padding:18px 16px;border:1px solid rgba(139,92,246,0.06);display:flex;align-items:center;gap:12px;transition:all 0.3s}
+        .sidebar{width:280px;flex-shrink:0;display:flex;flex-direction:column;gap:12px;padding:16px 14px;background:rgba(255,255,255,0.3);border-right:1px solid rgba(139,92,246,0.06);overflow-y:auto}
+        .profile-card{background:rgba(255,255,255,0.6);backdrop-filter:blur(12px);border-radius:16px;padding:16px 14px;border:1px solid rgba(139,92,246,0.06);display:flex;align-items:center;gap:10px;transition:all 0.3s}
         .profile-card:hover{border-color:rgba(139,92,246,0.12)}
-        .avatar-circle{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,#8B5CF6,#E11D8D);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:#fff;font-weight:700;overflow:hidden;background-size:cover;background-position:center}
-        .profile-name{font-size:0.9rem;font-weight:700;letter-spacing:-0.3px}.profile-email{font-size:0.7rem;color:#9CA3AF}
-        .role-badge{display:inline-block;padding:2px 8px;border-radius:50px;font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-top:3px}
+        .avatar-circle{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#8B5CF6,#E11D8D);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1rem;color:#fff;font-weight:700;overflow:hidden;background-size:cover;background-position:center}
+        .profile-name{font-size:0.85rem;font-weight:700;letter-spacing:-0.3px}.profile-email{font-size:0.68rem;color:#9CA3AF}
+        .role-badge{display:inline-block;padding:2px 7px;border-radius:50px;font-size:0.58rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-top:2px}
         .role-student{background:rgba(139,92,246,0.07);color:#8B5CF6;border:1px solid rgba(139,92,246,0.1)}
         .role-teacher{background:rgba(225,29,141,0.06);color:#E11D8D;border:1px solid rgba(225,29,141,0.1)}
         .role-admin{background:rgba(239,68,68,0.06);color:#EF4444;border:1px solid rgba(239,68,68,0.1)}
 
-        .side-nav{display:flex;flex-direction:column;gap:2px;background:rgba(255,255,255,0.5);border-radius:16px;padding:6px;border:1px solid rgba(139,92,246,0.06);backdrop-filter:blur(12px);flex:1}
-        .side-nav-btn{width:100%;padding:11px 16px;border-radius:10px;border:none;background:transparent;font-family:inherit;font-size:0.82rem;font-weight:600;color:#9CA3AF;cursor:pointer;transition:all 0.25s;text-align:left;display:flex;align-items:center;gap:10px}
-        .side-nav-btn i{width:18px;text-align:center;font-size:0.78rem}
+        .side-nav{display:flex;flex-direction:column;gap:1px;background:rgba(255,255,255,0.5);border-radius:14px;padding:4px;border:1px solid rgba(139,92,246,0.06);backdrop-filter:blur(12px);flex:1}
+        .side-nav-btn{width:100%;padding:10px 14px;border-radius:10px;border:none;background:transparent;font-family:inherit;font-size:0.8rem;font-weight:600;color:#9CA3AF;cursor:pointer;transition:all 0.25s;text-align:left;display:flex;align-items:center;gap:9px}
+        .side-nav-btn i{width:16px;text-align:center;font-size:0.74rem}
         .side-nav-btn.active{background:#fff;color:#1F2937;box-shadow:0 2px 8px rgba(0,0,0,0.04)}
         .side-nav-btn:hover:not(.active){color:#6B7280;background:rgba(139,92,246,0.03)}
+        .side-nav-divider{height:1px;background:rgba(139,92,246,0.06);margin:4px 6px}
 
-        .content-area{flex:1;min-width:0;overflow-y:auto;padding:20px 24px}
-        .content-panel{display:none;flex-direction:column;gap:14px}
+        .content-area{flex:1;min-width:0;overflow-y:auto;padding:18px 22px}
+        .content-panel{display:none;flex-direction:column;gap:12px}
         .content-panel.active{display:flex}
 
-        .info-card{background:rgba(255,255,255,0.55);backdrop-filter:blur(12px);border-radius:16px;padding:18px 20px;border:1px solid rgba(139,92,246,0.06)}
-        .info-card h3{font-size:0.64rem;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;font-family:'JetBrains Mono',monospace}
-        .row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(0,0,0,0.02);gap:10px;font-size:0.84rem}
+        .info-card{background:rgba(255,255,255,0.55);backdrop-filter:blur(12px);border-radius:16px;padding:16px 18px;border:1px solid rgba(139,92,246,0.06)}
+        .info-card h3{font-size:0.62rem;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;font-family:'JetBrains Mono',monospace}
+        .row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(0,0,0,0.02);gap:10px;font-size:0.82rem}
         .row:last-child{border-bottom:none}.row-label{font-weight:500}.row-value{color:#9CA3AF;text-align:right}.row-link{color:#8B5CF6;cursor:pointer;font-weight:500}
 
-        .empty{text-align:center;padding:18px 10px;color:#9CA3AF;font-size:0.78rem}.empty i{font-size:1.1rem;display:block;margin-bottom:4px;opacity:0.2}
+        .empty{text-align:center;padding:16px 10px;color:#9CA3AF;font-size:0.76rem}.empty i{font-size:1rem;display:block;margin-bottom:4px;opacity:0.2}
 
-        .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
-        .stat-card{background:rgba(255,255,255,0.55);backdrop-filter:blur(12px);border-radius:14px;padding:16px 14px;border:1px solid rgba(139,92,246,0.05);transition:all 0.3s}
+        .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+        .stat-card{background:rgba(255,255,255,0.55);backdrop-filter:blur(12px);border-radius:12px;padding:14px 12px;border:1px solid rgba(139,92,246,0.05);transition:all 0.3s}
         .stat-card:hover{border-color:rgba(139,92,246,0.1);transform:translateY(-2px)}
-        .stat-num{font-size:1.3rem;font-weight:800;color:#8B5CF6;font-family:'Unbounded',sans-serif}.stat-lbl{font-size:0.68rem;color:#9CA3AF;margin-top:2px}
+        .stat-num{font-size:1.15rem;font-weight:800;color:#8B5CF6;font-family:'Unbounded',sans-serif}.stat-lbl{font-size:0.64rem;color:#9CA3AF;margin-top:2px}
 
-        .filters-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
-        .filter-btn{padding:6px 14px;border-radius:50px;border:1.5px solid rgba(139,92,246,0.1);background:transparent;color:#6B7280;font-weight:600;font-size:0.74rem;cursor:pointer;font-family:inherit;transition:all 0.25s}
+        .filters-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+        .filter-btn{padding:5px 12px;border-radius:50px;border:1.5px solid rgba(139,92,246,0.1);background:transparent;color:#6B7280;font-weight:600;font-size:0.72rem;cursor:pointer;font-family:inherit;transition:all 0.25s}
         .filter-btn.active{background:#8B5CF6;color:#fff;border-color:#8B5CF6}
 
-        .lead-card{background:rgba(255,255,255,0.55);backdrop-filter:blur(12px);border-radius:14px;padding:14px 16px;border:1px solid rgba(139,92,246,0.05);transition:all 0.3s;position:relative;overflow:hidden}
+        .lead-card{background:rgba(255,255,255,0.55);backdrop-filter:blur(12px);border-radius:14px;padding:12px 14px;border:1px solid rgba(139,92,246,0.05);transition:all 0.3s;position:relative;overflow:hidden}
         .lead-card:hover{border-color:rgba(139,92,246,0.12);box-shadow:0 4px 16px rgba(139,92,246,0.03)}
-        .lead-card::after{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(180deg,#8B5CF6,#E11D8D);border-radius:3px 0 0 3px;opacity:0;transition:opacity 0.3s}
+        .lead-card::after{content:'';position:absolute;top:0;left:0;width:2px;height:100%;background:linear-gradient(180deg,#8B5CF6,#E11D8D);border-radius:2px 0 0 2px;opacity:0;transition:opacity 0.3s}
         .lead-card.unread{background:rgba(139,92,246,0.02);border-color:rgba(139,92,246,0.1)}
         .lead-card.unread::after,.lead-card:hover::after{opacity:1}
         .lead-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px}
-        .lead-student{font-weight:700;font-size:0.84rem;display:flex;align-items:center;gap:6px}.lead-date{font-size:0.68rem;color:#9CA3AF;margin-left:4px;white-space:nowrap}
-        .lead-badge{padding:2px 8px;border-radius:50px;font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1px}
+        .lead-student{font-weight:700;font-size:0.82rem;display:flex;align-items:center;gap:6px}.lead-date{font-size:0.66rem;color:#9CA3AF;margin-left:4px;white-space:nowrap}
+        .lead-badge{padding:2px 7px;border-radius:50px;font-size:0.58rem;font-weight:700;text-transform:uppercase;letter-spacing:1px}
         .badge-new{background:rgba(139,92,246,0.07);color:#8B5CF6;border:1px solid rgba(139,92,246,0.1)}
         .badge-accepted{background:rgba(34,197,94,0.06);color:#22C55E;border:1px solid rgba(34,197,94,0.1)}
         .badge-rejected{background:rgba(239,68,68,0.06);color:#EF4444;border:1px solid rgba(239,68,68,0.1)}
         .badge-paid{background:rgba(34,197,94,0.08);color:#16A34A;border:1px solid rgba(34,197,94,0.12)}
         .badge-unpaid{background:rgba(245,158,11,0.07);color:#F59E0B;border:1px solid rgba(245,158,11,0.1)}
-        .lead-body{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;margin-bottom:8px;font-size:0.74rem}
+        .lead-body{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;margin-bottom:8px;font-size:0.73rem}
         .lead-field .lbl{color:#9CA3AF;margin-right:3px}.lead-field .val{color:#4B5563;font-weight:500}
-        .lead-msg{background:rgba(139,92,246,0.03);padding:8px 10px;border-radius:8px;font-size:0.74rem;color:#6B7280;margin-bottom:8px;font-style:italic}
+        .lead-msg{background:rgba(139,92,246,0.03);padding:8px 10px;border-radius:8px;font-size:0.72rem;color:#6B7280;margin-bottom:8px;font-style:italic}
         .lead-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-        .btn-sm{padding:6px 14px;border-radius:50px;font-weight:600;font-size:0.74rem;cursor:pointer;font-family:inherit;transition:all 0.25s;border:none}
+        .btn-sm{padding:6px 13px;border-radius:50px;font-weight:600;font-size:0.72rem;cursor:pointer;font-family:inherit;transition:all 0.25s;border:none}
         .btn-accept{background:#8B5CF6;color:#fff}.btn-accept:hover{background:#7C3AED}
         .btn-reject{background:transparent;color:#EF4444;border:1.5px solid rgba(239,68,68,0.2)}.btn-reject:hover{background:rgba(239,68,68,0.04)}
         .btn-pay{background:#F59E0B;color:#fff}.btn-pay:hover{background:#D97706}
         .btn-confirm-reject{background:#EF4444;color:#fff;white-space:nowrap}.btn-confirm-reject:hover{background:#DC2626}
         .reject-row{display:none;gap:6px;align-items:center;margin-top:6px;width:100%}
-        .reject-row input{flex:1;padding:6px 10px;border:1.5px solid rgba(239,68,68,0.2);border-radius:8px;font-family:inherit;font-size:0.74rem;outline:none}
-        .teacher-row,.unassigned-card{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(0,0,0,0.02);gap:8px;font-size:0.8rem}
+        .reject-row input{flex:1;padding:6px 10px;border:1.5px solid rgba(239,68,68,0.2);border-radius:8px;font-family:inherit;font-size:0.72rem;outline:none}
+        .teacher-row,.unassigned-card{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(0,0,0,0.02);gap:8px;font-size:0.78rem}
         .teacher-row:last-child,.unassigned-card:last-child{border-bottom:none}
-        .teacher-email{font-size:0.7rem;color:#9CA3AF}.teacher-stats{font-size:0.74rem;color:#6B7280;text-align:right}.teacher-stats span{font-weight:600;color:#8B5CF6}
-        .assign-select{padding:5px 8px;border-radius:8px;border:1.5px solid rgba(139,92,246,0.15);font-family:inherit;font-size:0.74rem;outline:none;background:#fff}
-        .btn-assign{padding:5px 12px;border-radius:8px;border:none;background:#8B5CF6;color:#fff;font-weight:600;font-size:0.72rem;cursor:pointer;font-family:inherit}
+        .teacher-email{font-size:0.68rem;color:#9CA3AF}.teacher-stats{font-size:0.72rem;color:#6B7280;text-align:right}.teacher-stats span{font-weight:600;color:#8B5CF6}
+        .assign-select{padding:5px 8px;border-radius:8px;border:1.5px solid rgba(139,92,246,0.15);font-family:inherit;font-size:0.72rem;outline:none;background:#fff}
+        .btn-assign{padding:5px 12px;border-radius:8px;border:none;background:#8B5CF6;color:#fff;font-weight:600;font-size:0.7rem;cursor:pointer;font-family:inherit}
+
+        .form-textarea{width:100%;padding:10px 12px;border:1.5px solid rgba(139,92,246,0.1);border-radius:12px;font-family:inherit;font-size:0.82rem;outline:none;resize:vertical;min-height:80px;background:rgba(255,255,255,0.5);transition:border-color 0.2s}
+        .form-textarea:focus{border-color:rgba(139,92,246,0.3)}
+        .stars-row{display:flex;gap:4px;margin-bottom:10px}
+        .star-btn{width:32px;height:32px;border-radius:8px;border:1.5px solid rgba(139,92,246,0.1);background:transparent;color:#9CA3AF;font-size:0.9rem;cursor:pointer;transition:all 0.2s}
+        .star-btn.active,.star-btn:hover{background:rgba(245,158,11,0.1);color:#F59E0B;border-color:rgba(245,158,11,0.3)}
 
         .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.15);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.2s}
         .modal-overlay.open{opacity:1;pointer-events:auto}
@@ -108,13 +115,15 @@
         .toast.success{color:#22C55E;border:1px solid rgba(34,197,94,0.2)}.toast.error{color:#EF4444;border:1px solid rgba(239,68,68,0.2)}
 
         @media(max-width:768px){
-            .layout{flex-direction:column;height:auto}
-            .sidebar{width:100%;flex-direction:row;flex-wrap:wrap;gap:8px;padding:12px 14px;border-right:none;border-bottom:1px solid rgba(139,92,246,0.06)}
-            .profile-card{flex:1;min-width:200px}
-            .side-nav{flex-direction:row;flex-wrap:wrap;flex:1;min-width:200px;justify-content:center}
-            .side-nav-btn{width:auto;font-size:0.72rem;padding:8px 12px}
+            body{overflow:auto}
+            .layout{flex-direction:column;overflow:visible}
+            .sidebar{width:100%;flex-direction:row;flex-wrap:wrap;gap:8px;padding:10px 12px;border-right:none;border-bottom:1px solid rgba(139,92,246,0.06);overflow:visible}
+            .profile-card{flex:1;min-width:180px}
+            .side-nav{flex-direction:row;flex-wrap:wrap;flex:1;min-width:180px;justify-content:center}
+            .side-nav-btn{width:auto;font-size:0.7rem;padding:7px 10px}
+            .side-nav-divider{display:none}
             .content-area{padding:12px 14px}
-            .stats-row{grid-template-columns:1fr 1fr;gap:8px}
+            .stats-row{grid-template-columns:1fr 1fr;gap:6px}
             .lead-body{grid-template-columns:1fr}
             .btn-header span{display:none}
         }
@@ -142,13 +151,21 @@
             </div>
             <nav class="side-nav" id="sideNav">
                 <button class="side-nav-btn active" data-panel="studentPanel"><i class="fas fa-graduation-cap"></i> Учёба</button>
-                <button class="side-nav-btn" data-panel="teacherPanel" style="display:none"><i class="fas fa-inbox"></i> Заявки</button>
-                <button class="side-nav-btn" data-panel="studentsPanel" style="display:none"><i class="fas fa-users"></i> Ученики</button>
-                <button class="side-nav-btn" data-panel="adminPanel" style="display:none"><i class="fas fa-cog"></i> Управление</button>
+                <button class="side-nav-btn" data-panel="rubiumPanel" id="rubiumNavBtn" style="display:none"><i class="fas fa-gamepad"></i> Rubium</button>
+                <button class="side-nav-btn" data-panel="teacherPanel" id="teacherNavBtn" style="display:none"><i class="fas fa-inbox"></i> Заявки</button>
+                <button class="side-nav-btn" data-panel="studentsPanel" id="studentsNavBtn" style="display:none"><i class="fas fa-users"></i> Ученики</button>
+                <button class="side-nav-btn" data-panel="adminPanel" id="adminNavBtn" style="display:none"><i class="fas fa-cog"></i> Управление</button>
+                <div class="side-nav-divider"></div>
+                <button class="side-nav-btn" onclick="window.open('teachers.html','_blank')"><i class="fas fa-chalkboard-teacher"></i> Преподаватели</button>
+                <button class="side-nav-btn" data-panel="supportPanel"><i class="fas fa-headset"></i> Техподдержка</button>
+                <button class="side-nav-btn" data-panel="referralPanel"><i class="fas fa-gift"></i> Рефералы</button>
+                <button class="side-nav-btn" data-panel="suggestPanel"><i class="fas fa-lightbulb"></i> Предложить</button>
+                <button class="side-nav-btn" data-panel="feedbackPanel"><i class="fas fa-star"></i> Отзыв</button>
             </nav>
         </div>
 
         <div class="content-area">
+            <!-- Студент: Учёба -->
             <div class="content-panel active" id="studentPanel">
                 <div class="info-card">
                     <h3>Информация</h3>
@@ -162,6 +179,29 @@
                 <div class="info-card"><h3>Мои заявки</h3><div id="studentLeadsList"><div class="empty"><i class="fas fa-inbox"></i> У вас пока нет заявок</div></div></div>
             </div>
 
+            <!-- Rubium -->
+            <div class="content-panel" id="rubiumPanel">
+                <div class="info-card">
+                    <h3>Rubium — игровой тренажёр</h3>
+                    <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap">
+                        <div style="flex:1;min-width:240px">
+                            <p style="font-size:0.88rem;color:#4B5563;line-height:1.6;margin-bottom:14px">Геймифицированная подготовка к ЕГЭ и ОГЭ. Учись играя — AI подстроится под твой уровень, а рейтинг с друзьями не даст заскучать.</p>
+                            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px">
+                                <span style="padding:5px 12px;border-radius:50px;font-size:0.72rem;font-weight:600;background:rgba(6,182,212,0.07);color:#0891B2;border:1px solid rgba(6,182,212,0.12)"><i class="fas fa-brain"></i> AI-адаптация</span>
+                                <span style="padding:5px 12px;border-radius:50px;font-size:0.72rem;font-weight:600;background:rgba(6,182,212,0.07);color:#0891B2;border:1px solid rgba(6,182,212,0.12)"><i class="fas fa-trophy"></i> Рейтинг</span>
+                                <span style="padding:5px 12px;border-radius:50px;font-size:0.72rem;font-weight:600;background:rgba(6,182,212,0.07);color:#0891B2;border:1px solid rgba(6,182,212,0.12)"><i class="fas fa-chart-line"></i> Прогресс</span>
+                                <span style="padding:5px 12px;border-radius:50px;font-size:0.72rem;font-weight:600;background:rgba(6,182,212,0.07);color:#0891B2;border:1px solid rgba(6,182,212,0.12)"><i class="fas fa-users"></i> Мультиплеер</span>
+                            </div>
+                            <div style="font-size:1.6rem;font-weight:900;color:#0891B2;font-family:'Unbounded',sans-serif;margin-bottom:2px">990 ₽/мес</div>
+                            <div style="font-size:0.72rem;color:#9CA3AF;margin-bottom:12px">или включено в любой курс с преподавателем</div>
+                            <button class="btn-sm" style="background:linear-gradient(135deg,#06B6D4,#0891B2);color:#fff;padding:9px 20px;font-size:0.78rem" onclick="toast('Скоро будет доступно','error')"><i class="fas fa-shopping-cart"></i> Купить Rubium</button>
+                        </div>
+                        <div style="flex:0 0 80px;text-align:center;font-size:2.5rem;opacity:0.12">🎮</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Учитель: Заявки -->
             <div class="content-panel" id="teacherPanel">
                 <div class="stats-row">
                     <div class="stat-card"><div class="stat-num" id="statTotal">0</div><div class="stat-lbl">Всего заявок</div></div>
@@ -178,9 +218,10 @@
                 <div id="leadsList"><div class="empty"><i class="fas fa-inbox"></i> Загружаем...</div></div>
             </div>
 
+            <!-- Учитель/Админ: Ученики -->
             <div class="content-panel" id="studentsPanel">
-                <div style="display:flex;gap:8px;margin-bottom:10px">
-                    <a href="task_manager.html" class="btn-sm btn-accept" style="text-decoration:none;padding:9px 16px;"><i class="fas fa-plus"></i> Менеджер задач</a>
+                <div style="display:flex;gap:8px;margin-bottom:8px">
+                    <a href="task_manager.html" class="btn-sm btn-accept" style="text-decoration:none;padding:8px 14px;"><i class="fas fa-plus"></i> Менеджер задач</a>
                 </div>
                 <div class="stats-row">
                     <div class="stat-card"><div class="stat-num" id="tStudTotal">0</div><div class="stat-lbl">Всего учеников</div></div>
@@ -191,6 +232,7 @@
                 <div id="teacherStudentsList"><div class="empty"><i class="fas fa-users"></i> Загружаем...</div></div>
             </div>
 
+            <!-- Админ: Управление -->
             <div class="content-panel" id="adminPanel">
                 <div class="stats-row">
                     <div class="stat-card"><div class="stat-num" id="adminTotalLeads">0</div><div class="stat-lbl">Всего заявок</div></div>
@@ -213,6 +255,49 @@
                 </div>
                 <div class="info-card"><h3>Распределение заявок</h3><div id="unassignedLeads"><div class="empty"><i class="fas fa-inbox"></i> Проверяем...</div></div></div>
             </div>
+
+            <!-- Техподдержка -->
+            <div class="content-panel" id="supportPanel">
+                <div class="info-card">
+                    <h3>Техподдержка</h3>
+                    <div class="empty"><i class="fas fa-headset"></i>Раздел в разработке</div>
+                    <p style="text-align:center;font-size:0.82rem;color:#6B7280;margin-top:8px">По любым вопросам пиши в Telegram: <a href="https://t.me/studschool" style="color:#8B5CF6;font-weight:600">@studschool</a></p>
+                </div>
+            </div>
+
+            <!-- Реферальная программа -->
+            <div class="content-panel" id="referralPanel">
+                <div class="info-card">
+                    <h3>Реферальная программа</h3>
+                    <div class="empty"><i class="fas fa-gift"></i>Скоро запустим</div>
+                    <p style="text-align:center;font-size:0.82rem;color:#6B7280;margin-top:8px">Приглашай друзей и получай бонусы. Следи за обновлениями.</p>
+                </div>
+            </div>
+
+            <!-- Предложить идею -->
+            <div class="content-panel" id="suggestPanel">
+                <div class="info-card">
+                    <h3>Предложить улучшение</h3>
+                    <textarea class="form-textarea" id="suggestText" placeholder="Опиши свою идею..."></textarea>
+                    <button class="btn-sm btn-accept" style="margin-top:8px" onclick="submitSuggestion()"><i class="fas fa-paper-plane"></i> Отправить</button>
+                </div>
+            </div>
+
+            <!-- Отзыв о платформе -->
+            <div class="content-panel" id="feedbackPanel">
+                <div class="info-card">
+                    <h3>Оставить отзыв</h3>
+                    <div class="stars-row" id="starsRow">
+                        <button class="star-btn" data-rating="1" onclick="setRating(1)"><i class="fas fa-star"></i></button>
+                        <button class="star-btn" data-rating="2" onclick="setRating(2)"><i class="fas fa-star"></i></button>
+                        <button class="star-btn" data-rating="3" onclick="setRating(3)"><i class="fas fa-star"></i></button>
+                        <button class="star-btn" data-rating="4" onclick="setRating(4)"><i class="fas fa-star"></i></button>
+                        <button class="star-btn" data-rating="5" onclick="setRating(5)"><i class="fas fa-star"></i></button>
+                    </div>
+                    <textarea class="form-textarea" id="feedbackText" placeholder="Расскажи о своём опыте..."></textarea>
+                    <button class="btn-sm btn-accept" style="margin-top:8px" onclick="submitFeedback()"><i class="fas fa-paper-plane"></i> Отправить</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -226,7 +311,7 @@
 
     <script>
         var supabase = window.supabase.createClient('https://nrmihghshpteellhmzuh.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ybWloZ2hzaHB0ZWVsbGhtenVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5NDI4NDMsImV4cCI6MjA5NzUxODg0M30.X77HE62ZqYPVv7uOpjHNWgn7H4wIL_FoJLcs-CV1itQ');
-        var currentUser=null,userRole='student',allLeads=[],allSchoolLeads=[],activeRejectId=null,editField='',sessionToken=null;
+        var currentUser=null,userRole='student',allLeads=[],allSchoolLeads=[],activeRejectId=null,editField='',sessionToken=null,feedbackRating=0;
 
         function toast(msg,type){var t=document.createElement('div');t.className='toast '+(type||'success');t.innerHTML='<i class="fas fa-'+(type==='error'?'exclamation-circle':'check-circle')+'"></i> '+msg;document.body.appendChild(t);setTimeout(function(){t.style.opacity='0';t.style.transition='opacity 0.3s'},2500);setTimeout(function(){t.remove()},3000)}
         function formatDate(d){if(!d)return'';var dt=new Date(d);return dt.toLocaleDateString('ru-RU',{day:'numeric',month:'short'})+' '+dt.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}
@@ -248,15 +333,13 @@
 
         function setupSidebar(){
             var nav=document.getElementById('sideNav');
-            var teacherBtn=nav.querySelector('[data-panel="teacherPanel"]');
-            var studentsBtn=nav.querySelector('[data-panel="studentsPanel"]');
-            var adminBtn=nav.querySelector('[data-panel="adminPanel"]');
-            if(userRole==='teacher'||userRole==='admin'){teacherBtn.style.display='';studentsBtn.style.display=''}
-            if(userRole==='admin')adminBtn.style.display='';
+            if(userRole==='student')document.getElementById('rubiumNavBtn').style.display='';
+            if(userRole==='teacher'||userRole==='admin'){document.getElementById('teacherNavBtn').style.display='';document.getElementById('studentsNavBtn').style.display=''}
+            if(userRole==='admin')document.getElementById('adminNavBtn').style.display='';
             nav.addEventListener('click',function(e){
                 var btn=e.target.closest('.side-nav-btn');
-                if(!btn)return;
-                nav.querySelectorAll('.side-nav-btn').forEach(function(b){b.classList.remove('active')});
+                if(!btn||btn.dataset.panel===undefined)return;
+                nav.querySelectorAll('.side-nav-btn[data-panel]').forEach(function(b){b.classList.remove('active')});
                 btn.classList.add('active');
                 switchPanel(btn.dataset.panel);
                 if(btn.dataset.panel==='adminPanel')loadAdminData();
@@ -282,23 +365,21 @@
 
         async function loadStudentSubscriptions(){try{var r=await fetch('http://localhost:5001/api/subscriptions?student_id='+currentUser.id);renderStudentSubscriptions(await r.json())}catch(e){document.getElementById('studentSubscriptionsList').innerHTML='<div class="empty"><i class="fas fa-graduation-cap"></i> Нет активных подписок</div>'}}
 
-        async function loadJobLeads(){try{var r=await fetch('http://localhost:5001/api/job-leads');renderJobLeads(await r.json())}catch(e){document.getElementById('jobLeadsList').innerHTML='<div class="empty"><i class="fas fa-briefcase"></i> Заявок пока нет</div>'}}
+        function renderStudentSubscriptions(subs){var c=document.getElementById('studentSubscriptionsList');if(!subs.length){c.innerHTML='<div class="empty"><i class="fas fa-graduation-cap"></i> Нет активных подписок</div>';return}c.innerHTML=subs.map(function(s){var titleHtml=s.is_paid?'<a href="course.html?id='+s.id+'" style="color:#8B5CF6;text-decoration:none;font-weight:700">'+(s.course_title||'—')+' <i class="fas fa-external-link-alt" style="font-size:0.6rem"></i></a>':(s.course_title||'—');return'<div class="lead-card"><div class="lead-header"><div class="lead-student">'+titleHtml+'</div><span class="lead-badge '+(s.is_paid?'badge-paid':'badge-unpaid')+'">'+(s.is_paid?'Оплачено':'Не оплачено')+'</span></div><div class="lead-body"><div class="lead-field"><span class="lbl">Преподаватель:</span><span class="val">'+(s.teacher_name||'—')+'</span></div><div class="lead-field"><span class="lbl">Занятий всего:</span><span class="val">'+(s.lessons_total||'—')+'</span></div><div class="lead-field"><span class="lbl">Осталось:</span><span class="val">'+(s.lessons_left||0)+'</span></div><div class="lead-field"><span class="lbl">Сумма:</span><span class="val" style="color:#8B5CF6;font-weight:700">'+((s.total_price||0)).toLocaleString('ru-RU')+' ₽</span></div></div>'+(s.is_paid?'':'<div class="lead-actions"><button class="btn-sm btn-pay" onclick="markPaid(\''+s.id+'\')"><i class="fas fa-credit-card"></i> Оплатить</button></div>')+'</div>'}).join('')}
+        async function markPaid(id){var r=await fetch('http://localhost:5001/api/subscriptions/'+id+'/pay',{method:'POST'});if(r.ok)await loadStudentSubscriptions()}
 
+        async function loadStudentLeads(){try{var all=await(await fetch('http://localhost:5001/api/leads')).json(),my=all.filter(function(l){return l.student_id===currentUser.id}),subs=await(await fetch('http://localhost:5001/api/subscriptions?student_id='+currentUser.id)).json(),paid=subs.map(function(s){return s.lead_id});renderStudentLeads(my,paid)}catch(e){document.getElementById('studentLeadsList').innerHTML='<div class="empty"><i class="fas fa-inbox"></i> У вас пока нет заявок</div>'}}
+        function renderStudentLeads(leads,paid){var c=document.getElementById('studentLeadsList');if(!leads.length){c.innerHTML='<div class="empty"><i class="fas fa-inbox"></i> У вас пока нет заявок</div>';return}c.innerHTML=leads.map(function(l){var sl={new:'На рассмотрении',accepted:'Принята',rejected:'Отклонена'},sb={new:'badge-new',accepted:'badge-accepted',rejected:'badge-rejected'},ap=paid.indexOf(l.id)!==-1,pay=!ap&&l.status==='accepted'?'<div class="lead-actions" style="margin-top:6px"><button class="btn-sm btn-pay" onclick="createSubscriptionFromLead(\''+l.id+'\')"><i class="fas fa-credit-card"></i> Оплатить</button></div>':'',courseTitleHtml=ap?'<a href="course.html?id='+l.id+'" style="color:#8B5CF6;text-decoration:none;font-weight:700">'+(l.course_title||'—')+' <i class="fas fa-external-link-alt" style="font-size:0.6rem"></i></a>':(l.course_title||'—');return'<div class="lead-card"><div class="lead-header"><div class="lead-student">'+courseTitleHtml+'<span class="lead-date">'+formatDate(l.created_at)+'</span></div><span class="lead-badge '+(sb[l.status]||'')+'">'+(sl[l.status]||l.status)+'</span></div><div class="lead-body"><div class="lead-field"><span class="lbl">Преподаватель:</span><span class="val">'+(l.teacher_name||'—')+'</span></div><div class="lead-field"><span class="lbl">Занятий:</span><span class="val">'+(l.lessons||'—')+'</span></div><div class="lead-field"><span class="lbl">Сумма:</span><span class="val" style="color:#8B5CF6;font-weight:700">'+((l.total_price||0)).toLocaleString('ru-RU')+' ₽</span></div></div>'+(l.reject_reason?'<div class="lead-msg">Причина отказа: '+l.reject_reason+'</div>':'')+pay+'</div>'}).join('')}
+        async function createSubscriptionFromLead(leadId){var {data:{session}}=await supabase.auth.getSession();if(!session){toast('Войди в аккаунт','error');return}var r=await fetch('http://localhost:5001/api/subscriptions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token},body:JSON.stringify({lead_id:leadId})});if(r.ok){toast('Подписка создана!','success');await loadStudentLeads();await loadStudentSubscriptions()}else{var err=await r.json();toast(err.detail||'Ошибка','error')}}
+
+        async function loadJobLeads(){try{var r=await fetch('http://localhost:5001/api/job-leads');renderJobLeads(await r.json())}catch(e){document.getElementById('jobLeadsList').innerHTML='<div class="empty"><i class="fas fa-briefcase"></i> Заявок пока нет</div>'}}
         function renderJobLeads(leads){var c=document.getElementById('jobLeadsList');if(!leads.length){c.innerHTML='<div class="empty"><i class="fas fa-briefcase"></i> Заявок пока нет</div>';return}c.innerHTML=leads.map(function(l){return'<div class="lead-card"><div class="lead-header"><div class="lead-student"><i class="fas fa-user"></i> '+l.name+' <span class="lead-date">'+formatDate(l.created_at)+'</span></div><button class="btn-sm btn-reject" onclick="deleteJobLead(\''+l.id+'\')" title="Удалить">Удалить <i class="fas fa-trash"></i></button></div><div class="lead-body"><div class="lead-field"><span class="lbl">Телефон:</span><span class="val">'+(l.phone||'—')+'</span></div><div class="lead-field"><span class="lbl">Должность:</span><span class="val">'+(l.position||'—')+'</span></div><div class="lead-field"><span class="lbl">Email:</span><span class="val">'+(l.email||'—')+'</span></div><div class="lead-field"><span class="lbl">TG:</span><span class="val">'+(l.tg?'@'+l.tg:'—')+'</span></div><div class="lead-field"><span class="lbl">VK:</span><span class="val">'+(l.vk||'—')+'</span></div></div>'+(l.about_yourself?'<div class="lead-msg">'+l.about_yourself+'</div>':'')+'</div>'}).join('')}
         function deleteJobLead(id){if(confirm('Удалить заявку навсегда?')){fetch('http://localhost:5001/api/job-leads/'+id,{method:'DELETE'}).then(function(r){if(r.ok)loadJobLeads()})}}
         async function deleteLead(id){if(confirm('Удалить заявку навсегда?')){fetch('http://localhost:5001/api/leads/'+id,{method:'DELETE'}).then(function(r){if(r.ok){loadLeads();if(userRole==='admin')loadAdminData()}})}}
 
-        function renderStudentSubscriptions(subs){var c=document.getElementById('studentSubscriptionsList');if(!subs.length){c.innerHTML='<div class="empty"><i class="fas fa-graduation-cap"></i> Нет активных подписок</div>';return}c.innerHTML=subs.map(function(s){var titleHtml=s.is_paid?'<a href="course.html?id='+s.id+'" style="color:#8B5CF6;text-decoration:none;font-weight:700">'+(s.course_title||'—')+' <i class="fas fa-external-link-alt" style="font-size:0.6rem"></i></a>':(s.course_title||'—');return'<div class="lead-card"><div class="lead-header"><div class="lead-student">'+titleHtml+'</div><span class="lead-badge '+(s.is_paid?'badge-paid':'badge-unpaid')+'">'+(s.is_paid?'Оплачено':'Не оплачено')+'</span></div><div class="lead-body"><div class="lead-field"><span class="lbl">Преподаватель:</span><span class="val">'+(s.teacher_name||'—')+'</span></div><div class="lead-field"><span class="lbl">Занятий всего:</span><span class="val">'+(s.lessons_total||'—')+'</span></div><div class="lead-field"><span class="lbl">Осталось:</span><span class="val">'+(s.lessons_left||0)+'</span></div><div class="lead-field"><span class="lbl">Сумма:</span><span class="val" style="color:#8B5CF6;font-weight:700">'+((s.total_price||0)).toLocaleString('ru-RU')+' ₽</span></div></div>'+(s.is_paid?'':'<div class="lead-actions"><button class="btn-sm btn-pay" onclick="markPaid(\''+s.id+'\')"><i class="fas fa-credit-card"></i> Оплатить</button></div>')+'</div>'}).join('')}
-        async function markPaid(id){var r=await fetch('http://localhost:5001/api/subscriptions/'+id+'/pay',{method:'POST'});if(r.ok)await loadStudentSubscriptions()}
-        async function loadStudentLeads(){try{var all=await(await fetch('http://localhost:5001/api/leads')).json(),my=all.filter(function(l){return l.student_id===currentUser.id}),subs=await(await fetch('http://localhost:5001/api/subscriptions?student_id='+currentUser.id)).json(),paid=subs.map(function(s){return s.lead_id});renderStudentLeads(my,paid)}catch(e){document.getElementById('studentLeadsList').innerHTML='<div class="empty"><i class="fas fa-inbox"></i> У вас пока нет заявок</div>'}}
-
-        function renderStudentLeads(leads,paid){var c=document.getElementById('studentLeadsList');if(!leads.length){c.innerHTML='<div class="empty"><i class="fas fa-inbox"></i> У вас пока нет заявок</div>';return}c.innerHTML=leads.map(function(l){var sl={new:'На рассмотрении',accepted:'Принята',rejected:'Отклонена'},sb={new:'badge-new',accepted:'badge-accepted',rejected:'badge-rejected'},ap=paid.indexOf(l.id)!==-1,pay=!ap&&l.status==='accepted'?'<div class="lead-actions" style="margin-top:6px"><button class="btn-sm btn-pay" onclick="createSubscriptionFromLead(\''+l.id+'\')"><i class="fas fa-credit-card"></i> Оплатить</button></div>':'',courseTitleHtml=ap?'<a href="course.html?id='+l.id+'" style="color:#8B5CF6;text-decoration:none;font-weight:700">'+(l.course_title||'—')+' <i class="fas fa-external-link-alt" style="font-size:0.6rem"></i></a>':(l.course_title||'—');return'<div class="lead-card"><div class="lead-header"><div class="lead-student">'+courseTitleHtml+'<span class="lead-date">'+formatDate(l.created_at)+'</span></div><span class="lead-badge '+(sb[l.status]||'')+'">'+(sl[l.status]||l.status)+'</span></div><div class="lead-body"><div class="lead-field"><span class="lbl">Преподаватель:</span><span class="val">'+(l.teacher_name||'—')+'</span></div><div class="lead-field"><span class="lbl">Занятий:</span><span class="val">'+(l.lessons||'—')+'</span></div><div class="lead-field"><span class="lbl">Сумма:</span><span class="val" style="color:#8B5CF6;font-weight:700">'+((l.total_price||0)).toLocaleString('ru-RU')+' ₽</span></div></div>'+(l.reject_reason?'<div class="lead-msg">Причина отказа: '+l.reject_reason+'</div>':'')+pay+'</div>'}).join('')}
-        async function createSubscriptionFromLead(leadId){var {data:{session}}=await supabase.auth.getSession();if(!session){toast('Войди в аккаунт','error');return}var r=await fetch('http://localhost:5001/api/subscriptions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token},body:JSON.stringify({lead_id:leadId})});if(r.ok){toast('Подписка создана!','success');await loadStudentLeads();await loadStudentSubscriptions()}else{var err=await r.json();toast(err.detail||'Ошибка','error')}}
-
         async function loadLeads(){try{var leads=await(await fetch('http://localhost:5001/api/leads')).json();if(userRole==='admin')allLeads=leads;else{var tn=document.getElementById('profileName').textContent.trim();allLeads=leads.filter(function(l){if(!l.teacher_name||!tn)return false;var p=tn.toLowerCase().split(' ');return p.some(function(x){return x.length>2&&l.teacher_name.toLowerCase().includes(x)})})}renderStats();renderLeads(allLeads)}catch(e){document.getElementById('leadsList').innerHTML='<div class="empty"><i class="fas fa-inbox"></i> Заявок пока нет</div>'}}
         function renderStats(){var t=allLeads.length,n=allLeads.filter(function(l){return l.status==='new'}).length,a=allLeads.filter(function(l){return l.status==='accepted'}).length,i=allLeads.filter(function(l){return l.status==='accepted'}).reduce(function(s,l){return s+(l.total_price||0)},0);document.getElementById('statTotal').textContent=t;document.getElementById('statNew').textContent=n;document.getElementById('statAccepted').textContent=a;document.getElementById('statIncome').textContent=i.toLocaleString('ru-RU')+' ₽'}
-
-        function renderLeads(leads){var c=document.getElementById('leadsList');if(!leads.length){c.innerHTML='<div class="empty"><i class="fas fa-inbox"></i> Заявок пока нет</div>';return}c.innerHTML=leads.map(function(l){var sl={new:'Новая',accepted:'Принята',rejected:'Отклонена'},sb={new:'badge-new',accepted:'badge-accepted',rejected:'badge-rejected'},act='',del='';if(l.status==='new')act='<button class="btn-sm btn-accept" onclick="acceptLead(\''+l.id+'\')"><i class="fas fa-check"></i> Принять</button><button class="btn-sm btn-reject" onclick="showReject(\''+l.id+'\')"><i class="fas fa-times"></i> Отклонить</button><div class="reject-row" id="rejectRow'+l.id+'"><input type="text" id="rejectReason'+l.id+'" placeholder="Причина отказа..."><button class="btn-sm btn-confirm-reject" onclick="confirmReject(\''+l.id+'\')">Отклонить</button></div>';else if(l.status==='rejected'&&l.reject_reason)act='<span style="font-size:0.74rem;color:#EF4444">Причина: '+l.reject_reason+'</span>';else if(l.status==='accepted')act='<span style="font-size:0.76rem;color:#22C55E;font-weight:600"><i class="fas fa-check-circle"></i> Принят</span>';if(l.is_paid)del='<button class="btn-sm btn-reject" onclick="deleteLead(\''+l.id+'\')" title="Удалить"><i class="fas fa-trash"></i></button>';return'<div class="lead-card'+(l.status==='new'?' unread':'')+'"><div class="lead-header"><div class="lead-student"><i class="fas fa-user-graduate"></i> '+(l.client_name||'—')+'<span class="lead-date">'+formatDate(l.created_at)+'</span></div><div style="display:flex;gap:6px;align-items:center"><span class="lead-badge '+(sb[l.status]||'')+'">'+(sl[l.status]||l.status)+'</span>'+del+'</div></div><div class="lead-body"><div class="lead-field"><span class="lbl">Телефон:</span><span class="val">'+(l.phone||'—')+'</span></div><div class="lead-field"><span class="lbl">Курс:</span><span class="val">'+(l.course_title||'—')+'</span></div><div class="lead-field"><span class="lbl">Занятий:</span><span class="val">'+(l.lessons||'—')+'</span></div><div class="lead-field"><span class="lbl">Сумма:</span><span class="val" style="color:#8B5CF6;font-weight:700">'+((l.total_price||0)).toLocaleString('ru-RU')+' ₽</span></div>'+(l.tg_username?'<div class="lead-field"><span class="lbl">TG:</span><span class="val">@'+l.tg_username+'</span></div>':'')+(l.vk_username?'<div class="lead-field"><span class="lbl">VK:</span><span class="val">'+l.vk_username+'</span></div>':'')+'</div>'+(l.student_message?'<div class="lead-msg">'+l.student_message+'</div>':'')+'<div class="lead-actions">'+act+'</div></div>'}).join('')}
+        function renderLeads(leads){var c=document.getElementById('leadsList');if(!leads.length){c.innerHTML='<div class="empty"><i class="fas fa-inbox"></i> Заявок пока нет</div>';return}c.innerHTML=leads.map(function(l){var sl={new:'Новая',accepted:'Принята',rejected:'Отклонена'},sb={new:'badge-new',accepted:'badge-accepted',rejected:'badge-rejected'},act='',del='';if(l.status==='new')act='<button class="btn-sm btn-accept" onclick="acceptLead(\''+l.id+'\')"><i class="fas fa-check"></i> Принять</button><button class="btn-sm btn-reject" onclick="showReject(\''+l.id+'\')"><i class="fas fa-times"></i> Отклонить</button><div class="reject-row" id="rejectRow'+l.id+'"><input type="text" id="rejectReason'+l.id+'" placeholder="Причина отказа..."><button class="btn-sm btn-confirm-reject" onclick="confirmReject(\''+l.id+'\')">Отклонить</button></div>';else if(l.status==='rejected'&&l.reject_reason)act='<span style="font-size:0.72rem;color:#EF4444">Причина: '+l.reject_reason+'</span>';else if(l.status==='accepted')act='<span style="font-size:0.74rem;color:#22C55E;font-weight:600"><i class="fas fa-check-circle"></i> Принят</span>';if(l.is_paid)del='<button class="btn-sm btn-reject" onclick="deleteLead(\''+l.id+'\')" title="Удалить"><i class="fas fa-trash"></i></button>';return'<div class="lead-card'+(l.status==='new'?' unread':'')+'"><div class="lead-header"><div class="lead-student"><i class="fas fa-user-graduate"></i> '+(l.client_name||'—')+'<span class="lead-date">'+formatDate(l.created_at)+'</span></div><div style="display:flex;gap:6px;align-items:center"><span class="lead-badge '+(sb[l.status]||'')+'">'+(sl[l.status]||l.status)+'</span>'+del+'</div></div><div class="lead-body"><div class="lead-field"><span class="lbl">Телефон:</span><span class="val">'+(l.phone||'—')+'</span></div><div class="lead-field"><span class="lbl">Курс:</span><span class="val">'+(l.course_title||'—')+'</span></div><div class="lead-field"><span class="lbl">Занятий:</span><span class="val">'+(l.lessons||'—')+'</span></div><div class="lead-field"><span class="lbl">Сумма:</span><span class="val" style="color:#8B5CF6;font-weight:700">'+((l.total_price||0)).toLocaleString('ru-RU')+' ₽</span></div>'+(l.tg_username?'<div class="lead-field"><span class="lbl">TG:</span><span class="val">@'+l.tg_username+'</span></div>':'')+(l.vk_username?'<div class="lead-field"><span class="lbl">VK:</span><span class="val">'+l.vk_username+'</span></div>':'')+'</div>'+(l.student_message?'<div class="lead-msg">'+l.student_message+'</div>':'')+'<div class="lead-actions">'+act+'</div></div>'}).join('')}
         async function acceptLead(id){var r=await fetch('http://localhost:5001/api/leads/'+id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:'accepted'})});if(r.ok)await loadLeads()}
         function showReject(id){if(activeRejectId&&activeRejectId!==id)document.getElementById('rejectRow'+activeRejectId).style.display='none';var row=document.getElementById('rejectRow'+id);row.style.display=row.style.display==='flex'?'none':'flex';activeRejectId=id;if(row.style.display==='flex')document.getElementById('rejectReason'+id).focus()}
         async function confirmReject(id){var reason=document.getElementById('rejectReason'+id).value.trim();if(!reason)return;var r=await fetch('http://localhost:5001/api/leads/'+id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:'rejected',reject_reason:reason})});if(r.ok){activeRejectId=null;await loadLeads()}}
@@ -307,11 +388,34 @@
         function renderTeacherStudents(subs){var c=document.getElementById('teacherStudentsList');if(!subs.length){c.innerHTML='<div class="empty"><i class="fas fa-users"></i> Нет учеников</div>';document.getElementById('tStudTotal').textContent='0';document.getElementById('tStudActive').textContent='0';document.getElementById('tStudIncome').textContent='0 ₽';document.getElementById('tStudDebt').textContent='0 ₽';return}var total=subs.length,active=subs.filter(function(s){return s.lessons_left>0}).length,paid=subs.filter(function(s){return s.is_paid}).reduce(function(sum,s){return sum+(s.total_price||0)},0),debt=subs.filter(function(s){return!s.is_paid}).reduce(function(sum,s){return sum+(s.total_price||0)},0);document.getElementById('tStudTotal').textContent=total;document.getElementById('tStudActive').textContent=active;document.getElementById('tStudIncome').textContent=paid.toLocaleString('ru-RU')+' ₽';document.getElementById('tStudDebt').textContent=debt.toLocaleString('ru-RU')+' ₽';c.innerHTML=subs.map(function(s){return'<div class="lead-card"><div class="lead-header"><div class="lead-student"><i class="fas fa-user-graduate"></i> '+(s.student_name||'—')+'<span class="lead-date">'+formatDate(s.created_at)+'</span></div><span class="lead-badge '+(s.is_paid?'badge-paid':'badge-unpaid')+'">'+(s.is_paid?'Оплачено':'Не оплачено')+'</span></div><div class="lead-body"><div class="lead-field"><span class="lbl">Курс:</span><span class="val">'+(s.course_title||'—')+'</span></div><div class="lead-field"><span class="lbl">Всего занятий:</span><span class="val">'+(s.lessons_total||'—')+'</span></div><div class="lead-field"><span class="lbl">Осталось:</span><span class="val">'+(s.lessons_left||0)+'</span></div><div class="lead-field"><span class="lbl">Сумма:</span><span class="val" style="color:#8B5CF6;font-weight:700">'+((s.total_price||0)).toLocaleString('ru-RU')+' ₽</span></div></div></div>'}).join('')}
 
         async function loadAdminData(){var leads=await(await fetch('http://localhost:5001/api/leads')).json();allSchoolLeads=leads;var total=leads.length,n=leads.filter(function(l){return l.status==='new'}).length,a=leads.filter(function(l){return l.status==='accepted'}).length,inc=leads.filter(function(l){return l.status==='accepted'}).reduce(function(s,l){return s+(l.total_price||0)},0);document.getElementById('adminTotalLeads').textContent=total;document.getElementById('adminNewLeads').textContent=n;document.getElementById('adminAcceptedLeads').textContent=a;document.getElementById('adminIncome').textContent=inc.toLocaleString('ru-RU')+' ₽';var {data:teachers}=await supabase.from('users').select('id,first_name,last_name,email,role').in('role',['teacher','admin']);renderTeachers(teachers,leads);renderAdminLeads(leads);var unassigned=leads.filter(function(l){return!l.teacher_name||l.teacher_name==='Назначается'||l.teacher_name.trim()===''});renderUnassigned(unassigned,teachers);var subs=await(await fetch('http://localhost:5001/api/subscriptions')).json();renderAllStudents(subs||[])}
-        function renderTeachers(teachers,leads){var c=document.getElementById('teachersList');if(!teachers||!teachers.length){c.innerHTML='<div class="empty"><i class="fas fa-chalkboard-teacher"></i> Нет преподавателей</div>';return}c.innerHTML=teachers.map(function(t){var full=((t.first_name||'')+' '+(t.last_name||'')).trim()||'Без имени',role=t.role==='admin'?' <span style="font-size:0.6rem;color:#EF4444">админ</span>':'',tl=leads.filter(function(l){if(!l.teacher_name)return false;var p=full.toLowerCase().split(' ');return p.some(function(x){return x.length>2&&l.teacher_name.toLowerCase().includes(x)})}),ac=tl.filter(function(l){return l.status==='accepted'}).length,inc=tl.filter(function(l){return l.status==='accepted'}).reduce(function(s,l){return s+(l.total_price||0)},0);return'<div class="teacher-row"><div><span style="font-weight:600">'+full+role+'</span><br><span class="teacher-email">'+(t.email||'—')+'</span></div><div class="teacher-stats">Заявок: <span>'+tl.length+'</span> | Учеников: <span>'+ac+'</span> | Доход: <span>'+inc.toLocaleString('ru-RU')+' ₽</span></div></div>'}).join('')}
+        function renderTeachers(teachers,leads){var c=document.getElementById('teachersList');if(!teachers||!teachers.length){c.innerHTML='<div class="empty"><i class="fas fa-chalkboard-teacher"></i> Нет преподавателей</div>';return}c.innerHTML=teachers.map(function(t){var full=((t.first_name||'')+' '+(t.last_name||'')).trim()||'Без имени',role=t.role==='admin'?' <span style="font-size:0.58rem;color:#EF4444">админ</span>':'',tl=leads.filter(function(l){if(!l.teacher_name)return false;var p=full.toLowerCase().split(' ');return p.some(function(x){return x.length>2&&l.teacher_name.toLowerCase().includes(x)})}),ac=tl.filter(function(l){return l.status==='accepted'}).length,inc=tl.filter(function(l){return l.status==='accepted'}).reduce(function(s,l){return s+(l.total_price||0)},0);return'<div class="teacher-row"><div><span style="font-weight:600">'+full+role+'</span><br><span class="teacher-email">'+(t.email||'—')+'</span></div><div class="teacher-stats">Заявок: <span>'+tl.length+'</span> | Учеников: <span>'+ac+'</span> | Доход: <span>'+inc.toLocaleString('ru-RU')+' ₽</span></div></div>'}).join('')}
         function renderAdminLeads(leads){var c=document.getElementById('adminLeadsList');if(!leads.length){c.innerHTML='<div class="empty"><i class="fas fa-inbox"></i> Заявок пока нет</div>';return}c.innerHTML=leads.map(function(l){var sl={new:'Новая',accepted:'Принята',rejected:'Отклонена'},sb={new:'badge-new',accepted:'badge-accepted',rejected:'badge-rejected'};return'<div class="lead-card" style="margin-bottom:6px"><div class="lead-header"><div class="lead-student">'+(l.client_name||'—')+'<span class="lead-date">'+formatDate(l.created_at)+'</span></div><div style="display:flex;gap:6px;align-items:center"><span class="lead-badge '+(sb[l.status]||'')+'">'+(sl[l.status]||l.status)+'</span>'+(l.is_paid?'<button class="btn-sm btn-reject" onclick="deleteLead(\''+l.id+'\')" title="Удалить"><i class="fas fa-trash"></i></button>':'')+'</div></div><div class="lead-body"><div class="lead-field"><span class="lbl">Телефон:</span><span class="val">'+(l.phone||'—')+'</span></div><div class="lead-field"><span class="lbl">Курс:</span><span class="val">'+(l.course_title||'—')+'</span></div><div class="lead-field"><span class="lbl">Преподаватель:</span><span class="val">'+(l.teacher_name||'—')+'</span></div><div class="lead-field"><span class="lbl">Сумма:</span><span class="val" style="color:#8B5CF6;font-weight:700">'+((l.total_price||0)).toLocaleString('ru-RU')+' ₽</span></div>'+(l.tg_username?'<div class="lead-field"><span class="lbl">TG:</span><span class="val">@'+l.tg_username+'</span></div>':'')+(l.vk_username?'<div class="lead-field"><span class="lbl">VK:</span><span class="val">'+l.vk_username+'</span></div>':'')+'</div></div>'}).join('')}
-        function renderUnassigned(leads,teachers){var c=document.getElementById('unassignedLeads');if(!leads.length){c.innerHTML='<div class="empty"><i class="fas fa-check-circle"></i> Все заявки распределены</div>';return}var opts=(teachers||[]).map(function(t){var f=((t.first_name||'')+' '+(t.last_name||'')).trim();return'<option value="'+f+'">'+f+'</option>'}).join('');c.innerHTML=leads.map(function(l){return'<div class="unassigned-card" id="unassigned-'+l.id+'"><div style="font-size:0.8rem"><strong>'+(l.client_name||'—')+'</strong> — '+(l.course_title||'—')+'<br><span style="font-size:0.68rem;color:#9CA3AF">'+(l.phone||'')+'</span><span class="lead-date" style="display:block">'+formatDate(l.created_at)+'</span></div><div style="display:flex;gap:6px;align-items:center"><select class="assign-select" id="assignSelect-'+l.id+'"><option value="">Назначить...</option>'+opts+'</select><button class="btn-assign" onclick="assignLead(\''+l.id+'\')">Ок</button></div></div>'}).join('')}
+        function renderUnassigned(leads,teachers){var c=document.getElementById('unassignedLeads');if(!leads.length){c.innerHTML='<div class="empty"><i class="fas fa-check-circle"></i> Все заявки распределены</div>';return}var opts=(teachers||[]).map(function(t){var f=((t.first_name||'')+' '+(t.last_name||'')).trim();return'<option value="'+f+'">'+f+'</option>'}).join('');c.innerHTML=leads.map(function(l){return'<div class="unassigned-card" id="unassigned-'+l.id+'"><div style="font-size:0.78rem"><strong>'+(l.client_name||'—')+'</strong> — '+(l.course_title||'—')+'<br><span style="font-size:0.66rem;color:#9CA3AF">'+(l.phone||'')+'</span><span class="lead-date" style="display:block">'+formatDate(l.created_at)+'</span></div><div style="display:flex;gap:6px;align-items:center"><select class="assign-select" id="assignSelect-'+l.id+'"><option value="">Назначить...</option>'+opts+'</select><button class="btn-assign" onclick="assignLead(\''+l.id+'\')">Ок</button></div></div>'}).join('')}
         async function assignLead(id){var sel=document.getElementById('assignSelect-'+id),tn=sel.value;if(!tn)return;var r=await fetch('http://localhost:5001/api/leads/'+id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({teacher_name:tn})});if(r.ok){document.getElementById('unassigned-'+id).style.opacity='0';setTimeout(function(){loadAdminData();if(userRole==='teacher'||userRole==='admin')loadLeads()},300)}}
         function renderAllStudents(subs){var c=document.getElementById('adminStudentsList');if(!subs.length){c.innerHTML='<div class="empty"><i class="fas fa-users"></i> Нет студентов</div>';return}c.innerHTML=subs.map(function(s){return'<div class="lead-card"><div class="lead-header"><div class="lead-student"><i class="fas fa-user-graduate"></i> '+(s.student_name||'—')+'<span class="lead-date">'+formatDate(s.created_at)+'</span></div><span class="lead-badge '+(s.is_paid?'badge-paid':'badge-unpaid')+'">'+(s.is_paid?'Оплачено':'Не оплачено')+'</span></div><div class="lead-body"><div class="lead-field"><span class="lbl">Курс:</span><span class="val">'+(s.course_title||'—')+'</span></div><div class="lead-field"><span class="lbl">Учитель:</span><span class="val">'+(s.teacher_name||'—')+'</span></div><div class="lead-field"><span class="lbl">Занятий:</span><span class="val">'+(s.lessons_left||0)+' / '+(s.lessons_total||'—')+'</span></div><div class="lead-field"><span class="lbl">Сумма:</span><span class="val" style="color:#8B5CF6;font-weight:700">'+((s.total_price||0)).toLocaleString('ru-RU')+' ₽</span></div></div></div>'}).join('')}
+
+        function setRating(r){
+            feedbackRating=r;
+            document.querySelectorAll('#starsRow .star-btn').forEach(function(b,i){
+                b.classList.toggle('active',i<r)
+            })
+        }
+
+        async function submitSuggestion(){
+            var text=document.getElementById('suggestText').value.trim();
+            if(!text){toast('Введи текст предложения','error');return}
+            if(!sessionToken){toast('Войди в аккаунт','error');return}
+            var r=await fetch('http://localhost:5001/api/suggestions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+sessionToken},body:JSON.stringify({text:text})});
+            if(r.ok){toast('Спасибо за предложение!','success');document.getElementById('suggestText').value=''}else{toast('Ошибка','error')}
+        }
+
+        async function submitFeedback(){
+            if(!feedbackRating){toast('Выбери рейтинг','error');return}
+            var text=document.getElementById('feedbackText').value.trim();
+            if(!sessionToken){toast('Войди в аккаунт','error');return}
+            var r=await fetch('http://localhost:5001/api/feedback',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+sessionToken},body:JSON.stringify({rating:feedbackRating,text:text})});
+            if(r.ok){toast('Спасибо за отзыв!','success');document.getElementById('feedbackText').value='';feedbackRating=0;document.querySelectorAll('#starsRow .star-btn').forEach(function(b){b.classList.remove('active')})}else{toast('Ошибка','error')}
+        }
 
         document.addEventListener('click',function(e){if(e.target.classList.contains('filter-btn')){var sec=e.target.dataset.section,container=e.target.parentElement;container.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active')});e.target.classList.add('active');var f=e.target.dataset.filter,filtered=f==='all'?(sec==='admin'?allSchoolLeads:allLeads):(sec==='admin'?allSchoolLeads:allLeads).filter(function(l){return l.status===f});sec==='admin'?renderAdminLeads(filtered):renderLeads(filtered)}});
 
