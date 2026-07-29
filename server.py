@@ -717,7 +717,6 @@ def fipi_hint():
     if not user_query:
         return jsonify({"response": "Напиши вопрос или номер задачи."})
 
-    # Ищем задачу по display_id с нормализацией (1 = 01 = 001 = 000001 = #000001)
     task_context = ""
     task_found = False
     if display_id:

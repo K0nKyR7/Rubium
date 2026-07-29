@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase.js"></script>
-    <script src="js/auth.js"></script>
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
         body{font-family:'Inter',sans-serif;background:#FAF8FC;color:#1F2937;min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;-webkit-font-smoothing:antialiased}
@@ -96,27 +95,125 @@
     </div>
 
     <script>
-        var errorEl=document.getElementById('error');
-        function showError(msg){errorEl.textContent=msg;errorEl.style.display='block';setTimeout(function(){errorEl.style.display='none'},5000)}
-        function isRussianEmail(email){var russianDomains=['.ru','.рф','.su','mail.ru','inbox.ru','list.ru','bk.ru','yandex.ru','ya.ru','rambler.ru','lenta.ru','autorambler.ru','myrambler.ru','ro.ru','r0.ru'];var lowerEmail=email.toLowerCase();return russianDomains.some(function(domain){return lowerEmail.endsWith(domain)})}
+        const errorEl = document.getElementById('error');
+        function showError(msg) {
+            errorEl.textContent = msg;
+            errorEl.style.display = 'block';
+            setTimeout(() => errorEl.style.display = 'none', 5000);
+        }
 
-        (async function(){await supabase.auth.signOut()})();
+        function isRussianEmail(email) {
+            const russianDomains = ['.ru', '.рф', '.su', 'mail.ru', 'inbox.ru', 'list.ru', 'bk.ru', 'yandex.ru', 'ya.ru', 'rambler.ru', 'lenta.ru', 'autorambler.ru', 'myrambler.ru', 'ro.ru', 'r0.ru'];
+            const lowerEmail = email.toLowerCase();
+            return russianDomains.some(domain => lowerEmail.endsWith(domain));
+        }
 
-        document.getElementById('registerForm').addEventListener('submit',async function(e){
+        // Выход перед регистрацией
+        (async function() {
+            await supabase.auth.signOut();
+        })();
+
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            var firstName=document.getElementById('firstName').value.trim(),lastName=document.getElementById('lastName').value.trim(),email=document.getElementById('email').value.trim(),password=document.getElementById('password').value;
-            if(!firstName||!lastName){showError('Заполните имя и фамилию');return}
-            if(!isRussianEmail(email)){showError('Пожалуйста, используйте российский email');return}
+            
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
 
-            var result=await supabase.auth.signUp({email:email,password:password,options:{data:{first_name:firstName,last_name:lastName}}});
-            if(result.error){showError(result.error.message==='User already registered'?'Пользователь с таким email уже существует':result.error.message);return}
+            if (!firstName || !lastName) {
+                showError('Заполните имя и фамилию');
+                return;
+            }
 
-            var user=result.data.user;
-            if(user){
-                var upsertResult=await supabase.from('users').upsert({id:user.id,email:user.email,first_name:firstName,last_name:lastName},{onConflict:'id',ignoreDuplicates:false});
-                if(upsertResult.error)console.log('Users table upsert error:',upsertResult.error.message);
-                window.location.href='profile.html'
-            }else{showError('Проверьте почту для подтверждения регистрации')}
+            if (!isRussianEmail(email)) {
+                showError('Пожалуйста, используйте российский email');
+                return;
+            }
+
+            // 1. Регистрация в Supabase Auth
+            const { data, error } = await supabase.auth.signUp({
+                email: email,
+                password: password,
+                options: {
+                    data: {
+                        first_name: firstName,
+                        last_name: lastName
+                    }
+                }
+            });
+
+            if (error) {
+                if (error.message === 'User already registered') {
+                    showError('Пользователь с таким email уже существует');
+                } else {
+                    showError(error.message);
+                }
+                return;
+            }
+
+            const user = data.user;
+            if (!user) {
+                showError('Проверьте почту для подтверждения регистрации');
+                return;
+            }
+
+            // 2. Создаём запись в Stud&School users
+            const { error: usersError } = await supabase
+                .from('users')
+                .upsert({
+                    id: user.id,
+                    email: user.email,
+                    first_name: firstName,
+                    last_name: lastName,
+                    role: 'student',
+                    auth_provider: 'email',
+                    created_at: new Date().toISOString()
+                }, { 
+                    onConflict: 'id',
+                    ignoreDuplicates: false 
+                });
+
+            if (usersError) {
+                console.error('❌ Stud&School users insert error:', usersError);
+                showError('Ошибка при создании профиля');
+                return;
+            }
+
+            // 3. Создаём запись в Rubium users
+            const { error: rubiumError } = await supabase
+                .from('rubium_users')
+                .upsert({
+                    auth_id: user.id,
+                    email: user.email,
+                    first_name: firstName,
+                    last_name: lastName,
+                    provider: 'stud_school',
+                    xp: 0,
+                    level: 1,
+                    streak: 0,
+                    last_streak_date: null,
+                    tasks_solved: 0,
+                    tasks_correct: 0,
+                    accuracy: 0,
+                    daily_reminder: true,
+                    dark_mode: true,
+                    notifications_enabled: true,
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString()
+                }, { 
+                    onConflict: 'auth_id',
+                    ignoreDuplicates: false 
+                });
+
+            if (rubiumError) {
+                console.error('❌ Rubium users insert error:', rubiumError);
+                showError('Ошибка при создании профиля Rubium');
+                return;
+            }
+
+            console.log('✅ Регистрация успешна:', user.email);
+            window.location.href = 'dashboard.html';
         });
     </script>
 </body>
